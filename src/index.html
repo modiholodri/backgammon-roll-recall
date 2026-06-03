@@ -20,11 +20,11 @@
                     <p id="boardChartMessage" class="centered">Not loaded yet...</p>
                 </div>
 
-                <!-- Ranking Summary -->
-                <h5 id="rankingSummaryToggle" type="button" data-toggle="collapse" data-target="#rankingSummary" aria-expanded="false" aria-controls="rankingSummary">
-                    Ranking Summary ⇅
+                <!-- Board Summary -->
+                <h5 id="boardSummaryToggle" type="button" data-toggle="collapse" data-target="#boardSummary" aria-expanded="false" aria-controls="boardSummary">
+                    Board Summary ⇅
                 </h5>
-                <div id="rankingSummary" class="collapse"></div>
+                <div id="boardSummary" class="collapse"></div>
         </section>
 
         <!-- Read Me -->
@@ -97,22 +97,6 @@
 
     
     <script>
-        const playerRating = {};  // the player ratings from the rating list on GitHub
-
-        let matchRecords = '';  // all the matches ever played split in single lines, still in Markdown format
-        let totalMatchList = '';  // all the matches ever played in Markdown format
-
-        let matchList = '';  // only the applicable matches
-        let ranglistenMatchList = '';  // only the matches applicable for the Rangliste
-
-        let ratingSummary = {};  // summary for the Rating list
-        let rankingSummary = {};  // summary for ranking lists
-        let ranglistenSummary = {};  // summary for the Rangliste
-        let playerSummary = {};  // summary for a player
-        let playerProgressList = {};  // summary for the progression over time
-
-        let cachedTipOfTheDayFiles = null;  // cache for tip of the day files
-
         // fetch the Read Me when the toggle is clicked the first time
         let readMeLoaded = false;
         document.getElementById('readMeToggle').addEventListener('click', function() {
@@ -125,86 +109,6 @@
 
     <!-- Events -->
     <script>
-        function checkLocalStorageAvailable() {
-            try {
-                localStorage.setItem('test', 'test');
-                localStorage.removeItem('test');
-            } catch (e) {
-                const crappleWarning = document.getElementById('crappleWarning');
-                if (crappleWarning) crappleWarning.style.display = 'block';
-            }
-        }
-
-        function showTipOfTheDay() {
-            const tipSection = document.getElementById('tipOfTheDay');
-            const tipContent = document.getElementById('tipContent');
-            if (!tipSection || !tipContent) return;
-
-            const options = {
-                headers: {
-                    'Authorization': `token ${githubToken}`
-                }
-            };
-
-            const loadTip = () => {
-                if (!cachedTipOfTheDayFiles || cachedTipOfTheDayFiles.length === 0) {
-                    throw new Error('No tip of the day files available');
-                }
-
-                const randomTip = cachedTipOfTheDayFiles[Math.floor(generator.random() * cachedTipOfTheDayFiles.length)];
-                fetch(`${randomTip.url}`, options)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch tip markdown');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        const fileContent = data.content ? decodeURIComponent(escape(window.atob(data.content))) : '';
-                        tipContent.innerHTML = marked.parse(fileContent);
-                        tipSection.style.display = 'block';
-                        autoCollapse('tipOfTheDay');
-                        // scroll to the end of the Tip of the Day section so the tip is visible
-                        setTimeout(() => {
-                            const tipOfTheDaySeparator = document.getElementById('tipOfTheDaySeparator');
-                            try {
-                                tipOfTheDaySeparator.scrollIntoView({ behavior: 'smooth', block: 'end' });
-                            } catch (e) {
-                                tipOfTheDaySeparator.scrollIntoView();
-                            }
-                        }, 100);
-                    })
-                    .catch(() => {
-                        tipSection.style.display = 'none';
-                    });
-            };
-
-            // If files are already cached, load a random tip directly
-            if (cachedTipOfTheDayFiles && Array.isArray(cachedTipOfTheDayFiles) && cachedTipOfTheDayFiles.length > 0) {
-                loadTip();
-            } else {
-                // Load the list of tip files first, then load a random tip
-                fetch(`https://api.github.com/repos/${repoOwner}/backgammon-tips/contents/Tips`, options)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Tips folder not found');
-                        }
-                        return response.json();
-                    })
-                    .then(files => {
-                        if (!Array.isArray(files) || files.length === 0) {
-                            throw new Error('No tips available');
-                        }
-
-                        cachedTipOfTheDayFiles = files.filter(file => file.type === 'file' && file.name.toLowerCase().endsWith('.md'));
-                        if (cachedTipOfTheDayFiles.length === 0) {
-                            throw new Error('No tip of the day files found');
-                        }
-                        loadTip();
-                    });
-            }
-        }
-
         // Add DOM Content Loaded Event Listener
         document.addEventListener("DOMContentLoaded", () => {
 
@@ -244,11 +148,6 @@
                     break;
             }
         }
-
-        function restTipOfTheDay() {
-            const tipContent = document.getElementById('tipContent');
-            if (tipContent) tipContent.innerHTML = ``;
-        }   
 
         function collapseElement(elementName) {
             const element = document.getElementById(elementName);

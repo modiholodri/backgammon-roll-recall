@@ -130,3 +130,92 @@ function toTitleCase(str) {
         text => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase()
     );
 }
+
+function checkLocalStorageAvailable() {
+    try {
+        localStorage.setItem('test', 'test');
+        localStorage.removeItem('test');
+    } catch (e) {
+        const crappleWarning = document.getElementById('crappleWarning');
+        if (crappleWarning) crappleWarning.style.display = 'block';
+    }
+}
+
+let cachedTipOfTheDayFiles = null;  // cache for tip of the day files
+
+
+function showTipOfTheDay() {
+    const tipSection = document.getElementById('tipOfTheDay');
+    const tipContent = document.getElementById('tipContent');
+    if (!tipSection || !tipContent) return;
+
+    const options = {
+        headers: {
+            'Authorization': `token ${githubToken}`
+        }
+    };
+
+    const loadTip = () => {
+        if (!cachedTipOfTheDayFiles || cachedTipOfTheDayFiles.length === 0) {
+            throw new Error('No tip of the day files available');
+        }
+
+        const randomTip = cachedTipOfTheDayFiles[Math.floor(generator.random() * cachedTipOfTheDayFiles.length)];
+        fetch(`${randomTip.url}`, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch tip markdown');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const fileContent = data.content ? decodeURIComponent(escape(window.atob(data.content))) : '';
+                tipContent.innerHTML = marked.parse(fileContent);
+                tipSection.style.display = 'block';
+                autoCollapse('tipOfTheDay');
+                // scroll to the end of the Tip of the Day section so the tip is visible
+                setTimeout(() => {
+                    const tipOfTheDaySeparator = document.getElementById('tipOfTheDaySeparator');
+                    try {
+                        tipOfTheDaySeparator.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    } catch (e) {
+                        tipOfTheDaySeparator.scrollIntoView();
+                    }
+                }, 100);
+            })
+            .catch(() => {
+                tipSection.style.display = 'none';
+            });
+    };
+
+    // If files are already cached, load a random tip directly
+    if (cachedTipOfTheDayFiles && Array.isArray(cachedTipOfTheDayFiles) && cachedTipOfTheDayFiles.length > 0) {
+        loadTip();
+    } else {
+        // Load the list of tip files first, then load a random tip
+        fetch(`https://api.github.com/repos/${repoOwner}/backgammon-tips/contents/Tips`, options)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Tips folder not found');
+                }
+                return response.json();
+            })
+            .then(files => {
+                if (!Array.isArray(files) || files.length === 0) {
+                    throw new Error('No tips available');
+                }
+
+                cachedTipOfTheDayFiles = files.filter(file => file.type === 'file' && file.name.toLowerCase().endsWith('.md'));
+                if (cachedTipOfTheDayFiles.length === 0) {
+                    throw new Error('No tip of the day files found');
+                }
+                loadTip();
+            });
+    }
+}
+
+function restTipOfTheDay() {
+    const tipContent = document.getElementById('tipContent');
+    if (tipContent) tipContent.innerHTML = ``;
+}   
+
