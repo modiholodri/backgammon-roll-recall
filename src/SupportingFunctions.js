@@ -1,3 +1,6 @@
+const repoOwner = 'modiholodri';
+const repoName = 'backgammon-roll-recall';  
+
 // Synchronously fetch the RatingList Markdown file and return its content
 function fetchMarkDownFromRepoSync(fileName, elementName) {
     const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}.md?timestamp=${Date.now()}`;
