@@ -3,7 +3,6 @@ function fetchMarkDownFromRepoSync(fileName, elementName) {
     const url = `https://api.github.com/repos/${repoOwner}/${repoName}/contents/${fileName}.md?timestamp=${Date.now()}`;
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, false); // false for synchronous request
-    xhr.setRequestHeader('Authorization', `token ${githubToken}`);
     xhr.setRequestHeader('Content-Type', 'text/markdown');
     xhr.send(null);
 
@@ -28,7 +27,6 @@ function fetchMarkDownFromRepo(fileName, elementName) {
 
     const options = {
         headers: {
-            'Authorization': `token ${githubToken}`,
             'Content-Type': 'text/markdown',
         }
     };
@@ -49,14 +47,6 @@ function fetchMarkDownFromRepo(fileName, elementName) {
     })
     .catch(error => console.error('Error:', error));
 }
-
-// Refresh the Backgammon Club Title
-function refreshWebPageTitle () {
-    const sel = document.getElementById('clubSelection');
-    document.getElementById('webPageTitle').innerText = sel.options[sel.selectedIndex].text;
-    document.title = sel.options[sel.selectedIndex].text;
-}
-
 
 //* Theme Handling
 
@@ -149,19 +139,13 @@ function showTipOfTheDay() {
     const tipContent = document.getElementById('tipContent');
     if (!tipSection || !tipContent) return;
 
-    const options = {
-        headers: {
-            'Authorization': `token ${githubToken}`
-        }
-    };
-
     const loadTip = () => {
         if (!cachedTipOfTheDayFiles || cachedTipOfTheDayFiles.length === 0) {
             throw new Error('No tip of the day files available');
         }
 
         const randomTip = cachedTipOfTheDayFiles[Math.floor(generator.random() * cachedTipOfTheDayFiles.length)];
-        fetch(`${randomTip.url}`, options)
+        fetch(`${randomTip.url}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Failed to fetch tip markdown');
@@ -193,7 +177,7 @@ function showTipOfTheDay() {
         loadTip();
     } else {
         // Load the list of tip files first, then load a random tip
-        fetch(`https://api.github.com/repos/${repoOwner}/backgammon-tips/contents/Tips`, options)
+        fetch(`https://api.github.com/repos/${repoOwner}/backgammon-tips/contents/Tips`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Tips folder not found');
