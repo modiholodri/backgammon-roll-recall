@@ -110,6 +110,11 @@ function createBoard() {
         options: {
             responsive: true,
             maintainAspectRatio: false, // Allow the chart to resize freely
+            plugins: {
+                legend: {
+                    display: false,
+                },
+            },
             scales: {
                 x: {
                     title: {
