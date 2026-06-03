@@ -15,14 +15,14 @@
         <!-- Board -->
         <section id="boardSection" class="container">
             <hr class="rounded">
-                <div id="boardChart" class="collapse container-fluid">
+                <div id="boardChart" class="container-fluid">
                     <canvas id="boardChartCanvas" style="background-color: black;"></canvas>
                     <p id="boardChartMessage" class="centered">Not loaded yet...</p>
                 </div>
 
                 <!-- Board Summary -->
                 <h5 id="boardSummaryToggle" type="button" data-toggle="collapse" data-target="#boardSummary" aria-expanded="false" aria-controls="boardSummary">
-                    Board Summary ⇅
+                    Board Summary
                 </h5>
                 <div id="boardSummary" class="collapse"></div>
         </section>
@@ -125,6 +125,7 @@
             })();
 
             checkLocalStorageAvailable();
+            createBoard();
         });
 
         // Auto-collapse other sections when one section is shown
