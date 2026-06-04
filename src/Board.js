@@ -7,10 +7,10 @@ const opponentBackColor = 'rgba(255, 0, 255, 0.3)';
 const yourForeColor = 'rgba(54, 162, 255, 1)';
 const yourBackColor = 'rgba(54, 162, 255, 0.3)';
 
-const chartColor = 'rgba(255, 255, 0, 0.7)';
-const gridColor = { color: 'rgba(255, 255, 0, 0.3)' };
+const chartColor = 'rgba(255, 255, 0, 0.2)';
+const gridColor = { color: 'rgba(255, 255, 0, 0.1)' };
 
-Chart.defaults.color = 'white';  // default text color
+Chart.defaults.color = chartColor;  // default text color
 Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.0)';  // don't show the default grid
 Chart.defaults.plugins.legend.labels.color = chartColor;
 Chart.defaults.scale.title.font = { size: 16, weight: 'bold' };
@@ -59,6 +59,68 @@ const boardFrameData = [
     { x: 11.0, y: NaN },
 ];
 
+
+
+// function AddPointNumberToBoard(iPoint, iPlayer)
+// {
+//     let iBoardPosition = PointNumberToBoardPosition(iPoint);
+//     let dMovePosition = MoveNumberToBoardPosition(0, iPoint);
+
+//     if (iPoint > 12) dMovePosition -= 0.2; // move the numbers closer to the board
+//     else dMovePosition += 0.2;
+
+//     if (iPlayer == 0) iPoint = 25 - iPoint;
+
+//     DataPoint dpNew = new DataPoint(iBoardPosition, dMovePosition)
+//     {
+//         Label = iPoint.ToString(),
+//         LabelForeColor = DimedColor(piPlayers[iPlayer].Color),
+//     };
+//     chrtBoard.Series["Point Number"].Points.Add(dpNew);
+// }
+
+const whitePointData = [];
+const blackPointData = [];
+
+function PointNumberToBoardPosition(iPoint)
+{
+    if (iPoint < 0) return 14;
+    if (iPoint == 25 || iPoint == 0) return 7; // the bar
+    if (iPoint > 12) iPoint -= 12;
+    else iPoint = 13 - iPoint;
+    if (iPoint > 6) iPoint++;
+    if (iPoint > 14) iPoint = 14; // just to make sure, don;t ask me why
+    return iPoint;
+}
+
+function AddPointToBoard(pointData, iPoint)
+{
+    const iBoardPosition = PointNumberToBoardPosition(iPoint);
+    pointData.push({ x: iBoardPosition - 0.5, y: 0 });
+    pointData.push({ x: iBoardPosition, y: 4.3 });
+    pointData.push({ x: iBoardPosition + 0.5, y: 0 });
+    pointData.push({ x: NaN, y: NaN });
+}
+
+function AddTopPointToBoard(pointData, iPoint)
+{
+    const iBoardPosition = PointNumberToBoardPosition(iPoint);
+    pointData.push({ x: iBoardPosition - 0.5, y: 11 });
+    pointData.push({ x: iBoardPosition, y: 6.7 });
+    pointData.push({ x: iBoardPosition + 0.5, y: 11 });
+    pointData.push({ x: NaN, y: NaN });
+}
+
+function generatePointData() {
+    for (let iPoint = 1; iPoint < 25; iPoint++)
+    {
+        let pointData = (iPoint % 2 === 1) ? blackPointData : whitePointData;
+
+        if (iPoint < 13) AddPointToBoard(pointData, iPoint);
+        else AddTopPointToBoard(pointData, iPoint);
+    }
+}
+
 let boardChart;
 
 // If the Ranking chart already exists, destroy it before creating a new one
@@ -88,6 +150,8 @@ function createBoard() {
 
     const chartTitle = 'Board';
 
+    generatePointData();
+
     destroyBoardChart('');
 
 
@@ -105,6 +169,26 @@ function createBoard() {
                     showLine: true,
                     pointRadius: 0
                 },
+                {
+                    label: 'B Points',
+                    data: blackPointData,
+                    borderColor: yourForeColor,
+                    backgroundColor: yourBackColor,
+                    borderWidth: 2,
+                    fill: false,
+                    showLine: true,
+                    pointRadius: 0
+                },
+                {
+                    label: 'W Points',
+                    data: whitePointData,
+                    borderColor: opponentForeColor,
+                    backgroundColor: opponentBackColor,
+                    borderWidth: 2,
+                    fill: false,
+                    showLine: true,
+                    pointRadius: 0
+                }
             ]
         },
         options: {
