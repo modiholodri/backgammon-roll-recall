@@ -19,10 +19,61 @@ Chart.defaults.scale.title.font = { size: 16, weight: 'bold' };
 Chart.defaults.scale.title.color = chartColor;
 Chart.defaults.layout.padding.top = 7;
 
+let boardChart;
+
 let player0CheckerData = [];
-let player1CheckerData = [];
 let Player0OffCheckerData = [];
+let player1CheckerData = [];
 let Player1OffCheckerData = [];
+
+// simple board data
+let checkerSize = 25;
+const dOut = 0.04;
+const boardFrameData = [
+    // Outer Frame
+    { x: 0.5, y: 0.0 - dOut },
+    { x: 13.5, y: 0.0 - dOut },
+    { x: 13.5, y: 11.0 + dOut },
+    { x: 0.5, y: 11.0 + dOut },
+    { x: 0.5, y: 0.0 - dOut },
+    { x: 0.5, y: NaN },
+
+    // Bar
+    { x: 6.5, y: 0.0 },
+    { x: 6.5, y: 11.0 },
+    { x: 6.5, y: NaN },
+    { x: 7.5, y: 0.0 },
+    { x: 7.5, y: 11.0 },
+    { x: 7.5, y: NaN },
+
+    // Cube borders
+    { x: -0.5, y: 5.0 },
+    { x: 0.5, y: 5.0 },
+    { x: 0.5, y: 6.0 },
+    { x: -0.5, y: 6.0 },
+    { x: -0.5, y: 5.0 - dOut },
+    { x: -0.5, y: NaN },
+
+    // Dice borders
+    { x: 9.0, y: 5.0 },
+    { x: 10.0, y: 5.0 },
+    { x: 10.0, y: 6.0 },
+    { x: 9.0, y: 6.0 },
+    { x: 9.0, y: 5.0 - dOut },
+    { x: 9.0, y: NaN },
+
+    { x: 11.0, y: 5.0 },
+    { x: 12.0, y: 5.0 },
+    { x: 12.0, y: 6.0 },
+    { x: 11.0, y: 6.0 },
+    { x: 11.0, y: 5.0 - dOut },
+    { x: 11.0, y: NaN },
+];
+const pointNumbers = [];
+const diceNumbers = [];
+const whitePointData = [];
+const blackPointData = [];
+
 
 function resetCheckerData() {
     player0CheckerData.length = 0;
@@ -130,52 +181,56 @@ function positionIDToBinaryString(sPositionID)
 }
 
 
+function addDiceToBoard()
+{
+    diceNumbers.length = 0;
+
+    // the Cube
+    const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
+    diceNumbers.push({
+        x: 0.0,
+        y: 5.5,
+        label: matchInfo.Cube.toString(),
+        labelColor: cubeColor,
+    });
+
+    // the dice
+    const diceColor = matchInfo.PlayerOnRoll == 0 ? player1ForeColor : player0ForeColor;
+    diceNumbers.push({
+        x: 9.5,
+        y: 5.5,
+        label: matchInfo.FirstDice.toString(),
+        labelColor: diceColor,
+    });
+    diceNumbers.push({
+        x: 11.5,
+        y: 5.5,
+        label: matchInfo.SecondDice.toString(),
+        labelColor: diceColor,
+    });
+}
+
+const diceNumberAnnotations = {
+    id: 'diceNumbers',
+    afterDatasetsDraw(chart, args, options) {
+        const { ctx } = chart;
+        ctx.save();
+        diceNumbers.forEach(point => {
+            if (point.label) {
+                ctx.fillStyle = point.labelColor;
+                ctx.font = 'bold 18px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const xPos = chart.scales.x.getPixelForValue(point.x);
+                const yPos = chart.scales.y.getPixelForValue(point.y);
+                ctx.fillText(point.label, xPos, yPos);
+            }
+        });
+        ctx.restore();
+    }
+};
+
 //* Draw the simple board stuff
-
-const dOut = 0.04;
-const boardFrameData = [
-    // Outer Frame
-    { x: 0.5, y: 0.0 - dOut },
-    { x: 13.5, y: 0.0 - dOut },
-    { x: 13.5, y: 11.0 + dOut },
-    { x: 0.5, y: 11.0 + dOut },
-    { x: 0.5, y: 0.0 - dOut },
-    { x: 0.5, y: NaN },
-
-    // Bar
-    { x: 6.5, y: 0.0 },
-    { x: 6.5, y: 11.0 },
-    { x: 6.5, y: NaN },
-    { x: 7.5, y: 0.0 },
-    { x: 7.5, y: 11.0 },
-    { x: 7.5, y: NaN },
-
-    // Cube borders
-    { x: -0.5, y: 5.0 },
-    { x: 0.5, y: 5.0 },
-    { x: 0.5, y: 6.0 },
-    { x: -0.5, y: 6.0 },
-    { x: -0.5, y: 5.0 - dOut },
-    { x: -0.5, y: NaN },
-
-    // Dice borders
-    { x: 9.0, y: 5.0 },
-    { x: 10.0, y: 5.0 },
-    { x: 10.0, y: 6.0 },
-    { x: 9.0, y: 6.0 },
-    { x: 9.0, y: 5.0 - dOut },
-    { x: 9.0, y: NaN },
-
-    { x: 11.0, y: 5.0 },
-    { x: 12.0, y: 5.0 },
-    { x: 12.0, y: 6.0 },
-    { x: 11.0, y: 6.0 },
-    { x: 11.0, y: 5.0 - dOut },
-    { x: 11.0, y: NaN },
-];
-
-
-const pointNumbers = [];
 
 function addPointNumberToBoard(point)
 {
@@ -232,10 +287,6 @@ function moveNumberToBoardPosition(iMoveNumber, point)
     return dMovePosition;
 }
 
-
-const whitePointData = [];
-const blackPointData = [];
-
 function pointNumberToBoardPosition(point)
 {
     if (point < 0) return 14;
@@ -275,8 +326,6 @@ function generatePointData() {
     }
 }
 
-let boardChart;
-
 // If the Ranking chart already exists, destroy it before creating a new one
 function destroyBoardChart(message) {
     if (boardChart) {
@@ -292,8 +341,6 @@ function destroyBoardChart(message) {
 function wholeNumbersOnly(value) {
     return Number.isInteger(value) ? value.toLocaleString() : null;
 }
-
-let checkerSize = 25;
 
 function setCanvasHeight() {
     const canvas = document.getElementById('boardChartCanvas');
@@ -325,12 +372,12 @@ function createBoard() {
     setPointNumbers();
 
     destroyBoardChart('');
-
+    diceNumbers.length = 0;
 
     // Create the chart if it doesn't exist
     boardChart = new Chart(ctx, {
         type: 'scatter',
-        plugins: [pointNumberAnnotations],
+        plugins: [pointNumberAnnotations, diceNumberAnnotations], 
         data: {
             datasets: [
                 {

@@ -126,7 +126,7 @@
             if (matchID) {
                 try {
                     readMatchID(matchID);
-                    document.getElementById('boardSummary').innerText = 'Cube: ' + matchInfo.Cube + ', First Dice: ' + matchInfo.FirstDice + ', Second Dice: ' + matchInfo.SecondDice;
+                    addDiceToBoard();
                 } catch (err) {
                     console.error('Failed to load match ID:', err);
                     alert('Failed to load match ID. Please check the console for more details.');
