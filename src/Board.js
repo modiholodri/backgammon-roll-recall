@@ -40,7 +40,7 @@ const boardFrameData = [
     { x: 0.5, y: 5.0 },
     { x: 0.5, y: 6.0 },
     { x: -0.5, y: 6.0 },
-    { x: -0.5, y: 5.0 },
+    { x: -0.5, y: 5.0 - dOut },
     { x: -0.5, y: NaN },
 
     // Dice borders
@@ -48,14 +48,14 @@ const boardFrameData = [
     { x: 10.0, y: 5.0 },
     { x: 10.0, y: 6.0 },
     { x: 9.0, y: 6.0 },
-    { x: 9.0, y: 5.0 },
+    { x: 9.0, y: 5.0 - dOut },
     { x: 9.0, y: NaN },
 
     { x: 11.0, y: 5.0 },
     { x: 12.0, y: 5.0 },
     { x: 12.0, y: 6.0 },
     { x: 11.0, y: 6.0 },
-    { x: 11.0, y: 5.0 },
+    { x: 11.0, y: 5.0 - dOut },
     { x: 11.0, y: NaN },
 ];
 
@@ -68,7 +68,7 @@ function AddPointNumberToBoard(iPoint, iPlayer)
     let dMovePosition = MoveNumberToBoardPosition(0, iPoint);
 
     if (iPoint > 12) dMovePosition -= 0.2; // move the numbers closer to the board
-    else dMovePosition += 0.2;
+    else dMovePosition += 0.1;
 
     const displayNumber = (iPlayer === 0) ? 25 - iPoint : iPoint;
 
@@ -180,13 +180,27 @@ function wholeNumbersOnly(value) {
     return Number.isInteger(value) ? value.toLocaleString() : null;
 }
 
+function setCanvasHeight() {
+    const canvas = document.getElementById('boardChartCanvas');
+    if (canvas) {
+        let height = window.innerHeight * 0.75;
+        let width = window.innerWidth;
+        if (height > width * 0.66) {
+            height = width * 0.66; // Maintain 3:2 aspect ratio (width:height)
+        } 
+        else if (width > height * 1.5) {
+            width = height * 1.5; // Maintain 3:2 aspect ratio (width:height)
+        }
+        canvas.style.height = `${height}px`;
+        canvas.style.width = `${width}px`;
+    }
+}
 
 // Function to create the Backgammon Board
 function createBoard() {
+    setCanvasHeight();
+
     const canvas = document.getElementById('boardChartCanvas');
-    if (canvas) {
-        canvas.style.height = `${window.innerHeight * 0.75}px`;
-    }
     const ctx = canvas.getContext('2d');
 
     const chartTitle = 'Board';
@@ -207,7 +221,7 @@ function createBoard() {
                     label: 'Board Frame',
                     data: boardFrameData,
                     borderColor: frameColor,
-                    borderWidth: 4,
+                    borderWidth: 3,
                     fill: false,
                     showLine: true,
                     pointRadius: 0
@@ -250,16 +264,20 @@ function createBoard() {
                     },
                     beginAtZero: true,
                     stacked: true,
-                    position: 'top',
+                    position: 'bottom',
                     ticks: {
                         color: chartColor,
                         callback: wholeNumbersOnly,
                     },                            
                     grid: gridColor,
+                    min: -1.0,
                 },
                 y: {
                     beginAtZero: true,
-                    ticks: { autoSkip: false } // show all the names
+                    ticks: { autoSkip: false }, // show all the names
+                    min: -0.5,
+                    max: 11.5,
+                    grid: gridColor,
                 }
             }
         }
