@@ -31,16 +31,16 @@ function resetCheckerData() {
     Player1OffCheckerData.length = 0;
 }
 
-function AddCheckerToBoard(series, moveNumber, point)
+function addCheckerToBoard(series, moveNumber, point)
 {
     // if (series == blackCheckerData) point = 25 - point;
-    let boardPosition = PointNumberToBoardPosition(point);
+    let boardPosition = pointNumberToBoardPosition(point);
     if (boardPosition == 7) moveNumber += 2;  // start the off checkers a little bit higher
-    let movePosition = MoveNumberToBoardPosition(moveNumber, point);
+    let movePosition = moveNumberToBoardPosition(moveNumber, point);
     series.push({ x: boardPosition, y: movePosition });
 }
 
-function AddOffCheckerToBoard(series, dOffCheckerNumber, player)
+function addOffCheckerToBoard(series, dOffCheckerNumber, player)
 {
     let where = 15.0;
     let stackedNumber = dOffCheckerNumber / 3 - 0.15;
@@ -50,7 +50,7 @@ function AddOffCheckerToBoard(series, dOffCheckerNumber, player)
     series.push({ x: NaN, y: NaN });
 }
 
-function AddOffCheckersToBoard(offCheckers, player)
+function addOffCheckersToBoard(offCheckers, player)
 {
     let series;
     if (player == 0) series = Player1OffCheckerData;
@@ -58,18 +58,18 @@ function AddOffCheckersToBoard(offCheckers, player)
 
     for (let offCheckerNumber = 1; offCheckerNumber <= offCheckers; offCheckerNumber++)
     {
-        AddOffCheckerToBoard(series, offCheckerNumber, player);
+        addOffCheckerToBoard(series, offCheckerNumber, player);
     }
 }
 
 
-function SetPositionID(sPositionID, player)
+function setPositionID(sPositionID, player)
 {
     if (sPositionID.length < 10) return;
 
     resetCheckerData();
 
-    let sBinary = PositionIDToBinaryString(sPositionID);  // add padding
+    let sBinary = positionIDToBinaryString(sPositionID);  // add padding
 
     let number = 1;
     let point = 1;
@@ -82,7 +82,7 @@ function SetPositionID(sPositionID, player)
     {
         if (sBinary[iBinaryPosition] === '1')
         {
-            AddCheckerToBoard(checkers, number++, player === 0 ? point : 25 - point);
+            addCheckerToBoard(checkers, number++, player === 0 ? point : 25 - point);
             offCheckers--;
         }
         else
@@ -92,7 +92,7 @@ function SetPositionID(sPositionID, player)
         }
         if (point === 26)
         {
-            AddOffCheckersToBoard(offCheckers, player);
+            addOffCheckersToBoard(offCheckers, player);
             point = 1;
             offCheckers = 15;
             if (player === 0)
@@ -111,7 +111,7 @@ function SetPositionID(sPositionID, player)
     boardChart.update();
 }
 
-function PositionIDToBinaryString(sPositionID)
+function positionIDToBinaryString(sPositionID)
 {
     sPositionID += "==";  // add padding
     let decodedBytes = atob(sPositionID);
@@ -177,10 +177,10 @@ const boardFrameData = [
 
 const pointNumbers = [];
 
-function AddPointNumberToBoard(point)
+function addPointNumberToBoard(point)
 {
-    const boardPosition = PointNumberToBoardPosition(point);
-    let movePosition = MoveNumberToBoardPosition(0, point);
+    const boardPosition = pointNumberToBoardPosition(point);
+    let movePosition = moveNumberToBoardPosition(0, point);
 
     if (point > 12) movePosition -= 0.2; // move the numbers closer to the board
     else movePosition += 0.1;
@@ -213,16 +213,16 @@ const pointNumberAnnotations = {
     }
 };
 
-function SetPointNumbers()
+function setPointNumbers()
 {
     pointNumbers.length = 0;
     for (let point = 1; point < 25; point++)
     {
-        AddPointNumberToBoard(point);
+        addPointNumberToBoard(point);
     }
 }
 
-function MoveNumberToBoardPosition(iMoveNumber, point)
+function moveNumberToBoardPosition(iMoveNumber, point)
 {
     let dMovePosition;
     let dStackThem = 0;
@@ -236,7 +236,7 @@ function MoveNumberToBoardPosition(iMoveNumber, point)
 const whitePointData = [];
 const blackPointData = [];
 
-function PointNumberToBoardPosition(point)
+function pointNumberToBoardPosition(point)
 {
     if (point < 0) return 14;
     if (point == 25 || point == 0) return 7; // the bar
@@ -247,18 +247,18 @@ function PointNumberToBoardPosition(point)
     return point;
 }
 
-function AddPointToBoard(pointData, point)
+function addPointToBoard(pointData, point)
 {
-    const iBoardPosition = PointNumberToBoardPosition(point);
+    const iBoardPosition = pointNumberToBoardPosition(point);
     pointData.push({ x: iBoardPosition - 0.5, y: 0 });
     pointData.push({ x: iBoardPosition, y: 4.3 });
     pointData.push({ x: iBoardPosition + 0.5, y: 0 });
     pointData.push({ x: NaN, y: NaN });
 }
 
-function AddTopPointToBoard(pointData, point)
+function addTopPointToBoard(pointData, point)
 {
-    const iBoardPosition = PointNumberToBoardPosition(point);
+    const iBoardPosition = pointNumberToBoardPosition(point);
     pointData.push({ x: iBoardPosition - 0.5, y: 11 });
     pointData.push({ x: iBoardPosition, y: 6.7 });
     pointData.push({ x: iBoardPosition + 0.5, y: 11 });
@@ -270,8 +270,8 @@ function generatePointData() {
     {
         let pointData = (point % 2 === 1) ? blackPointData : whitePointData;
 
-        if (point < 13) AddPointToBoard(pointData, point);
-        else AddTopPointToBoard(pointData, point);
+        if (point < 13) addPointToBoard(pointData, point);
+        else addTopPointToBoard(pointData, point);
     }
 }
 
@@ -322,7 +322,7 @@ function createBoard() {
     const ctx = canvas.getContext('2d');
 
     generatePointData();
-    SetPointNumbers();
+    setPointNumbers();
 
     destroyBoardChart('');
 
