@@ -293,6 +293,8 @@ function wholeNumbersOnly(value) {
     return Number.isInteger(value) ? value.toLocaleString() : null;
 }
 
+let checkerSize = 25;
+
 function setCanvasHeight() {
     const canvas = document.getElementById('boardChartCanvas');
     if (canvas) {
@@ -306,6 +308,9 @@ function setCanvasHeight() {
         }
         canvas.style.height = `${height}px`;
         canvas.style.width = `${width}px`;
+
+        checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 2; // Adjust checker size based on canvas size
+        boardChart?.update();
     }
 }
 
@@ -334,7 +339,7 @@ function createBoard() {
                     borderColor: frameColor,
                     borderWidth: 3,
                     showLine: true,
-                    pointRadius: 0
+                    pointRadius: 0,
                 },
                 {
                     label: 'A Points',
@@ -343,7 +348,7 @@ function createBoard() {
                     backgroundColor: player0BackColor,
                     borderWidth: 3,
                     showLine: true,
-                    pointRadius: 0
+                    pointRadius: 0,
                 },
                 {
                     label: 'B Points',
@@ -353,7 +358,7 @@ function createBoard() {
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
-                    pointRadius: 0
+                    pointRadius: 0,
                 },
                 {
                     label: 'P0 Checkers',
@@ -362,7 +367,7 @@ function createBoard() {
                     backgroundColor: player0BackColor,
                     borderWidth: 2,
                     fill: true,
-                    pointRadius: 25
+                    pointRadius: checkerSize,
                 },
                 {
                     label: 'P1 Checkers',
@@ -371,7 +376,7 @@ function createBoard() {
                     backgroundColor: player1BackColor,
                     borderWidth: 2,
                     fill: true,
-                    pointRadius: 25
+                    pointRadius: checkerSize,
                 },
                 {
                     label: 'P0 Off Checkers',
@@ -381,7 +386,7 @@ function createBoard() {
                     borderWidth: 5,
                     fill: false,
                     showLine: true,
-                    pointRadius: 0
+                    pointRadius: 0,
                 },
                 {
                     label: 'P1 Off Checkers',
@@ -391,7 +396,7 @@ function createBoard() {
                     borderWidth: 5,
                     fill: false,
                     showLine: true,
-                    pointRadius: 0
+                    pointRadius: 0,
                 },
             ]
         },
@@ -418,14 +423,14 @@ function createBoard() {
                     grid: gridColor,
                     min: -1.0,
                     max: 15.5,
-                    display: false,
+                    display: false, // just shown when needed for debugging
                 },
                 y: {
                     beginAtZero: true,
                     min: -0.5,
                     max: 11.5,
                     grid: gridColor,
-                    display: false,
+                    display: false, // just shown when needed for debugging
                 }
             }
         }
