@@ -60,24 +60,65 @@ const boardFrameData = [
 ];
 
 
+const pointNumbers = [];
 
-// function AddPointNumberToBoard(iPoint, iPlayer)
-// {
-//     let iBoardPosition = PointNumberToBoardPosition(iPoint);
-//     let dMovePosition = MoveNumberToBoardPosition(0, iPoint);
+function AddPointNumberToBoard(iPoint, iPlayer)
+{
+    const iBoardPosition = PointNumberToBoardPosition(iPoint);
+    let dMovePosition = MoveNumberToBoardPosition(0, iPoint);
 
-//     if (iPoint > 12) dMovePosition -= 0.2; // move the numbers closer to the board
-//     else dMovePosition += 0.2;
+    if (iPoint > 12) dMovePosition -= 0.2; // move the numbers closer to the board
+    else dMovePosition += 0.2;
 
-//     if (iPlayer == 0) iPoint = 25 - iPoint;
+    const displayNumber = (iPlayer === 0) ? 25 - iPoint : iPoint;
 
-//     DataPoint dpNew = new DataPoint(iBoardPosition, dMovePosition)
-//     {
-//         Label = iPoint.ToString(),
-//         LabelForeColor = DimedColor(piPlayers[iPlayer].Color),
-//     };
-//     chrtBoard.Series["Point Number"].Points.Add(dpNew);
-// }
+    pointNumbers.push({
+        x: iBoardPosition,
+        y: dMovePosition,
+        label: displayNumber.toString(),
+        labelColor: yourForeColor,
+    });
+}
+
+const pointNumberAnnotations = {
+    id: 'pointNumbers',
+    afterDatasetsDraw(chart, args, options) {
+        const { ctx } = chart;
+        ctx.save();
+        pointNumbers.forEach(point => {
+            if (point.label) {
+                ctx.fillStyle = point.labelColor;
+                ctx.font = 'bold 12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                const xPos = chart.scales.x.getPixelForValue(point.x);
+                const yPos = chart.scales.y.getPixelForValue(point.y);
+                ctx.fillText(point.label, xPos, yPos);
+            }
+        });
+        ctx.restore();
+    }
+};
+
+function SetPointNumbers(iPlayer)
+{
+    pointNumbers.length = 0;
+    for (let iPoint = 1; iPoint < 25; iPoint++)
+    {
+        AddPointNumberToBoard(iPoint, iPlayer);
+    }
+}
+
+function MoveNumberToBoardPosition(iMoveNumber, iPoint)
+{
+    let dMovePosition;
+    let dStackThem = 0;
+    if (iMoveNumber > 5) dStackThem = 4.5;  // stack the checkers if there are too many
+    if (iPoint < 13) dMovePosition = iMoveNumber - 0.5 - dStackThem;
+    else dMovePosition = 11.0 - iMoveNumber + 0.5 + dStackThem;
+    return dMovePosition;
+}
+
 
 const whitePointData = [];
 const blackPointData = [];
@@ -151,6 +192,7 @@ function createBoard() {
     const chartTitle = 'Board';
 
     generatePointData();
+    SetPointNumbers(1);
 
     destroyBoardChart('');
 
@@ -158,13 +200,14 @@ function createBoard() {
     // Create the chart if it doesn't exist
     boardChart = new Chart(ctx, {
         type: 'scatter',
+        plugins: [pointNumberAnnotations],
         data: {
             datasets: [
                 {
                     label: 'Board Frame',
                     data: boardFrameData,
                     borderColor: frameColor,
-                    borderWidth: 2,
+                    borderWidth: 4,
                     fill: false,
                     showLine: true,
                     pointRadius: 0
