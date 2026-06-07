@@ -1,11 +1,13 @@
 // default colors
 const frameColor = 'rgba(0, 255, 0, 1)';
 
-const opponentForeColor = 'rgba(255, 0, 255, 1)';
-const opponentBackColor = 'rgba(255, 0, 255, 0.3)';
+const player1ForeColor = 'rgba(255, 0, 255, 1)';
+const player1BackColor = 'rgba(255, 0, 255, 0.3)';
 
-const yourForeColor = 'rgba(54, 162, 255, 1)';
-const yourBackColor = 'rgba(54, 162, 255, 0.3)';
+const player0ForeColor = 'rgba(0, 255, 255, 1)';
+const player0BackColor = 'rgba(0, 255, 255, 0.3)';
+
+const labelColor = 'rgba(255, 255, 0, 0.3)';
 
 const chartColor = 'rgba(255, 255, 0, 0.2)';
 const gridColor = { color: 'rgba(255, 255, 0, 0.1)' };
@@ -16,6 +18,119 @@ Chart.defaults.plugins.legend.labels.color = chartColor;
 Chart.defaults.scale.title.font = { size: 16, weight: 'bold' };
 Chart.defaults.scale.title.color = chartColor;
 Chart.defaults.layout.padding.top = 7;
+
+let player0CheckerData = [];
+let player1CheckerData = [];
+let Player0OffCheckerData = [];
+let Player1OffCheckerData = [];
+
+function resetCheckerData() {
+    player0CheckerData.length = 0;
+    player1CheckerData.length = 0;
+    Player0OffCheckerData.length = 0;
+    Player1OffCheckerData.length = 0;
+}
+
+function AddCheckerToBoard(series, moveNumber, point)
+{
+    // if (series == blackCheckerData) point = 25 - point;
+    let boardPosition = PointNumberToBoardPosition(point);
+    if (boardPosition == 7) moveNumber += 2;  // start the off checkers a little bit higher
+    let movePosition = MoveNumberToBoardPosition(moveNumber, point);
+    series.push({ x: boardPosition, y: movePosition });
+}
+
+function AddOffCheckerToBoard(series, dOffCheckerNumber, player)
+{
+    let where = 15.0;
+    let stackedNumber = dOffCheckerNumber / 3 - 0.15;
+    if (player != 0) stackedNumber = 11 - stackedNumber;
+    series.push({ x: where - 0.4, y: stackedNumber });
+    series.push({ x: where + 0.4, y: stackedNumber });
+    series.push({ x: NaN, y: NaN });
+}
+
+function AddOffCheckersToBoard(offCheckers, player)
+{
+    let series;
+    if (player == 0) series = Player1OffCheckerData;
+    else series = Player0OffCheckerData;
+
+    for (let offCheckerNumber = 1; offCheckerNumber <= offCheckers; offCheckerNumber++)
+    {
+        AddOffCheckerToBoard(series, offCheckerNumber, player);
+    }
+}
+
+
+function SetPositionID(sPositionID, player)
+{
+    if (sPositionID.length < 10) return;
+
+    resetCheckerData();
+
+    let sBinary = PositionIDToBinaryString(sPositionID);  // add padding
+
+    let number = 1;
+    let point = 1;
+    let checkers;
+    let offCheckers = 15;
+
+    if (player === 0) checkers = player0CheckerData;
+    else checkers = player1CheckerData;
+    for (let iBinaryPosition = 0; iBinaryPosition < sBinary.length; iBinaryPosition++)
+    {
+        if (sBinary[iBinaryPosition] === '1')
+        {
+            AddCheckerToBoard(checkers, number++, player === 0 ? point : 25 - point);
+            offCheckers--;
+        }
+        else
+        {
+            point++;
+            number = 1;
+        }
+        if (point === 26)
+        {
+            AddOffCheckersToBoard(offCheckers, player);
+            point = 1;
+            offCheckers = 15;
+            if (player === 0)
+            {
+                checkers = player1CheckerData;
+                player = 1;
+            }
+            else
+            {
+                checkers = player0CheckerData;
+                player = 0;
+            }
+        }
+    }
+
+    boardChart.update();
+}
+
+function PositionIDToBinaryString(sPositionID)
+{
+    sPositionID += "==";  // add padding
+    let decodedBytes = atob(sPositionID);
+
+    let sBinary = "";
+    for (let characterPosition = 0; characterPosition < decodedBytes.length; characterPosition++)
+    {
+        let bByte = decodedBytes.charCodeAt(characterPosition);
+        for (let bitPosition = 0; bitPosition < 8; bitPosition++)
+        {
+            if ((bByte & (1 << bitPosition)) != 0) sBinary += "1";
+            else sBinary += "0";
+        }
+    }
+    return sBinary;
+}
+
+
+//* Draw the simple board stuff
 
 const dOut = 0.04;
 const boardFrameData = [
@@ -62,21 +177,19 @@ const boardFrameData = [
 
 const pointNumbers = [];
 
-function AddPointNumberToBoard(iPoint, iPlayer)
+function AddPointNumberToBoard(point)
 {
-    const iBoardPosition = PointNumberToBoardPosition(iPoint);
-    let dMovePosition = MoveNumberToBoardPosition(0, iPoint);
+    const boardPosition = PointNumberToBoardPosition(point);
+    let movePosition = MoveNumberToBoardPosition(0, point);
 
-    if (iPoint > 12) dMovePosition -= 0.2; // move the numbers closer to the board
-    else dMovePosition += 0.1;
-
-    const displayNumber = (iPlayer === 0) ? 25 - iPoint : iPoint;
+    if (point > 12) movePosition -= 0.2; // move the numbers closer to the board
+    else movePosition += 0.1;
 
     pointNumbers.push({
-        x: iBoardPosition,
-        y: dMovePosition,
-        label: displayNumber.toString(),
-        labelColor: yourForeColor,
+        x: boardPosition,
+        y: movePosition,
+        label: point.toString(),
+        labelColor: labelColor,
     });
 }
 
@@ -100,21 +213,21 @@ const pointNumberAnnotations = {
     }
 };
 
-function SetPointNumbers(iPlayer)
+function SetPointNumbers()
 {
     pointNumbers.length = 0;
-    for (let iPoint = 1; iPoint < 25; iPoint++)
+    for (let point = 1; point < 25; point++)
     {
-        AddPointNumberToBoard(iPoint, iPlayer);
+        AddPointNumberToBoard(point);
     }
 }
 
-function MoveNumberToBoardPosition(iMoveNumber, iPoint)
+function MoveNumberToBoardPosition(iMoveNumber, point)
 {
     let dMovePosition;
     let dStackThem = 0;
     if (iMoveNumber > 5) dStackThem = 4.5;  // stack the checkers if there are too many
-    if (iPoint < 13) dMovePosition = iMoveNumber - 0.5 - dStackThem;
+    if (point < 13) dMovePosition = iMoveNumber - 0.5 - dStackThem;
     else dMovePosition = 11.0 - iMoveNumber + 0.5 + dStackThem;
     return dMovePosition;
 }
@@ -123,29 +236,29 @@ function MoveNumberToBoardPosition(iMoveNumber, iPoint)
 const whitePointData = [];
 const blackPointData = [];
 
-function PointNumberToBoardPosition(iPoint)
+function PointNumberToBoardPosition(point)
 {
-    if (iPoint < 0) return 14;
-    if (iPoint == 25 || iPoint == 0) return 7; // the bar
-    if (iPoint > 12) iPoint -= 12;
-    else iPoint = 13 - iPoint;
-    if (iPoint > 6) iPoint++;
-    if (iPoint > 14) iPoint = 14; // just to make sure, don;t ask me why
-    return iPoint;
+    if (point < 0) return 14;
+    if (point == 25 || point == 0) return 7; // the bar
+    if (point > 12) point -= 12;
+    else point = 13 - point;
+    if (point > 6) point++;
+    if (point > 14) point = 14; // just to make sure, don;t ask me why
+    return point;
 }
 
-function AddPointToBoard(pointData, iPoint)
+function AddPointToBoard(pointData, point)
 {
-    const iBoardPosition = PointNumberToBoardPosition(iPoint);
+    const iBoardPosition = PointNumberToBoardPosition(point);
     pointData.push({ x: iBoardPosition - 0.5, y: 0 });
     pointData.push({ x: iBoardPosition, y: 4.3 });
     pointData.push({ x: iBoardPosition + 0.5, y: 0 });
     pointData.push({ x: NaN, y: NaN });
 }
 
-function AddTopPointToBoard(pointData, iPoint)
+function AddTopPointToBoard(pointData, point)
 {
-    const iBoardPosition = PointNumberToBoardPosition(iPoint);
+    const iBoardPosition = PointNumberToBoardPosition(point);
     pointData.push({ x: iBoardPosition - 0.5, y: 11 });
     pointData.push({ x: iBoardPosition, y: 6.7 });
     pointData.push({ x: iBoardPosition + 0.5, y: 11 });
@@ -153,12 +266,12 @@ function AddTopPointToBoard(pointData, iPoint)
 }
 
 function generatePointData() {
-    for (let iPoint = 1; iPoint < 25; iPoint++)
+    for (let point = 1; point < 25; point++)
     {
-        let pointData = (iPoint % 2 === 1) ? blackPointData : whitePointData;
+        let pointData = (point % 2 === 1) ? blackPointData : whitePointData;
 
-        if (iPoint < 13) AddPointToBoard(pointData, iPoint);
-        else AddTopPointToBoard(pointData, iPoint);
+        if (point < 13) AddPointToBoard(pointData, point);
+        else AddTopPointToBoard(pointData, point);
     }
 }
 
@@ -203,10 +316,8 @@ function createBoard() {
     const canvas = document.getElementById('boardChartCanvas');
     const ctx = canvas.getContext('2d');
 
-    const chartTitle = 'Board';
-
     generatePointData();
-    SetPointNumbers(1);
+    SetPointNumbers();
 
     destroyBoardChart('');
 
@@ -222,30 +333,66 @@ function createBoard() {
                     data: boardFrameData,
                     borderColor: frameColor,
                     borderWidth: 3,
-                    fill: false,
+                    showLine: true,
+                    pointRadius: 0
+                },
+                {
+                    label: 'A Points',
+                    data: blackPointData,
+                    borderColor: player0BackColor,
+                    backgroundColor: player0BackColor,
+                    borderWidth: 3,
                     showLine: true,
                     pointRadius: 0
                 },
                 {
                     label: 'B Points',
-                    data: blackPointData,
-                    borderColor: yourForeColor,
-                    backgroundColor: yourBackColor,
-                    borderWidth: 2,
+                    data: whitePointData,
+                    borderColor: player1BackColor,
+                    backgroundColor: player1BackColor,
+                    borderWidth: 3,
                     fill: false,
                     showLine: true,
                     pointRadius: 0
                 },
                 {
-                    label: 'W Points',
-                    data: whitePointData,
-                    borderColor: opponentForeColor,
-                    backgroundColor: opponentBackColor,
+                    label: 'P0 Checkers',
+                    data: player0CheckerData,
+                    borderColor: player0ForeColor,
+                    backgroundColor: player0BackColor,
                     borderWidth: 2,
+                    fill: true,
+                    pointRadius: 25
+                },
+                {
+                    label: 'P1 Checkers',
+                    data: player1CheckerData,
+                    borderColor: player1ForeColor,
+                    backgroundColor: player1BackColor,
+                    borderWidth: 2,
+                    fill: true,
+                    pointRadius: 25
+                },
+                {
+                    label: 'P0 Off Checkers',
+                    data: Player0OffCheckerData,
+                    borderColor: player0ForeColor,
+                    backgroundColor: player0BackColor,
+                    borderWidth: 5,
                     fill: false,
                     showLine: true,
                     pointRadius: 0
-                }
+                },
+                {
+                    label: 'P1 Off Checkers',
+                    data: Player1OffCheckerData,
+                    borderColor: player1ForeColor,
+                    backgroundColor: player1BackColor,
+                    borderWidth: 5,
+                    fill: false,
+                    showLine: true,
+                    pointRadius: 0
+                },
             ]
         },
         options: {
@@ -259,8 +406,7 @@ function createBoard() {
             scales: {
                 x: {
                     title: {
-                        text: chartTitle,
-                        display: true,
+                        display: false,
                     },
                     beginAtZero: true,
                     stacked: true,
@@ -271,13 +417,15 @@ function createBoard() {
                     },                            
                     grid: gridColor,
                     min: -1.0,
+                    max: 15.5,
+                    display: false,
                 },
                 y: {
                     beginAtZero: true,
-                    ticks: { autoSkip: false }, // show all the names
                     min: -0.5,
                     max: 11.5,
                     grid: gridColor,
+                    display: false,
                 }
             }
         }

@@ -20,6 +20,12 @@
                     <p id="boardChartMessage" class="centered">Not loaded yet...</p>
                 </div>
 
+                <!-- Your Name -->
+                <div class="input-group">
+                    <span class="input-group-text">GNUbg ID</span>
+                    <label for="gnuBgId"></label><input id="gnuBgId" type="text" class="form-control centered" placeholder="Enter a GNUbg ID">
+                </div>
+
                 <!-- Board Summary -->
                 <h5 id="boardSummaryToggle" type="button" data-toggle="collapse" data-target="#boardSummary" aria-expanded="false" aria-controls="boardSummary">
                     Board Summary
@@ -103,6 +109,23 @@
             if (!readMeLoaded) {
                 fetchMarkDownFromRepo('README', 'readmeContent');
                 readMeLoaded = true;
+            }
+        });
+
+        // a GNUbg ID has been entered, try to load the board
+        document.getElementById('gnuBgId').addEventListener('change', function() {
+            const gnuBgIDs = this.value.trim().split(':');
+            const positionID = gnuBgIDs[0];
+            const matchID = gnuBgIDs[1];
+            if (positionID) {
+                try {
+                    SetPositionID(positionID, 1);
+                } catch (err) {
+                    console.error('Failed to load board Position ID:', err);
+                    alert('Failed to load board. Please check the console for more details.');
+                }
+            } else {
+                alert('Please enter a valid GNUbg ID.');
             }
         });
     </script>
