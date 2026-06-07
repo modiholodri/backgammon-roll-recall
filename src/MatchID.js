@@ -39,7 +39,7 @@ function readMatchID(sMatchID) {
     matchInfo.FirstDice = getValue(baDecodedBytes, 16, 18);
     matchInfo.SecondDice = getValue(baDecodedBytes, 19, 21);
 
-    //! Bit 22 to 36 is the match length.The maximum value for the match length is 32767. A match score of zero indicates that the game is a money game.
+    //! Bit 22 to 36 is the match length. The maximum value for the match length is 32767. A match score of zero indicates that the game is a money game.
     matchInfo.MatchLength = getValue(baDecodedBytes, 22, 36);
 
     //! Bit 37-51 and bit 52-66 is the score for player 0 and player 1 respectively.The maximum value of the match score is 32767.
@@ -51,10 +51,16 @@ function getBit(baDecodedBytes, iBitPosition)
 {
     // 01234567 89012345 67890123
     iBitPosition -= 1;  // Make it match the GNU Backgammon MatchID description
-    let iBytePosition = iBitPosition / 8;
+    let iBytePosition = Math.floor(iBitPosition / 8);
     let bBitMask = 1;
     bBitMask <<= iBitPosition % 8;
-    let bByte = (byte)(baDecodedBytes[iBytePosition] & bBitMask);
+    let bByte;
+    if (typeof baDecodedBytes === 'string') {
+        bByte = baDecodedBytes.charCodeAt(iBytePosition);
+    } else {
+        bByte = baDecodedBytes[iBytePosition];
+    }
+    bByte &= bBitMask;
     return bByte != 0 ? 1 : 0;
 }
 

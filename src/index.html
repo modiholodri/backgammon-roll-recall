@@ -23,14 +23,10 @@
                 <!-- Your Name -->
                 <div class="input-group">
                     <span class="input-group-text">GNUbg ID</span>
-                    <label for="gnuBgId"></label><input id="gnuBgId" type="text" class="form-control centered" placeholder="Enter a GNUbg ID">
+                    <label for="gnuBgId"></label><input id="gnuBgId" type="text" class="form-control centered" placeholder="Enter a GNUbg ID" value="zJ7BASIaM/gAWA:cImlAAAACAAE">
                 </div>
 
-                <!-- Board Summary -->
-                <h5 id="boardSummaryToggle" type="button" data-toggle="collapse" data-target="#boardSummary" aria-expanded="false" aria-controls="boardSummary">
-                    Board Summary
-                </h5>
-                <div id="boardSummary" class="collapse"></div>
+                <div id="boardSummary"></div>
         </section>
 
         <!-- Read Me -->
@@ -127,8 +123,20 @@
             } else {
                 alert('Please enter a valid GNUbg ID.');
             }
+            if (matchID) {
+                try {
+                    readMatchID(matchID);
+                    document.getElementById('boardSummary').innerText = 'Cube: ' + matchInfo.Cube + ', First Dice: ' + matchInfo.FirstDice + ', Second Dice: ' + matchInfo.SecondDice;
+                } catch (err) {
+                    console.error('Failed to load match ID:', err);
+                    alert('Failed to load match ID. Please check the console for more details.');
+                }
+            } else {
+                alert('Please enter a valid match ID.');
+            }
         });
     </script>
+
 
     <!-- Events -->
     <script>
@@ -213,6 +221,7 @@
         
     <script src="Board.js"></script>
     <script src="Settings.js"></script>
+    <script src="MatchID.js"></script>
     <script src="SupportingFunctions.js"></script>
 </body>
 </html>
