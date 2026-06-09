@@ -14,19 +14,12 @@
 
         <!-- Board -->
         <section id="boardSection" class="container">
-            <hr class="rounded">
-                <div id="boardChart" style="aspect-ratio: 3 / 2;">
-                    <canvas id="boardChartCanvas" style="background-color: black; display: block;"></canvas>
-                    <p id="boardChartMessage" class="centered">Not loaded yet...</p>
-                </div>
+            <div id="boardChart" style="aspect-ratio: 3 / 2;">
+                <canvas id="boardChartCanvas" style="background-color: black; display: block;"></canvas>
+                <p id="boardChartMessage" class="centered">Not loaded yet...</p>
+            </div>
 
-                <!-- Your Name -->
-                <div class="input-group">
-                    <span class="input-group-text">GNUbg ID</span>
-                    <label for="gnuBgId"></label><input id="gnuBgId" type="text" class="form-control centered" placeholder="Enter a GNUbg ID" value="zJ7BASIaM/gAWA:cImlAAAACAAE">
-                </div>
-
-                <div id="boardSummary"></div>
+            <div id="movesDisplay"></div>
         </section>
 
         <!-- Read Me -->
@@ -101,7 +94,7 @@
     <!-- Include Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
 
-    
+    <!-- Read Me handling -->    
     <script>
         // fetch the Read Me when the toggle is clicked the first time
         let readMeLoaded = false;
@@ -109,34 +102,6 @@
             if (!readMeLoaded) {
                 fetchMarkDownFromRepo('README', 'readmeContent');
                 readMeLoaded = true;
-            }
-        });
-
-        // a GNUbg ID has been entered, try to load the board
-        document.getElementById('gnuBgId').addEventListener('change', function() {
-            const gnuBgIDs = this.value.trim().split(':');
-            const positionID = gnuBgIDs[0];
-            const matchID = gnuBgIDs[1];
-            if (positionID) {
-                try {
-                    setPositionID(positionID, 1);
-                } catch (err) {
-                    console.error('Failed to load board Position ID:', err);
-                    alert('Failed to load board. Please check the console for more details.');
-                }
-            } else {
-                alert('Please enter a valid GNUbg ID.');
-            }
-            if (matchID) {
-                try {
-                    readMatchID(matchID);
-                    addDiceToBoard();
-                } catch (err) {
-                    console.error('Failed to load match ID:', err);
-                    alert('Failed to load match ID. Please check the console for more details.');
-                }
-            } else {
-                alert('Please enter a valid match ID.');
             }
         });
     </script>
@@ -225,9 +190,10 @@
     </script>
         
     <script src="ExtractBlunders.js"></script>
+    <script src="Blunder.js"></script>
+    <script src="Move.js"></script>
 
     <script src="Board.js"></script>
-    <script src="Move.js"></script>
     <script src="MatchID.js"></script>
     <script src="BlunderStore.js"></script>
 
