@@ -60,6 +60,12 @@ class Move {
         return `Rank: ${this.rank}, Move: ${this.move}, Win%: ${this.winningChances}, Loss%: ${this.losingChances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
     }
 
+    toTableRow() {
+        // |#|Move|Chances|Equity|
+        return `|${this.rank}|${this.move}|${this.winningChances}<br>${this.losingChances}|${this.equity} ${this.lostEquity}|`;
+    }
+
+    //! probably not needed, remove later
     equals(other) {
         return this instanceof Move &&
             other instanceof Move &&
