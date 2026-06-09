@@ -2,7 +2,7 @@ if (typeof Dexie === 'undefined') {
   throw new Error('Dexie is required and should be loaded before this script');
 }
 
-const DB_NAME = 'BackgammonBlunderDB';
+const DB_NAME = 'RollRecallDB';
 const DB_VERSION = 1;
 const TABLE_NAME = 'blunders';
 
@@ -10,7 +10,7 @@ class BlunderStore extends Dexie {
   constructor() {
     super(DB_NAME);
     this.version(DB_VERSION).stores({
-      blunders: '++id, gameId, boardState, moveNumber, createdAt'
+      blunders: '++id'
     });
     this.blunders = this.table(TABLE_NAME);
   }
@@ -52,9 +52,9 @@ class BlunderStore extends Dexie {
     return this.blunders.clear();
   }
 
-  async findBlundersByGame(gameId) {
-    return this.blunders.where('gameId').equals(gameId).toArray();
-  }
+//   async findBlundersByGame(gameId) {
+//     return this.blunders.where('gameId').equals(gameId).toArray();
+//   }
 
   async importBlunders(blunderArray) {
     if (!Array.isArray(blunderArray)) {
@@ -66,21 +66,16 @@ class BlunderStore extends Dexie {
   }
 
   createBlunderObject({
-    gameId,
-    boardState,
-    moveNumber,
-    analysisSource = 'GMU',
+    positionId,
+    matchId,
+    alert,
     moves = [],
-    metadata = {}
   } = {}) {
     return {
-      gameId,
-      boardState,
-      moveNumber,
-      analysisSource,
+      positionId,
+      matchId,
+      alert,
       moves,
-      metadata,
-      createdAt: new Date().toISOString()
     };
   }
 }
@@ -89,14 +84,15 @@ const blunderStore = new BlunderStore();
 
 blunderStore.init().then(() => {
   console.log('BlunderStore initialized successfully');
+
+  const move1 = new Move(1, '13/7*', '47.9 13.4 0.6', '52.1 14.5 0.9', '-0.042', '');
+  const move2 = new Move(2, '8/7* 6/1*', '47.9 13.4 0.6', '52.4 15.7 1.1', '-0.048', '(-0.006)');
   
   const sampleBlunder = blunderStore.createBlunderObject({
-    gameId: 'game-001',
-    boardState: 'initial',
-    moveNumber: 1,
-    analysisSource: 'GMU',
-    moves: [{ from: 24, to: 20 }, { from: 13, to: 11 }],
-    metadata: { playerName: 'Sample Player', difficulty: 'intermediate' }
+    positionId: '4HPhASjgc/ABMA',
+    matchId: 'cImpAAAAAAAE',
+    alert: 'Alert: doubtful move ( -0.057)',
+    moves: [move1, move2],
   });
   
   blunderStore.addBlunder(sampleBlunder).then((id) => {
