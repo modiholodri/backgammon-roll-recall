@@ -195,18 +195,17 @@ function addDiceToBoard()
     });
 
     // the dice
-    const diceColor = matchInfo.PlayerOnRoll == 0 ? player1ForeColor : player0ForeColor;
     diceNumbers.push({
         x: 9.5,
         y: 5.5,
         label: matchInfo.FirstDice.toString(),
-        labelColor: diceColor,
+        labelColor: player0ForeColor,
     });
     diceNumbers.push({
         x: 11.5,
         y: 5.5,
         label: matchInfo.SecondDice.toString(),
-        labelColor: diceColor,
+        labelColor: player0ForeColor,
     });
 }
 
@@ -218,7 +217,7 @@ const diceNumberAnnotations = {
         diceNumbers.forEach(point => {
             if (point.label) {
                 ctx.fillStyle = point.labelColor;
-                ctx.font = 'bold 18px Arial';
+                ctx.font = 'bold 24px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 const xPos = chart.scales.x.getPixelForValue(point.x);

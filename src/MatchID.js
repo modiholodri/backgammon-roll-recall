@@ -1,4 +1,4 @@
-let matchInfo = {};
+if (typeof matchInfo === 'undefined') var matchInfo = {};
     
 function readMatchID(sMatchID) {
     const baDecodedBytes = atob(sMatchID);
