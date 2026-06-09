@@ -10,24 +10,24 @@ class BlunderStore extends Dexie {
     constructor() {
         super(DB_NAME);
         this.version(DB_VERSION).stores({
-        blunders: '++id'
+            blunders: '++id'
         });
-        this.blunders = this.table(TABLE_NAME);
+            this.blunders = this.table(TABLE_NAME);
     }
 
     async init() {
         try {
-        await this.open();
-        return true;
+            await this.open();
+            return true;
         } catch (error) {
-        console.error('BlunderStore init failed', error);
-        return false;
+            console.error('BlunderStore init failed', error);
+            return false;
         }
     }
 
     async addBlunder(blunder) {
         if (!blunder || typeof blunder !== 'object') {
-        throw new Error('Invalid blunder object');
+            throw new Error('Invalid blunder object');
         }
         return this.blunders.add(blunder);
     }
@@ -58,25 +58,11 @@ class BlunderStore extends Dexie {
 
     async importBlunders(blunderArray) {
         if (!Array.isArray(blunderArray)) {
-        throw new Error('importBlunders expects an array');
+            throw new Error('importBlunders expects an array');
         }
         return this.transaction('rw', this.blunders, async () => {
-        return Promise.all(blunderArray.map((blunder) => this.blunders.add(blunder)));
+            return Promise.all(blunderArray.map((blunder) => this.blunders.add(blunder)));
         });
-    }
-
-    createBlunderObject({
-        positionId,
-        matchId,
-        alert,
-        moves = [],
-    } = {}) {
-        return {
-        positionId,
-        matchId,
-        alert,
-        moves,
-        };
     }
 }
 
