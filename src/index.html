@@ -166,9 +166,10 @@
             window.addEventListener('resize', function() {
                 try { setCanvasHeight(); } catch (e) { /* ignore if not defined */ }
             });
+
+            //! just for testing, remove this later
+            addSampleBlunder();
         });
-
-
         
         // Auto-collapse other sections when one section is shown
         function autoCollapse(elementName) {
@@ -223,11 +224,14 @@
         addToggleListener('settings'); 
     </script>
         
+    <script src="ExtractBlunders.js"></script>
+
     <script src="Board.js"></script>
     <script src="Move.js"></script>
-    <script src="Settings.js"></script>
     <script src="MatchID.js"></script>
     <script src="BlunderStore.js"></script>
+
     <script src="SupportingFunctions.js"></script>
+    <script src="Settings.js"></script>
 </body>
 </html>
