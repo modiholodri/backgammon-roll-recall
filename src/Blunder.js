@@ -5,7 +5,9 @@ class Blunder {
         this.matchId = matchId;
         this.alert = alert;
         this.moves = moves;
+        this.level = 0;
     }
+
 
     static create({ positionId, matchId, alert, moves = [] } = {}) {
         return new Blunder({ positionId, matchId, alert, moves });
@@ -49,6 +51,7 @@ class Blunder {
         }
 
         document.getElementById('movesDisplay').innerHTML = marked.parse(Blunder.movesToTable(this.moves));
+        scrollToElement('boardChart');
     }
 }
 

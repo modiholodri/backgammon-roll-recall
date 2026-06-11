@@ -206,3 +206,12 @@ function restTipOfTheDay() {
     if (tipContent) tipContent.innerHTML = ``;
 }   
 
+function scrollToElement(element) {
+    const targetElement = document.getElementById(element);
+
+    targetElement.scrollIntoView({
+        behavior: 'smooth', // Optional: for smooth scrolling animation
+        block: 'start'      // Optional: aligns the element to the top of the viewport
+    });
+}
+
