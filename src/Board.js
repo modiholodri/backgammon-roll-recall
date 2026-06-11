@@ -1,11 +1,12 @@
 // default colors
-const frameColor = 'rgba(0, 255, 0, 1)';
+const frameColor = 'rgb(75, 75, 75)';
+
+const player0ForeColor = 'rgba(0, 255, 255, 1)';
+const player0BackColor = 'rgba(0, 255, 255, 0.3)';
 
 const player1ForeColor = 'rgba(255, 0, 255, 1)';
 const player1BackColor = 'rgba(255, 0, 255, 0.3)';
 
-const player0ForeColor = 'rgba(0, 255, 255, 1)';
-const player0BackColor = 'rgba(0, 255, 255, 0.3)';
 
 const labelColor = 'rgba(255, 255, 0, 0.3)';
 
