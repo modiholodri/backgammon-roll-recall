@@ -61,14 +61,15 @@ class Move {
     }
 
     toTableRow() {
+        const rank = `<span style="color: ${unimportantColor}">${this.rank}</span>`;
         const equity = `${this.equity}<br>${this.lostEquity}`
         const move = `${this.move.replace(' ', '<br>')}`;
         const winingChances = this.winningChances.split(' ');
         const losingChances = this.losingChances.split(' ');
-        const chances = `${winingChances[0]} - ${losingChances[0]}<br>${winingChances[1]} - ${losingChances[1]}<br>${winingChances[2]} - ${losingChances[2]}`;
+        const chances = `<span style="color: ${unimportantColor}">${winingChances[0]} - ${losingChances[0]}<br>${winingChances[1]} - ${losingChances[1]}<br>${winingChances[2]} - ${losingChances[2]}</span>`;
 
         // |#|Move|Chances|Equity|
-        return `|${this.rank}|${equity}|${move}|${chances}|`;
+        return `|${rank}|${equity}|${move}|${chances}|`;
     }
 
     //! probably not needed, remove later

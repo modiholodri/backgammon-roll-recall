@@ -9,17 +9,15 @@ const player0BackColor = 'rgba(0, 255, 255, 0.3)';
 const player1ForeColor = 'rgba(255, 0, 255, 1)';
 const player1BackColor = 'rgba(255, 0, 255, 0.3)';
 
+const unimportantColor = 'rgba(255, 255, 255, 0.3)';
 
-const labelColor = 'rgba(255, 255, 0, 0.3)';
-
-const chartColor = 'rgba(255, 255, 0, 0.2)';
 const gridColor = { color: 'rgba(255, 255, 0, 0.1)' };
 
-Chart.defaults.color = chartColor;  // default text color
+Chart.defaults.color = unimportantColor;  // default text color
 Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.0)';  // don't show the default grid
-Chart.defaults.plugins.legend.labels.color = chartColor;
+Chart.defaults.plugins.legend.labels.color = unimportantColor;
 Chart.defaults.scale.title.font = { size: 16, weight: 'bold' };
-Chart.defaults.scale.title.color = chartColor;
+Chart.defaults.scale.title.color = unimportantColor;
 Chart.defaults.layout.padding.top = 7;
 
 let boardChart;
@@ -246,7 +244,7 @@ function addPointNumberToBoard(point)
         x: boardPosition,
         y: movePosition,
         label: point.toString(),
-        labelColor: labelColor,
+        labelColor: unimportantColor,
     });
 }
 
@@ -459,8 +457,8 @@ function createBoard() {
                     stacked: true,
                     position: 'bottom',
                     ticks: {
-                        color: chartColor,
-                        display: false,
+                        color: unimportantColor,
+                        display: showDebug,
                     },                            
                     grid: gridColor,
                     min: -0.1,
