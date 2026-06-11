@@ -72,8 +72,8 @@ const boardFrameData = [
 ];
 const pointNumbers = [];
 const diceNumbers = [];
-const whitePointData = [];
-const blackPointData = [];
+const player0PointNumbers = [];
+const player1PointNumbers = [];
 
 
 function resetCheckerData() {
@@ -105,8 +105,8 @@ function addOffCheckerToBoard(series, dOffCheckerNumber, player)
 function addOffCheckersToBoard(offCheckers, player)
 {
     let series;
-    if (player == 0) series = Player1OffCheckerData;
-    else series = Player0OffCheckerData;
+    if (player == 0) series = Player0OffCheckerData;
+    else series = Player1OffCheckerData;
 
     for (let offCheckerNumber = 1; offCheckerNumber <= offCheckers; offCheckerNumber++)
     {
@@ -316,10 +316,10 @@ function addTopPointToBoard(pointData, point)
     pointData.push({ x: NaN, y: NaN });
 }
 
-function generatePointData() {
+function generatePointNumbers() {
     for (let point = 1; point < 25; point++)
     {
-        let pointData = (point % 2 === 1) ? blackPointData : whitePointData;
+        let pointData = (point % 2 === 0) ? player0PointNumbers : player1PointNumbers;
 
         if (point < 13) addPointToBoard(pointData, point);
         else addTopPointToBoard(pointData, point);
@@ -362,7 +362,7 @@ function createBoard() {
     const canvas = document.getElementById('boardChartCanvas');
     const ctx = canvas.getContext('2d');
 
-    generatePointData();
+    generatePointNumbers();
     setPointNumbers();
 
     destroyBoardChart('');
@@ -383,8 +383,8 @@ function createBoard() {
                     pointRadius: 0,
                 },
                 {
-                    label: 'A Points',
-                    data: blackPointData,
+                    label: 'P0 Points',
+                    data: player1PointNumbers,
                     borderColor: player0BackColor,
                     backgroundColor: player0BackColor,
                     borderWidth: 3,
@@ -392,8 +392,8 @@ function createBoard() {
                     pointRadius: 0,
                 },
                 {
-                    label: 'B Points',
-                    data: whitePointData,
+                    label: 'P1 Points',
+                    data: player0PointNumbers,
                     borderColor: player1BackColor,
                     backgroundColor: player1BackColor,
                     borderWidth: 3,
