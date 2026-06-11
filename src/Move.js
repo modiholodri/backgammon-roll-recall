@@ -61,12 +61,15 @@ class Move {
     }
 
     toTableRow() {
+        const blunderColor = moveColor(this.lostEquity);
+
         const rank = `<span style="color: ${unimportantColor}">${this.rank}</span>`;
-        const equity = `${this.equity}<br>${this.lostEquity}`
-        const move = `${this.move.replace(' ', '<br>')}`;
+        const equity = `<span style="color: ${blunderColor}">${this.equity}<br>${this.lostEquity}</span>`;
+        const move = `<span style="color: ${blunderColor}">${this.move.replace(' ', '<br>')}</span>`;
         const winingChances = this.winningChances.split(' ');
         const losingChances = this.losingChances.split(' ');
-        const chances = `<span style="color: ${unimportantColor}">${winingChances[0]} - ${losingChances[0]}<br>${winingChances[1]} - ${losingChances[1]}<br>${winingChances[2]} - ${losingChances[2]}</span>`;
+        const chances = `<span style="color: ${unimportantColor}">${winingChances[0]} - ${losingChances[0]}<br>` + 
+                        `${winingChances[1]} - ${losingChances[1]}<br>${winingChances[2]} - ${losingChances[2]}</span>`;
 
         // |#|Move|Chances|Equity|
         return `|${rank}|${equity}|${move}|${chances}|`;
@@ -83,4 +86,33 @@ class Move {
             this.equity === other.equity &&
             this.lostEquity === other.lostEquity;
     }
+}
+
+
+let rgxNumber = /[0-9.,-]+/
+let rgxLostEquity = /[0-9.,]+/
+
+function moveColor(lostEquity)
+{
+    if (lostEquity === "") return `rgb(2, 255, 0)`;
+    const value = Number(lostEquity.match(rgxLostEquity));
+    const dGoodMove = 0.030;
+    const dBigBlunder = 0.120;
+
+    if (value < dGoodMove)
+    {
+        const red = 255 * value / dGoodMove;
+        clrIntensified = `rgb(${red}, 255, 0)`;
+    }
+    else if (value < dBigBlunder)
+    {
+        const green = 255 - 255 * (value - dGoodMove) / (dBigBlunder - dGoodMove);
+        clrIntensified = `rgb(255, ${green}, 0)`;
+    }
+    else
+    {
+        clrIntensified = `rgb(255, 0, 0)`;
+    }
+
+    return clrIntensified;
 }
