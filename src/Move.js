@@ -17,54 +17,6 @@ class Move {
         this.lostEquityValue = Number(lostEquity.match(rgxLostEquity));
     }
 
-    getRank() {
-        return this.rank;
-    }
-
-    setRank(rank) {
-        this.rank = rank;
-    }
-
-    getMove() {
-        return this.move;
-    }
-
-    setMove(move) {
-        this.move = move;
-    }
-
-    getWinningChances() {
-        return this.winningChances;
-    }
-
-    setWinningChances(winningChances) {
-        this.winningChances = winningChances;
-    }
-
-    getLosingChances() {
-        return this.losingChances;
-    }
-
-    setLosingChances(losingChances) {
-        this.losingChances = losingChances;
-    }
-
-    getEquity() {
-        return this.equity;
-    }
-
-    setEquity(equity) {
-        this.equity = equity;
-    }
-
-    getLostEquity() {
-        return this.lostEquity;
-    }
-
-    setLostEquity(lostEquity) {
-        this.lostEquity = lostEquity;
-    }
-
     toString() {
         return `Rank: ${this.rank}, Move: ${this.move}, Win%: ${this.winningChances}, Loss%: ${this.losingChances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
     }
