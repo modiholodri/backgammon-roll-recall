@@ -6,7 +6,7 @@ function addSampleBlunder() {
     const move4 = new Move(4, '24/21 18/16', '41.0 8.3 0.3', '59.0 16.8 0.6', '-0.181', '(-0.090)');
     const move5 = new Move(5, '13/10 6/4', '40.1 9.2 0.4', '59.9 20.4 1.5', '-0.197', '(-0.120)');
     
-    const sampleBlunder = createBlunderObject({
+    const sampleBlunder = new Blunder({
         positionId: 'bg4AAP4vgEABAA',
         matchId: 'UYmmAAAAAAAE',
         // positionId: '4HPGESDgc/BBIA',
@@ -21,5 +21,5 @@ function addSampleBlunder() {
         console.error('Failed to add sample blunder', error);
     });
 
-    showBlunder(sampleBlunder);
+    sampleBlunder.show();
 }
