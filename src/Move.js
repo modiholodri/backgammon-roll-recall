@@ -64,7 +64,7 @@ class Move {
         const blunderColor = moveColor(this.lostEquity);
 
         const rank = `<span style="color: ${unimportantColor}">${this.rank}</span>`;
-        const equity = `<span style="color: ${blunderColor}">${this.equity}<br>${this.lostEquity}</span>`;
+        const equity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
         const move = `<span style="color: ${blunderColor}">${this.move.replace(' ', '<br>')}</span>`;
         const winingChances = this.winningChances.split(' ');
         const losingChances = this.losingChances.split(' ');
