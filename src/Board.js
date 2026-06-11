@@ -190,7 +190,7 @@ function addDiceToBoard()
     const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
     diceNumbers.push({
         x: 0.0,
-        y: 5.5,
+        y: 5.45,
         label: matchInfo.Cube.toString(),
         labelColor: cubeColor,
     });
@@ -198,13 +198,13 @@ function addDiceToBoard()
     // the dice
     diceNumbers.push({
         x: 9.5,
-        y: 5.5,
+        y: 5.45,
         label: matchInfo.FirstDice.toString(),
         labelColor: player0ForeColor,
     });
     diceNumbers.push({
         x: 11.5,
-        y: 5.5,
+        y: 5.45,
         label: matchInfo.SecondDice.toString(),
         labelColor: player0ForeColor,
     });
@@ -218,7 +218,7 @@ const diceNumberAnnotations = {
         diceNumbers.forEach(point => {
             if (point.label) {
                 ctx.fillStyle = point.labelColor;
-                ctx.font = 'bold 24px Arial';
+                ctx.font = 'bold 18px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 const xPos = chart.scales.x.getPixelForValue(point.x);
