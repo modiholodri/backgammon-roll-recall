@@ -7,8 +7,10 @@ function addSampleBlunder() {
     const move5 = new Move(5, '13/10 6/4', '40.1 9.2 0.4', '59.9 20.4 1.5', '-0.197', '(-0.041)');
     
     const sampleBlunder = createBlunderObject({
-        positionId: '4HPGESDgc/BBIA',
-        matchId: 'cIkpAAAAAAAE',
+        positionId: 'bg4AAP4vgEABAA',
+        matchId: 'UYmmAAAAAAAE',
+        // positionId: '4HPGESDgc/BBIA',
+        // matchId: 'cIkpAAAAAAAE',
         alert: 'Alert: bad move ( -0.025)',
         moves: [move1, move2, move3, move4, move5],
     });

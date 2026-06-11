@@ -1,5 +1,5 @@
 // default colors
-const showDebug = true;
+const showDebug = false;
 
 const frameColor = 'rgb(75, 75, 75)';
 
@@ -96,7 +96,7 @@ function addCheckerToBoard(series, moveNumber, point)
 
 function addOffCheckerToBoard(series, dOffCheckerNumber, player)
 {
-    let where = 15.0;
+    let where = 14.0;
     let stackedNumber = dOffCheckerNumber / 3 - 0.15;
     if (player != 0) stackedNumber = 11 - stackedNumber;
     series.push({ x: where - 0.4, y: stackedNumber });
@@ -409,7 +409,6 @@ function createBoard() {
                     borderColor: player0ForeColor,
                     backgroundColor: player0BackColor,
                     borderWidth: 2,
-                    fill: true,
                     pointRadius: checkerSize,
                 },
                 {
@@ -418,14 +417,12 @@ function createBoard() {
                     borderColor: player1ForeColor,
                     backgroundColor: player1BackColor,
                     borderWidth: 2,
-                    fill: true,
                     pointRadius: checkerSize,
                 },
                 {
                     label: 'P0 Off Checkers',
                     data: Player0OffCheckerData,
                     borderColor: player0ForeColor,
-                    backgroundColor: player0BackColor,
                     borderWidth: 5,
                     fill: false,
                     showLine: true,
@@ -435,7 +432,6 @@ function createBoard() {
                     label: 'P1 Off Checkers',
                     data: Player1OffCheckerData,
                     borderColor: player1ForeColor,
-                    backgroundColor: player1BackColor,
                     borderWidth: 5,
                     fill: false,
                     showLine: true,
@@ -464,7 +460,6 @@ function createBoard() {
                     position: 'bottom',
                     ticks: {
                         color: chartColor,
-                        callback: wholeNumbersOnly,
                         display: false,
                     },                            
                     grid: gridColor,
@@ -474,7 +469,7 @@ function createBoard() {
                 },
                 y: {
                     ticks: { 
-                        display: false,
+                        display: showDebug,
                     },
                     beginAtZero: true,
                     min: -0.1,

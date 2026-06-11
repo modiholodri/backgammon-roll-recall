@@ -61,8 +61,10 @@ class Move {
     }
 
     toTableRow() {
+        const equity = `${this.equity}<br>${this.lostEquity}`
+
         // |#|Move|Chances|Equity|
-        return `|${this.rank}|${this.move}|${this.winningChances}<br>${this.losingChances}|${this.equity} ${this.lostEquity}|`;
+        return `|${this.rank}|${this.move}|${this.winningChances}<br>${this.losingChances}|${equity}|`;
     }
 
     //! probably not needed, remove later
