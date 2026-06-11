@@ -1,4 +1,6 @@
 // default colors
+const showDebug = true;
+
 const frameColor = 'rgb(75, 75, 75)';
 
 const player0ForeColor = 'rgba(0, 255, 255, 1)';
@@ -345,14 +347,8 @@ function wholeNumbersOnly(value) {
 function setCanvasHeight() {
     const canvas = document.getElementById('boardChartCanvas');
     if (canvas) {
-        let height = window.innerHeight * 0.75;
-        let width = window.innerWidth;
-        if (height > width * 0.66) {
-            height = width * 0.66; // Maintain 3:2 aspect ratio (width:height)
-        } 
-        else if (width > height * 1.5) {
-            width = height * 1.5; // Maintain 3:2 aspect ratio (width:height)
-        }
+        const width = window.innerWidth;
+        const height = width * 0.66; // Maintain 3:2 aspect ratio (width:height)
         canvas.style.height = `${height}px`;
         canvas.style.width = `${width}px`;
 
@@ -455,10 +451,13 @@ function createBoard() {
                     display: false,
                 },
             },
+            layout: {
+                padding: { bottom: -20 }
+            },
             scales: {
                 x: {
                     title: {
-                        display: false,
+                        display: showDebug,
                     },
                     beginAtZero: true,
                     stacked: true,
@@ -466,18 +465,22 @@ function createBoard() {
                     ticks: {
                         color: chartColor,
                         callback: wholeNumbersOnly,
+                        display: false,
                     },                            
                     grid: gridColor,
-                    min: -1.0,
-                    max: 15.5,
-                    display: false, // just shown when needed for debugging
+                    min: -0.1,
+                    max: 14.1,
+                    display: showDebug,
                 },
                 y: {
+                    ticks: { 
+                        display: false,
+                    },
                     beginAtZero: true,
-                    min: -0.5,
-                    max: 11.5,
+                    min: -0.1,
+                    max: 11.1,
                     grid: gridColor,
-                    display: false, // just shown when needed for debugging
+                    display: showDebug,
                 }
             }
         }
