@@ -1,11 +1,19 @@
+let rgxNumber = /[0-9.,-]+/
+let rgxLostEquity = /[0-9.,]+/
+
 class Move {
     constructor(rank, move, winningChances, losingChances, equity, lostEquity) {
         this.rank = rank;
         this.move = move;
+
         this.winningChances = winningChances;
         this.losingChances = losingChances;
+
         this.equity = equity;
-        this.lostEquity = lostEquity;
+        if (lostEquity === '') {
+            this.lostEquity = '(0.000)';
+        }
+        this.lostEquityValue = Number(lostEquity.match(rgxLostEquity));
     }
 
     getRank() {
@@ -61,7 +69,7 @@ class Move {
     }
 
     toTableRow() {
-        const blunderColor = moveColor(this.lostEquity);
+        const blunderColor = moveColor(this.lostEquityValue);
 
         const rank = `<span style="color: ${unimportantColor}">${this.rank}</span>`;
         const equity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
@@ -88,25 +96,22 @@ class Move {
     }
 }
 
-
-let rgxNumber = /[0-9.,-]+/
-let rgxLostEquity = /[0-9.,]+/
-
 function moveColor(lostEquity)
 {
-    if (lostEquity === "") return `rgb(2, 255, 0)`;
-    const value = Number(lostEquity.match(rgxLostEquity));
-    const dGoodMove = 0.030;
-    const dBigBlunder = 0.120;
+    const dGoodMoveEquity = 0.030;
+    const dBigBlunderEquity = 0.120;
 
-    if (value < dGoodMove)
+    if (lostEquity < 0.002) {
+        return `rgb(2, 255, 0)`;
+    }
+    if (lostEquity < dGoodMoveEquity)
     {
-        const red = 255 * value / dGoodMove;
+        const red = 255 * lostEquity / dGoodMoveEquity;
         clrIntensified = `rgb(${red}, 255, 0)`;
     }
-    else if (value < dBigBlunder)
+    else if (lostEquity < dBigBlunderEquity)
     {
-        const green = 255 - 255 * (value - dGoodMove) / (dBigBlunder - dGoodMove);
+        const green = 255 - 255 * (lostEquity - dGoodMoveEquity) / (dBigBlunderEquity - dGoodMoveEquity);
         clrIntensified = `rgb(255, ${green}, 0)`;
     }
     else
