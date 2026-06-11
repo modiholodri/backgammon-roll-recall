@@ -10,6 +10,7 @@ class Move {
         this.losingChances = losingChances;
 
         this.equity = equity;
+        this.lostEquity = lostEquity;
         if (lostEquity === '') {
             this.lostEquity = '(0.000)';
         }
