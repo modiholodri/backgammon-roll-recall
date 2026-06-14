@@ -42,6 +42,7 @@ class Blunder {
             try {
                 readMatchID(this.matchId);
                 addDiceToBoard();
+                addAwayToBoard();
             } catch (err) {
                 console.error('Failed to load match ID:', err);
                 alert('Failed to load match ID. Please check the console for more details.');

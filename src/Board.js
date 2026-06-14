@@ -68,6 +68,7 @@ const boardFrameData = [
 ];
 const pointNumbers = [];
 const diceNumbers = [];
+const away = [];
 const pointsB = [];
 const pointsA = [];
 
@@ -184,7 +185,9 @@ function addDiceToBoard()
 
     // the Cube
     const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
-    const cubePosition = matchInfo.CubeOwner == 0 ? 9.5 : (matchInfo.CubeOwner == 1 ? 1.5 : 5.45);
+    const cubePosition = matchInfo.CubeOwner == 0 ? 8.5 : (matchInfo.CubeOwner == 1 ? 2.5 : 5.45);
+
+    // the cube
     diceNumbers.push({
         x: 0.0,
         y: cubePosition,
@@ -227,8 +230,57 @@ const diceNumberAnnotations = {
     }
 };
 
-//* Draw the simple board stuff
+function addAwayToBoard()
+{
+    away.length = 0;
 
+    // the Cube
+    const player0Away = matchInfo.MatchLength - matchInfo.Player0Score;
+    const player1Away = matchInfo.MatchLength - matchInfo.Player1Score;
+
+    away.push({
+        x: 0.0,
+        y: 0.5,
+        yAway: 0.0,
+        label: player0Away.toString(),
+        labelColor: player0ForeColor,
+    });
+    away.push({
+        x: 0.0,
+        y: 10.5,
+        yAway: 11.1,
+        label: player1Away.toString(),
+        labelColor: player1ForeColor,
+    });
+}
+
+const awayAnnotations = {
+    id: 'away',
+    afterDatasetsDraw(chart, args, options) {
+        const { ctx } = chart;
+        ctx.save();
+        away.forEach(point => {
+            if (point.label) {
+                ctx.fillStyle = point.labelColor;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                ctx.font = 'bold 18px Arial';
+                const xPos = chart.scales.x.getPixelForValue(point.x);
+                const yPos = chart.scales.y.getPixelForValue(point.y);
+                ctx.fillText(point.label, xPos, yPos);
+
+                ctx.font = 'bold 8px Arial';
+                const yAwayPos = chart.scales.y.getPixelForValue(point.yAway);
+                ctx.fillText('Away', xPos, yAwayPos);
+            }
+        });
+        ctx.restore();
+    }
+};
+
+
+//* Draw the simple board stuff
 function addPointNumberToBoard(point)
 {
     const boardPosition = pointNumberToBoardPosition(point);
@@ -368,7 +420,7 @@ function createBoard() {
     // Create the chart if it doesn't exist
     boardChart = new Chart(ctx, {
         type: 'scatter',
-        plugins: [pointNumberAnnotations, diceNumberAnnotations], 
+        plugins: [pointNumberAnnotations, diceNumberAnnotations, awayAnnotations], 
         data: {
             datasets: [
                 {
