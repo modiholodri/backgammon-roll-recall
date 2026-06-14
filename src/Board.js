@@ -2,12 +2,16 @@
 const showDebug = false;
 
 const frameColor = 'rgb(75, 75, 75)';
+const point0ForeColor = 'rgba(255, 255, 0, 0.3)';
+const point1ForeColor = 'rgba(50, 205, 50, 0.3)';
 
 const player0ForeColor = 'rgba(0, 255, 255, 1)';
 const player0BackColor = 'rgba(0, 255, 255, 0.7)';
 
 const player1ForeColor = 'rgba(255, 0, 255, 1)';
 const player1BackColor = 'rgba(255, 0, 255, 0.7)';
+
+
 
 const unimportantColor = 'rgba(255, 255, 255, 0.3)';
 
@@ -420,8 +424,8 @@ function createBoard() {
                 {
                     label: 'P0 Points',
                     data: player1PointNumbers,
-                    borderColor: player0BackColor,
-                    backgroundColor: player0BackColor,
+                    borderColor: point0ForeColor,
+                    backgroundColor: point0ForeColor,
                     borderWidth: 3,
                     showLine: true,
                     pointRadius: 0,
@@ -429,8 +433,8 @@ function createBoard() {
                 {
                     label: 'P1 Points',
                     data: player0PointNumbers,
-                    borderColor: player1BackColor,
-                    backgroundColor: player1BackColor,
+                    borderColor: point1ForeColor,
+                    backgroundColor: point1ForeColor,
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
