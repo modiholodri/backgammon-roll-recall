@@ -8,6 +8,7 @@ function addSampleBlunder() {
     
     const sampleBlunder = new Blunder({
         // 7LYBAB6zdwAAAA:UgmvAAAAAAAE
+        id: '7LYBAB6zdwAAAA:UgmvAAAAAAAE',
         positionId: '7LYBAB6zdwAAAA',
         matchId: 'UgmvAAAAAAAE',
         // positionId: 'bg4AAP4vgEABAA',

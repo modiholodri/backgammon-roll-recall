@@ -10,7 +10,7 @@ class BlunderStore extends Dexie {
     constructor() {
         super(DB_NAME);
         this.version(DB_VERSION).stores({
-            blunders: '++id'
+            blunders: '[positionId+matchId]'
         });
             this.blunders = this.table(TABLE_NAME);
     }
@@ -29,6 +29,20 @@ class BlunderStore extends Dexie {
         if (!blunder || typeof blunder !== 'object') {
             throw new Error('Invalid blunder object');
         }
+
+        if (blunder.positionId == null || blunder.matchId == null) {
+            throw new Error('Blunder must include positionId and matchId');
+        }
+
+        const existing = await this.blunders
+            .where('[positionId+matchId]')
+            .equals([blunder.positionId, blunder.matchId])
+            .first();
+
+        if (existing) {
+            return existing;
+        }
+
         return this.blunders.add(blunder);
     }
 
