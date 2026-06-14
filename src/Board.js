@@ -215,17 +215,29 @@ const diceNumberAnnotations = {
     afterDatasetsDraw(chart, args, options) {
         const { ctx } = chart;
         ctx.save();
+        ctx.font = 'bold 18px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
         diceNumbers.forEach(point => {
             if (point.label) {
                 ctx.fillStyle = point.labelColor;
-                ctx.font = 'bold 18px Arial';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
                 const xPos = chart.scales.x.getPixelForValue(point.x);
                 const yPos = chart.scales.y.getPixelForValue(point.y);
                 ctx.fillText(point.label, xPos, yPos);
             }
         });
+        
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.font = 'bold 8px Arial';
+        const xValue = (diceNumbers[0] && typeof diceNumbers[0].x === 'number') ? diceNumbers[0].x : 0.0;
+        const yValue = (diceNumbers[0] && typeof diceNumbers[0].y === 'number') ? diceNumbers[0].y : 0.0;
+        const xPos = chart.scales.x.getPixelForValue(xValue);
+        let yPos = chart.scales.y.getPixelForValue(yValue - 0.4);
+        ctx.fillText('Cube', xPos, yPos);
+        yPos = chart.scales.y.getPixelForValue(yValue + 0.6);
+        ctx.fillText('Cube', xPos, yPos);
+
         ctx.restore();
     }
 };
