@@ -2,8 +2,8 @@
 const showDebug = false;
 
 const frameColor = 'rgb(75, 75, 75)';
-const point0ForeColor = 'rgba(255, 255, 0, 0.3)';
-const point1ForeColor = 'rgba(50, 205, 50, 0.3)';
+const pointsAForeColor = 'rgba(255, 255, 0, 0.3)';
+const pointsBForeColor = 'rgba(50, 205, 50, 0.3)';
 
 const player0ForeColor = 'rgba(0, 255, 255, 1)';
 const player0BackColor = 'rgba(0, 255, 255, 0.7)';
@@ -51,14 +51,6 @@ const boardFrameData = [
     { x: 7.5, y: 11.0 },
     { x: 7.5, y: NaN },
 
-    // Cube borders
-    // { x: -0.5, y: 5.0 },
-    // { x: 0.5, y: 5.0 },
-    // { x: 0.5, y: 6.0 },
-    // { x: -0.5, y: 6.0 },
-    // { x: -0.5, y: 5.0 - dOut },
-    // { x: -0.5, y: NaN },
-
     // Dice borders
     { x: 9.0, y: 5.0 },
     { x: 10.0, y: 5.0 },
@@ -76,8 +68,8 @@ const boardFrameData = [
 ];
 const pointNumbers = [];
 const diceNumbers = [];
-const player0PointNumbers = [];
-const player1PointNumbers = [];
+const pointsB = [];
+const pointsA = [];
 
 
 function resetCheckerData() {
@@ -324,7 +316,7 @@ function addTopPointToBoard(pointData, point)
 function generatePointNumbers() {
     for (let point = 1; point < 25; point++)
     {
-        let pointData = (point % 2 === 0) ? player0PointNumbers : player1PointNumbers;
+        let pointData = (point % 2 === 0) ? pointsB : pointsA;
 
         if (point < 13) addPointToBoard(pointData, point);
         else addTopPointToBoard(pointData, point);
@@ -422,19 +414,19 @@ function createBoard() {
                     pointRadius: 0,
                 },
                 {
-                    label: 'P0 Points',
-                    data: player1PointNumbers,
-                    borderColor: point0ForeColor,
-                    backgroundColor: point0ForeColor,
+                    label: 'Points A',
+                    data: pointsA,
+                    borderColor: pointsAForeColor,
+                    backgroundColor: pointsAForeColor,
                     borderWidth: 3,
                     showLine: true,
                     pointRadius: 0,
                 },
                 {
-                    label: 'P1 Points',
-                    data: player0PointNumbers,
-                    borderColor: point1ForeColor,
-                    backgroundColor: point1ForeColor,
+                    label: 'Points B',
+                    data: pointsB,
+                    borderColor: pointsBForeColor,
+                    backgroundColor: pointsBForeColor,
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
