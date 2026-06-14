@@ -4,10 +4,10 @@ const showDebug = false;
 const frameColor = 'rgb(75, 75, 75)';
 
 const player0ForeColor = 'rgba(0, 255, 255, 1)';
-const player0BackColor = 'rgba(0, 255, 255, 0.3)';
+const player0BackColor = 'rgba(0, 255, 255, 0.7)';
 
 const player1ForeColor = 'rgba(255, 0, 255, 1)';
-const player1BackColor = 'rgba(255, 0, 255, 0.3)';
+const player1BackColor = 'rgba(255, 0, 255, 0.7)';
 
 const unimportantColor = 'rgba(255, 255, 255, 0.3)';
 
@@ -188,7 +188,7 @@ function addDiceToBoard()
 
     // the Cube
     const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
-    const cubePosition = matchInfo.CubeOwner == 0 ? 10.5 : (matchInfo.CubeOwner == 1 ? 0.5 : 5.45);
+    const cubePosition = matchInfo.CubeOwner == 0 ? 9.5 : (matchInfo.CubeOwner == 1 ? 1.5 : 5.45);
     diceNumbers.push({
         x: 0.0,
         y: cubePosition,
@@ -376,33 +376,6 @@ function createBoard() {
         data: {
             datasets: [
                 {
-                    label: 'Board Frame',
-                    data: boardFrameData,
-                    borderColor: frameColor,
-                    borderWidth: 3,
-                    showLine: true,
-                    pointRadius: 0,
-                },
-                {
-                    label: 'P0 Points',
-                    data: player1PointNumbers,
-                    borderColor: player0BackColor,
-                    backgroundColor: player0BackColor,
-                    borderWidth: 3,
-                    showLine: true,
-                    pointRadius: 0,
-                },
-                {
-                    label: 'P1 Points',
-                    data: player0PointNumbers,
-                    borderColor: player1BackColor,
-                    backgroundColor: player1BackColor,
-                    borderWidth: 3,
-                    fill: false,
-                    showLine: true,
-                    pointRadius: 0,
-                },
-                {
                     label: 'P0 Checkers',
                     data: player0CheckerData,
                     borderColor: player0ForeColor,
@@ -432,6 +405,33 @@ function createBoard() {
                     data: Player1OffCheckerData,
                     borderColor: player1ForeColor,
                     borderWidth: 5,
+                    fill: false,
+                    showLine: true,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'Board Frame',
+                    data: boardFrameData,
+                    borderColor: frameColor,
+                    borderWidth: 3,
+                    showLine: true,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'P0 Points',
+                    data: player1PointNumbers,
+                    borderColor: player0BackColor,
+                    backgroundColor: player0BackColor,
+                    borderWidth: 3,
+                    showLine: true,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'P1 Points',
+                    data: player0PointNumbers,
+                    borderColor: player1BackColor,
+                    backgroundColor: player1BackColor,
+                    borderWidth: 3,
                     fill: false,
                     showLine: true,
                     pointRadius: 0,
