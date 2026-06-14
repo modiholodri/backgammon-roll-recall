@@ -47,8 +47,8 @@
                 <!-- Your Name -->    <script src="MatchID.js"></script>
 
                 <div class="input-group">
-                    <span class="input-group-text">Your Name</span>
-                    <label for="yourName"></label><input id="yourName" type="text" class="form-control centered" placeholder="Enter your name">
+                    <span class="input-group-text">Accepted Lost Equity</span>
+                    <label for="acceptedLostEquity"></label><input id="acceptedLostEquity" type="text" class="form-control centered" placeholder="Enter the accepted lost equity">
                 </div>
                 <!-- Theme Selection -->
                 <div class="input-group">
@@ -62,6 +62,20 @@
                 <p class="mt-3" style="color: gray;">Note: The settings are saved locally on your device. 
                                 They will be loaded automatically the next time you visit the page.
                                 Refresh the page after making changes.</p>
+            </div>
+        </section>
+
+        <!-- General -->
+        <section id="generalSection" class="container">
+            <hr class="rounded">
+            <h3 id="generalToggle" type="button" data-toggle="collapse" data-target="#general" aria-expanded="false" aria-controls="general">
+                General ⇅
+            </h3>
+            <div id="general" class="collapse">
+                <div class="d-flex flex-column gap-2">
+                    <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
+                    <p class="text-muted mb-0">Toggle fullscreen mode for the application.</p>
+                </div>
             </div>
         </section>
 
@@ -143,20 +157,46 @@
             }
 
             switch (elementName) {
-                case 'rankingLists':
-                    collapseElements(['readMe', 'settings']);
-                    break;
                 case 'readMe':
-                    collapseElements(['rankingLists', 'settings']);
+                    collapseElements(['settings', 'general', 'tipOfTheDay']);
                     break;
                 case 'settings':
-                    collapseElements(['rankingLists', 'readMe']);
+                    collapseElements(['readMe', 'general', 'tipOfTheDay']);
+                    break;
+                case 'general':
+                    collapseElements(['readMe', 'settings', 'tipOfTheDay']);
                     break;
                 case 'tipOfTheDay':
-                    collapseElements(['rankingLists', 'readMe', 'settings']);
+                    collapseElements(['readMe', 'settings', 'general']);
                     break;
             }
         }
+
+        const btn = document.getElementById('fullscreenBtn');
+
+        btn.addEventListener('click', async () => {
+        try {
+            // If no element is in fullscreen, request it
+            if (!document.fullscreenElement) {
+                // documentElement targets the entire HTML page
+                await document.documentElement.requestFullscreen();
+                btn.textContent = 'Exit Fullscreen';
+            } else {
+                // Exit fullscreen mode
+                await document.exitFullscreen();
+                btn.textContent = 'Go Fullscreen';
+            }
+        } catch (err) {
+            console.error(`Error attempting to toggle fullscreen: ${err.message}`);
+        }
+        });
+
+        // Sync button text if user exits manually via the Escape key
+        document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+            btn.textContent = 'Go Fullscreen';
+        }
+        });        
 
         function collapseElement(elementName) {
             const element = document.getElementById(elementName);
@@ -186,7 +226,8 @@
         }
 
         addToggleListener('readMe');
-        addToggleListener('settings'); 
+        addToggleListener('settings');
+        addToggleListener('general');
     </script>
         
     <script src="ExtractBlunders.js"></script>

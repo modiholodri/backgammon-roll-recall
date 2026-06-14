@@ -65,6 +65,24 @@ function themeSelectionChanged() {
     document.body.classList.toggle('light-theme', theme === 'light-theme');
 }
 
+// Fullscreen Changed
+function fullscreenChanged() {
+    let fullscreen = document.getElementById('fullscreen').checked;
+
+    try {
+        if (fullscreen) {
+            document.documentElement.requestFullscreen();
+        }
+        else if (document.fullscreenElement) {
+            document.exitFullscreen();
+        }
+    }
+    catch (error) {
+        console.error('Error toggling fullscreen mode:', error);
+    }
+}
+
+
 // Linear Congruential Generator (LCG) for pseudo-random number generation
 class LCG {
     constructor(seed) {

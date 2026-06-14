@@ -20,13 +20,6 @@ function loadValueSetting(elementName, defaultValue) {
     document.getElementById(elementName).value = localStorage.getItem(elementName) || defaultValue;
 }
 
-// Load settings from localStorage
-function loadSettings() {
-    // Theme Selection
-    loadValueSetting('themeSelection', 'system-theme');
-    themeSelectionChanged();
-}
-
 // save the settings of a toggle element to localStorage
 function saveToggleSetting(elementName) {
     const matchReportFormCollapsed = document.getElementById(elementName).classList.contains('show') ? 'expanded' : 'collapsed';
@@ -43,6 +36,13 @@ function saveValueSetting(elementName) {
 function saveCheckedSetting(elementName) {
     const checked = document.getElementById(elementName).checked;
     localStorage.setItem(elementName, checked);
+}
+
+// Load settings from localStorage
+function loadSettings() {
+    // Theme Selection
+    loadValueSetting('themeSelection', 'system-theme');
+    themeSelectionChanged();
 }
 
 // Save settings to localStorage
