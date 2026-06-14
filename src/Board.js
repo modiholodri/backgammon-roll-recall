@@ -188,9 +188,10 @@ function addDiceToBoard()
 
     // the Cube
     const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
+    const cubePosition = matchInfo.CubeOwner == 0 ? 10.5 : (matchInfo.CubeOwner == 1 ? 0.5 : 5.45);
     diceNumbers.push({
         x: 0.0,
-        y: 5.45,
+        y: cubePosition,
         label: matchInfo.Cube.toString(),
         labelColor: cubeColor,
     });
