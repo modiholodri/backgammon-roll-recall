@@ -11,8 +11,6 @@ const player0BackColor = 'rgba(0, 255, 255, 0.7)';
 const player1ForeColor = 'rgba(255, 0, 255, 1)';
 const player1BackColor = 'rgba(255, 0, 255, 0.7)';
 
-
-
 const unimportantColor = 'rgba(255, 255, 255, 0.3)';
 
 const gridColor = { color: 'rgba(255, 255, 0, 0.1)' };
@@ -30,6 +28,9 @@ let player0CheckerData = [];
 let Player0OffCheckerData = [];
 let player1CheckerData = [];
 let Player1OffCheckerData = [];
+
+let diceDots = [];
+let diceDotsData = [];
 
 // simple board data
 let checkerSize = 25;
@@ -79,6 +80,53 @@ function resetCheckerData() {
     Player0OffCheckerData.length = 0;
     Player1OffCheckerData.length = 0;
 }
+
+const baaDots = [[true, true, true, true, true, true, true], //! not rolled yet
+                 [true, true, true, false, true, true, true], //! one          1   2
+                 [true, false, true, true, true, false, true], //! two         3 4 5
+                 [false, true, true, false, true, true, false], //! three      6   7
+                 [false, false, true, true, true, false, false], //! four
+                 [false, false, true, false, true, false, false], //! five
+                 [false, false, false, true, false, false, false], //! six
+];
+
+function setDices(firstDice, secondDice) {
+    diceDotsData.length = 0;
+    setDice(1, firstDice);
+    setDice(8, secondDice);
+}
+
+function setDice(start, value)
+{
+    if (value < 0 || value > 6) return;
+
+    const baseIndex = start - 1;
+    for (let dotPosition = 0; dotPosition < 7; dotPosition++)
+    {
+        const i = baseIndex + dotPosition;
+        if (i < 0 || i >= diceDots.length) continue;
+
+        // Access the baaDots 2D array correctly and push when a dot is present
+        if (baaDots[value] && baaDots[value][dotPosition] === false)
+        {
+            diceDotsData.push(diceDots[i]);
+        }
+    }
+}
+
+function generateDice(dPointPosition, dMovePosition)
+{
+    const dOffset = 0.3;
+    const dSize = 1.0;
+    diceDots.push({ x: dPointPosition - dOffset, y: dMovePosition - dOffset });
+    diceDots.push({ x: dPointPosition + dOffset, y: dMovePosition - dOffset });
+    diceDots.push({ x: dPointPosition - dOffset, y: dMovePosition });
+    diceDots.push({ x: dPointPosition, y: dMovePosition });
+    diceDots.push({ x: dPointPosition + dOffset, y: dMovePosition });
+    diceDots.push({ x: dPointPosition - dOffset, y: dMovePosition + dOffset });
+    diceDots.push({ x: dPointPosition + dOffset, y: dMovePosition + dOffset });
+}
+
 
 function addCheckerToBoard(series, moveNumber, point)
 {
@@ -195,19 +243,7 @@ function addDiceToBoard()
         labelColor: cubeColor,
     });
 
-    // the dice
-    diceNumbers.push({
-        x: 9.5,
-        y: 5.45,
-        label: matchInfo.FirstDice.toString(),
-        labelColor: player0ForeColor,
-    });
-    diceNumbers.push({
-        x: 11.5,
-        y: 5.45,
-        label: matchInfo.SecondDice.toString(),
-        labelColor: player0ForeColor,
-    });
+    setDices(matchInfo.FirstDice, matchInfo.SecondDice);
 }
 
 const diceNumberAnnotations = {
@@ -426,6 +462,9 @@ function createBoard() {
     generatePointNumbers();
     setPointNumbers();
 
+    generateDice(9.5, 5.5);
+    generateDice(11.5, 5.5);
+
     destroyBoardChart('');
     diceNumbers.length = 0;
 
@@ -495,6 +534,14 @@ function createBoard() {
                     fill: false,
                     showLine: true,
                     pointRadius: 0,
+                },
+                {
+                    label: 'Dice Dots',
+                    data: diceDotsData,
+                    borderColor: player0ForeColor,
+                    backgroundColor: player0BackColor,
+                    borderWidth: 1,
+                    pointRadius: 2,
                 },
             ]
         },
