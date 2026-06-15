@@ -18,9 +18,40 @@
                 <canvas id="boardChartCanvas" style="background-color: black; display: block;"></canvas>
                 <p id="boardChartMessage" class="centered">Not loaded yet...</p>
             </div>
-
             <div id="movesDisplay"></div>
         </section>
+
+        <!-- Move Options -->
+        <section id="moveOptionsSection" class="container">
+            <hr class="rounded">
+            <h3 id="moveOptionsToggle" type="button" data-toggle="collapse" data-target="#moveOptions" aria-expanded="false" aria-controls="moveOptions">
+                Move Options ⇅
+            </h3>
+            <div id="moveOptions" class="collapse show">
+                <div class="d-flex flex-column gap-2">
+                    <button id="moveOption1" class="btn btn-outline-primary">Move Option 1</button>
+                    <button id="moveOption2" class="btn btn-outline-primary">Move Option 2</button>
+                    <button id="moveOption3" class="btn btn-outline-primary">Move Option 3</button>
+                    <button id="moveOption4" class="btn btn-outline-primary">Move Option 4</button>
+                    <button id="moveOption5" class="btn btn-outline-primary">Move Option 5</button>
+                    <button id="deletePosition" class="btn btn-outline-primary">Delete Position</button>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- General -->
+        <section id="generalSection" class="container">
+            <hr class="rounded">
+            <h3 id="generalToggle" type="button" data-toggle="collapse" data-target="#general" aria-expanded="false" aria-controls="general">
+                General ⇅
+            </h3>
+            <div id="general" class="collapse show">
+                <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
+                <button id="openAnalysis" class="btn btn-outline-primary" onclick="openAnalysisFile()">Open Analysis</button>
+            </div>
+        </section>
+
 
         <!-- Read Me -->
         <section id="readMeSection">
@@ -36,7 +67,6 @@
             </div>
         </section>
 
-        
         <!-- Settings -->
         <section id="settingsSection" class="container">
             <hr class="rounded">
@@ -64,20 +94,6 @@
                                 Refresh the page after making changes.</p>
             </div>
         </section>
-
-        <!-- General -->
-        <section id="generalSection" class="container">
-            <hr class="rounded">
-            <h3 id="generalToggle" type="button" data-toggle="collapse" data-target="#general" aria-expanded="false" aria-controls="general">
-                General ⇅
-            </h3>
-            <div id="general" class="collapse">
-                <div class="d-flex flex-column gap-2">
-                    <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
-                </div>
-            </div>
-        </section>
-
 
         <!-- Tip of the Day -->
         <section id="tipOfTheDay">
@@ -224,9 +240,10 @@
             });
         }
 
+        addToggleListener('moveOptions');
+        addToggleListener('general');
         addToggleListener('readMe');
         addToggleListener('settings');
-        addToggleListener('general');
     </script>
         
     <script src="ExtractBlunders.js"></script>

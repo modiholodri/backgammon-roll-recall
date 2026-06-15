@@ -1,3 +1,20 @@
+
+async function openAnalysisFile() {
+    try {
+        // Open the native system file picker
+        const [fileHandle] = await window.showOpenFilePicker();
+        
+        // Get the file object from the system handle
+        const file = await fileHandle.getFile();
+        const contents = await file.text();
+        
+        console.log("File content:", contents);
+    } catch (err) {
+        console.error("User cancelled or file access failed:", err);
+    }
+}
+
+
 // add a sample blunder to the store for testing purposes
 function addSampleBlunder() {
     const move1 = new Move(1, '18/13', '42.2 8.3 0.2', '57.8 14.4 0.4', '-0.156', '');
