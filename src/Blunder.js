@@ -18,7 +18,7 @@ class Blunder {
             return '| No moves recorded |';
         }
 
-        const headers = '|#|Move|Chances|Equity|';
+        const headers = '|#|Equity|- Move -|Chances|';
         const separator = '|:-:|:-:|:-:|:-:|';
 
         const rows = moves.map((move) => move.toTableRow()).join('\n');

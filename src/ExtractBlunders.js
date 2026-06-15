@@ -1,3 +1,144 @@
+//! Position ID & Match ID
+
+//! <span class="positionid">Position ID: <tt>72xBKAB9AAAAAA</tt> Match ID: <tt>cAmrAAAAAAAE</tt><br/>
+const rgxPositionMatchID = new RegExp('^<span class="positionid">Position ID: <tt>(.+)</tt> Match ID: <tt>(.+)</tt><br/>');
+function ExtractPositionMatchID(sLine)
+{
+    if (sLine.match(rgxPositionMatchID))
+    {
+        const mPositionMatchID = sLine.match(rgxPositionMatchID);
+        const positionID = mPositionMatchID[1];
+        const matchID = mPositionMatchID[2];
+        return { positionID, matchID };
+    }
+}
+
+
+const rgxComment = /^<!-- /;
+const rgxEnd = /^<!-- End /;
+function ReadHTML(file)
+{
+
+    let bHaveScore = false;
+    let bHaveGameNumber = false;
+    let bInHeader = false;
+    let bInBoard = false;
+    let bInMoveAnalysis = false;
+    let bInCubeAnalysis = false;
+    let iPossibleMoves = 0;
+    let iPossibleCubes = 0;
+    let iWorseMoves = -1;
+    let dActualCheckerLostEquity = 0.0;
+    let dActualCubeLostEquity = 0.0;
+
+    let blunder = new Blunder();
+
+    const lines = file.split('\n');
+    for (let i = 0; i < lines.length; i++)
+    {
+        var sLine = lines[i];
+        if (sLine != null)
+        {
+            if (sLine == "") continue;
+
+            if (sLine.match(rgxComment))
+            {
+                if (!bInHeader && !bInMoveAnalysis && !bInCubeAnalysis)
+                {
+                    if (sLine == "<!-- Header -->") {
+                        console.log("Found header");
+                        blunder = new Blunder();
+                        bInHeader = true;
+                    }
+                    if (sLine == "<!--  Board -->") {
+                        bInBoard = true;
+                    }
+                    if (sLine == "<!-- Move Analysis -->")
+                    {
+                        bInMoveAnalysis = true;
+                        iPossibleMoves = 0;
+                        iWorseMoves = -1;
+                        dActualCheckerLostEquity = 0.0;
+                    }
+                    if (sLine == "<!-- Cube Analysis -->")
+                    {
+                        bInCubeAnalysis = true;
+                        iPossibleCubes = 0;
+                        dActualCubeLostEquity = 0.0;
+                    }
+                    if (sLine == "<!-- Game Statistics -->") break;
+                }
+                else if (sLine.match(rgxEnd))
+                {
+                    bInHeader = false;
+                    bInBoard = false;
+                    bInCubeAnalysis = false;
+
+                    if (bInMoveAnalysis)
+                    {
+                        // AddPlayerOnRoll(iMasterSlot);
+                        // AddCheckerER(iMasterSlot, dActualCheckerLostEquity, iPossibleMoves > 1);
+                        // AddCubeER(iMasterSlot, 0.0, false);  // Add a fake ER just to make sure
+                        // AddOverallER(iMasterSlot);
+
+
+                        blunderStore.addBlunder(blunder).then((id) => {
+                            console.log('Blunder added with ID:', id);
+                            blunder.show();
+                        }).catch((error) => {
+                            console.error('Failed to add blunder', error);
+                        });
+
+                        bInMoveAnalysis = false;
+                    }
+                    continue;
+                }
+            }
+
+            if (!bInHeader && !bInMoveAnalysis && !bInCubeAnalysis)
+            {
+            }
+
+            if (bInBoard)
+            {
+                const ids = ExtractPositionMatchID(sLine);
+                if (ids)
+                {
+                    blunder.positionId = ids.positionID;
+                    blunder.matchId = ids.matchID;
+                }
+            }
+
+            if (bInMoveAnalysis)
+            {
+                // ExtractBlunderJoker(sLine);
+                // if (DetectActualMove(sLine))
+                // {
+                //     if (bActualMove || iWorseMoves > -1) iWorseMoves++;
+                // };
+
+                // if (iWorseMoves <= nudWorseMovesToShow.Value && iPossibleMoves <= 5) // Limit the shown worse moves
+                // {
+                //     ExtractMoveMove(sLine);
+                //     ExtractEvaluation(sLine);
+
+                //     double dCheckerLostEquity = ExtractMoveEquity(sLine);
+                //     if (!double.IsNaN(dCheckerLostEquity))
+                //     {
+                //         iPossibleMoves++;
+                //         if (!double.IsNegativeInfinity(dCheckerLostEquity))
+                //         {
+                //             dActualCheckerLostEquity += dCheckerLostEquity;
+                //         }
+                //     }
+                // }
+            }
+        }
+    }
+}
+
+
+
 
 async function openAnalysisFile() {
     try {
@@ -8,7 +149,8 @@ async function openAnalysisFile() {
         const file = await fileHandle.getFile();
         const contents = await file.text();
         
-        console.log("File content:", contents);
+        // console.log("File content:", contents);
+        ReadHTML(contents);
     } catch (err) {
         console.error("User cancelled or file access failed:", err);
     }
@@ -24,14 +166,9 @@ function addSampleBlunder() {
     const move5 = new Move(5, '13/10 6/4', '40.1 9.2 0.4', '59.9 20.4 1.5', '-0.197', '(-0.120)');
     
     const sampleBlunder = new Blunder({
-        // 7LYBAB6zdwAAAA:UgmvAAAAAAAE
         id: '7LYBAB6zdwAAAA:UgmvAAAAAAAE',
         positionId: '7LYBAB6zdwAAAA',
         matchId: 'UgmvAAAAAAAE',
-        // positionId: 'bg4AAP4vgEABAA',
-        // matchId: 'UYmmAAAAAAAE',
-        // positionId: '4HPGESDgc/BBIA',
-        // matchId: 'cIkpAAAAAAAE',
         alert: 'Alert: bad move ( -0.025)',
         moves: [move1, move2, move3, move4, move5],
     });

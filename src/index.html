@@ -21,6 +21,18 @@
             <div id="movesDisplay"></div>
         </section>
 
+        <!-- General -->
+        <section id="generalSection" class="container">
+            <hr class="rounded">
+            <h3 id="generalToggle" type="button" data-toggle="collapse" data-target="#general" aria-expanded="false" aria-controls="general">
+                General ⇅
+            </h3>
+            <div id="general" class="collapse show">
+                <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
+                <button id="openAnalysis" class="btn btn-outline-primary" onclick="openAnalysisFile()">Open Analysis</button>
+            </div>
+        </section>
+
         <!-- Move Options -->
         <section id="moveOptionsSection" class="container">
             <hr class="rounded">
@@ -39,18 +51,6 @@
             </div>
         </section>
 
-
-        <!-- General -->
-        <section id="generalSection" class="container">
-            <hr class="rounded">
-            <h3 id="generalToggle" type="button" data-toggle="collapse" data-target="#general" aria-expanded="false" aria-controls="general">
-                General ⇅
-            </h3>
-            <div id="general" class="collapse show">
-                <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
-                <button id="openAnalysis" class="btn btn-outline-primary" onclick="openAnalysisFile()">Open Analysis</button>
-            </div>
-        </section>
 
 
         <!-- Read Me -->
@@ -162,7 +162,7 @@
             });
 
             //! just for testing, remove this later
-            addSampleBlunder();
+            // addSampleBlunder();
         });
         
         // Auto-collapse other sections when one section is shown
