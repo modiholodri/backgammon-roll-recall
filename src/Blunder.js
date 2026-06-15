@@ -41,6 +41,7 @@ class Blunder {
         if (this.matchId) {
             try {
                 readMatchID(this.matchId);
+                addCubeToBoard();
                 addDiceToBoard();
                 addAwayToBoard();
             } catch (err) {

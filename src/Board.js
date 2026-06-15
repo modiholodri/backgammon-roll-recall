@@ -68,7 +68,7 @@ const boardFrameData = [
     { x: 11.0, y: NaN },
 ];
 const pointNumbers = [];
-const diceNumbers = [];
+const cube = [];
 const away = [];
 const pointsB = [];
 const pointsA = [];
@@ -90,10 +90,10 @@ const baaDots = [[true, true, true, true, true, true, true], //! not rolled yet
                  [false, false, false, true, false, false, false], //! six
 ];
 
-function setDices(firstDice, secondDice) {
+function addDiceToBoard() {
     diceDotsData.length = 0;
-    setDice(1, firstDice);
-    setDice(8, secondDice);
+    setDice(1, matchInfo.FirstDice);
+    setDice(8, matchInfo.SecondDice);
 }
 
 function setDice(start, value)
@@ -227,27 +227,25 @@ function positionIDToBinaryString(sPositionID)
 }
 
 
-function addDiceToBoard()
+function addCubeToBoard()
 {
-    diceNumbers.length = 0;
+    cube.length = 0;
 
     // the Cube
     const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
     const cubePosition = matchInfo.CubeOwner == 0 ? 8.5 : (matchInfo.CubeOwner == 1 ? 2.5 : 5.45);
 
     // the cube
-    diceNumbers.push({
+    cube.push({
         x: 0.0,
         y: cubePosition,
         label: matchInfo.Cube.toString(),
         labelColor: cubeColor,
     });
-
-    setDices(matchInfo.FirstDice, matchInfo.SecondDice);
 }
 
 const diceNumberAnnotations = {
-    id: 'diceNumbers',
+    id: 'cube',
     afterDatasetsDraw(chart, args, options) {
         const { ctx } = chart;
         ctx.save();
@@ -255,7 +253,7 @@ const diceNumberAnnotations = {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        diceNumbers.forEach(point => {
+        cube.forEach(point => {
             if (point.label) {
                 ctx.fillStyle = point.labelColor;
                 const xPos = chart.scales.x.getPixelForValue(point.x);
@@ -266,10 +264,10 @@ const diceNumberAnnotations = {
         
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.font = 'bold 8px Arial';
-        const xValue = (diceNumbers[0] && typeof diceNumbers[0].x === 'number') ? diceNumbers[0].x : 0.0;
-        const yValue = (diceNumbers[0] && typeof diceNumbers[0].y === 'number') ? diceNumbers[0].y : 0.0;
+        const xValue = (cube[0] && typeof cube[0].x === 'number') ? cube[0].x : 0.0;
+        const yValue = (cube[0] && typeof cube[0].y === 'number') ? cube[0].y : 0.0;
         const xPos = chart.scales.x.getPixelForValue(xValue);
-        let yPos = chart.scales.y.getPixelForValue(yValue - 0.4);
+        let yPos = chart.scales.y.getPixelForValue(yValue - 0.5);
         ctx.fillText('Cube', xPos, yPos);
         yPos = chart.scales.y.getPixelForValue(yValue + 0.6);
         ctx.fillText('Cube', xPos, yPos);
@@ -334,7 +332,7 @@ function addPointNumberToBoard(point)
     const boardPosition = pointNumberToBoardPosition(point);
     let movePosition = moveNumberToBoardPosition(0, point);
 
-    if (point > 12) movePosition -= 0.2; // move the numbers closer to the board
+    if (point > 12) movePosition -= 0.15; // move the numbers closer to the board
     else movePosition += 0.1;
 
     pointNumbers.push({
@@ -466,7 +464,7 @@ function createBoard() {
     generateDice(11.5, 5.5);
 
     destroyBoardChart('');
-    diceNumbers.length = 0;
+    cube.length = 0;
 
     // Create the chart if it doesn't exist
     boardChart = new Chart(ctx, {
