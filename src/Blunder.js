@@ -1,16 +1,16 @@
 
 class Blunder {
-    constructor({ positionId = null, matchId = null, alert = null, moves = [] } = {}) {
-        this.positionId = positionId;
-        this.matchId = matchId;
+    constructor({ positionID = null, matchID = null, alert = null, moves = [] } = {}) {
+        this.positionID = positionID;
+        this.matchID = matchID;
         this.alert = alert;
         this.moves = moves;
         this.level = 0;
     }
 
 
-    static create({ positionId, matchId, alert, moves = [] } = {}) {
-        return new Blunder({ positionId, matchId, alert, moves });
+    static create({ positionID, matchID, alert, moves = [] } = {}) {
+        return new Blunder({ positionID, matchID, alert, moves });
     }
 
     static movesToTable(moves) {
@@ -27,9 +27,9 @@ class Blunder {
     }
 
     show() {
-        if (this.positionId) {
+        if (this.positionID) {
             try {
-                setPositionID(this.positionId, 1);
+                setPositionID(this.positionID, 1);
             } catch (err) {
                 console.error('Failed to load board Position ID:', err);
                 alert('Failed to load board. Please check the console for more details.');
@@ -38,9 +38,9 @@ class Blunder {
             alert('Invalid GNUbg ID.');
         }
 
-        if (this.matchId) {
+        if (this.matchID) {
             try {
-                readMatchID(this.matchId);
+                readMatchID(this.matchID);
                 addCubeToBoard();
                 addDiceToBoard();
                 addAwayToBoard();

@@ -1,3 +1,5 @@
+
+
 //! Position ID & Match ID
 
 //! <span class="positionid">Position ID: <tt>72xBKAB9AAAAAA</tt> Match ID: <tt>cAmrAAAAAAAE</tt><br/>
@@ -31,7 +33,12 @@ function ReadHTML(file)
     let dActualCheckerLostEquity = 0.0;
     let dActualCubeLostEquity = 0.0;
 
-    let blunder = new Blunder();
+    // temp blunder info
+    let positionID = null;
+    let matchID = null;
+
+
+    // let blunder = new Blunder();
 
     const lines = file.split('\n');
     for (let i = 0; i < lines.length; i++)
@@ -47,7 +54,7 @@ function ReadHTML(file)
                 {
                     if (sLine == "<!-- Header -->") {
                         console.log("Found header");
-                        blunder = new Blunder();
+                        // blunder = new Blunder();
                         bInHeader = true;
                     }
                     if (sLine == "<!--  Board -->") {
@@ -81,13 +88,17 @@ function ReadHTML(file)
                         // AddCubeER(iMasterSlot, 0.0, false);  // Add a fake ER just to make sure
                         // AddOverallER(iMasterSlot);
 
+                        readMatchID(matchID);
 
-                        blunderStore.addBlunder(blunder).then((id) => {
-                            console.log('Blunder added with ID:', id);
-                            blunder.show();
-                        }).catch((error) => {
-                            console.error('Failed to add blunder', error);
-                        });
+                        if ( matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0) {
+                            const blunder = new Blunder({ positionID, matchID });
+                            blunderStore.addBlunder(blunder).then((id) => {
+                                console.log('Blunder added with ID:', positionID, ':', matchID);
+                                blunder.show();
+                            }).catch((error) => {
+                                console.error('Failed to add blunder', error);
+                            });
+                        }
 
                         bInMoveAnalysis = false;
                     }
@@ -104,8 +115,8 @@ function ReadHTML(file)
                 const ids = ExtractPositionMatchID(sLine);
                 if (ids)
                 {
-                    blunder.positionId = ids.positionID;
-                    blunder.matchId = ids.matchID;
+                    positionID = ids.positionID;
+                    matchID = ids.matchID;
                 }
             }
 
@@ -167,8 +178,8 @@ function addSampleBlunder() {
     
     const sampleBlunder = new Blunder({
         id: '7LYBAB6zdwAAAA:UgmvAAAAAAAE',
-        positionId: '7LYBAB6zdwAAAA',
-        matchId: 'UgmvAAAAAAAE',
+        positionID: '7LYBAB6zdwAAAA',
+        matchID: 'UgmvAAAAAAAE',
         alert: 'Alert: bad move ( -0.025)',
         moves: [move1, move2, move3, move4, move5],
     });
