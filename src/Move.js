@@ -2,12 +2,11 @@ let rgxNumber = /[0-9.,-]+/
 let rgxLostEquity = /[0-9.,]+/
 
 class Move {
-    constructor(rank, move, winningChances, losingChances, equity, lostEquity) {
+    constructor(rank, move, chances, equity, lostEquity) {
         this.rank = rank;
         this.move = move;
 
-        this.winningChances = winningChances;
-        this.losingChances = losingChances;
+        this.chances = chances;
 
         this.equity = equity;
         this.lostEquity = lostEquity;
@@ -18,7 +17,7 @@ class Move {
     }
 
     toString() {
-        return `Rank: ${this.rank}, Move: ${this.move}, Win%: ${this.winningChances}, Loss%: ${this.losingChances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
+        return `Rank: ${this.rank}, Move: ${this.move}, Chances: ${this.chances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
     }
 
     toTableRow() {
@@ -27,10 +26,11 @@ class Move {
         const rank = `<span style="color: ${unimportantColor}">${this.rank}</span>`;
         const equity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
         const move = `<span style="color: ${blunderColor}">${this.move.replace(' ', '<br>')}</span>`;
-        const winingChances = this.winningChances.split(' ');
-        const losingChances = this.losingChances.split(' ');
-        const chances = `<span style="color: ${unimportantColor}">${winingChances[0]} - ${losingChances[0]}<br>` + 
-                        `${winingChances[1]} - ${losingChances[1]}<br>${winingChances[2]} - ${losingChances[2]}</span>`;
+        const [winningChancesRaw, losingChancesRaw] = this.chances.split(' - ');
+        const winningChances = winningChancesRaw.trim().split(/\s+/);
+        const losingChances = losingChancesRaw.trim().split(/\s+/);
+        const chances = `<span style="color: ${unimportantColor}">${winningChances[0]} - ${losingChances[0]}<br>` + 
+                        `${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
 
         // |#|Move|Chances|Equity|
         return `|${rank}|${equity}|${move}|${chances}|`;
@@ -42,8 +42,7 @@ class Move {
             other instanceof Move &&
             this.rank === other.rank &&
             this.move === other.move &&
-            this.winningChances === other.winningChances &&
-            this.losingChances === other.losingChances &&
+            this.chances === other.chances &&
             this.equity === other.equity &&
             this.lostEquity === other.lostEquity;
     }
