@@ -1,6 +1,4 @@
 let actualMove = false;
-const nudWorseMovesToShow = 0;
-
 
 // temp blunder info
 let positionID = null;
@@ -37,16 +35,15 @@ function ResetTempMoveInfo()
 }
 
 
-
 //* Position ID & Match ID
 
 //! <span class="positionid">Position ID: <tt>72xBKAB9AAAAAA</tt> Match ID: <tt>cAmrAAAAAAAE</tt><br/>
 const rgxPositionMatchID = new RegExp('^<span class="positionid">Position ID: <tt>(.+)</tt> Match ID: <tt>(.+)</tt><br/>');
-function ExtractPositionMatchID(sLine)
+function ExtractPositionMatchID(line)
 {
-    if (sLine.match(rgxPositionMatchID))
+    if (line.match(rgxPositionMatchID))
     {
-        const mPositionMatchID = sLine.match(rgxPositionMatchID);
+        const mPositionMatchID = line.match(rgxPositionMatchID);
         positionID = mPositionMatchID[1];
         matchID = mPositionMatchID[2];
     }
@@ -60,22 +57,17 @@ function ExtractPositionMatchID(sLine)
 const rgxUsedMove = new RegExp('^<td class="movenumber">&bull;');
 const rgxNotUsedMove = new RegExp('^<td class="movenumber">&nbsp;');
 
-function DetectActualMove(sLine)
+function DetectActualMove(line)
 {
-    // Change the color for the used move
-    if (sLine.match(rgxUsedMove))
+    if (line.match(rgxUsedMove))
     {
         actualMove = true;
-        return true; // A new move has been detected
     }
 
-    // Change the color for not used moves
-    if (sLine.match(rgxNotUsedMove))
+    if (line.match(rgxNotUsedMove))
     {
         actualMove = false;
-        return true; // A new move has been detected
     }
-    return false; // No new move has been detected
 }
 
 
@@ -84,14 +76,14 @@ function DetectActualMove(sLine)
 //! <td class="movemove">8/3 7/3</td>
 const rgxMoveMove = new RegExp('^<td class="movemove');
 
-function ExtractMoveMove(sLine)
+function ExtractMoveMove(line)
 {
-    if (sLine.match(rgxMoveMove))
+    if (line.match(rgxMoveMove))
     {
-        move = Middle(sLine, 21, 5);
+        move = Middle(line, 21, 5);
 
         if (actualMove) console.log("  Actual Move: " + move);
-        else             console.log("   Other Move : " + move);
+        else            console.log("   Other Move: " + move);
     }
 }
 
@@ -101,11 +93,11 @@ function ExtractMoveMove(sLine)
 //! <td class="moveequity">+0.030 (-0.006)</td>
 const rgxMoveEquity = new RegExp('^<td class="moveequity');
 
-function ExtractMoveEquity(sLine)
+function ExtractMoveEquity(line)
 {
-    if (sLine.match(rgxMoveEquity))
+    if (line.match(rgxMoveEquity))
     {
-        const sMoveEquity = Middle(sLine, 23, 5);
+        const sMoveEquity = Middle(line, 23, 5);
         [equity, lostEquity] = sMoveEquity.split(' ');
         if ( lostEquity === undefined ) lostEquity = '';
         
@@ -123,21 +115,21 @@ function ExtractMoveEquity(sLine)
 //! <td colspan = "3" > &nbsp;</td>
 //! <td> 42.8   7.7   0.0 -  57.2   5.0   0.1</td>
 const rgxBeforeMoveChances = new RegExp('^<td colspan="3">&');
-let bMoveChancesNext = false;
-function ExtractMoveChances(sLine)
+let moveChancesNext = false;
+function ExtractMoveChances(line)
 {
-    if (bMoveChancesNext)
+    if (moveChancesNext)
     {
-        chances = Middle(sLine, 4, 5);
+        chances = Middle(line, 4, 5);
         console.log("   " + chances);
         actualMove = false;
-        bMoveChancesNext = false;
+        moveChancesNext = false;
         moves.push(new Move(moves.length + 1, move, chances, equity, lostEquity));
         ResetTempMoveInfo();
     }
-    if (rgxBeforeMoveChances.test(sLine))
+    if (rgxBeforeMoveChances.test(line))
     {
-        bMoveChancesNext = true;
+        moveChancesNext = true;
     }
 }
 
@@ -148,61 +140,48 @@ const rgxComment = /^<!-- /;
 const rgxEnd = /^<!-- End /;
 function ReadHTML(file)
 {
-
-    let bHaveScore = false;
-    let bHaveGameNumber = false;
-    let bInHeader = false;
-    let bInBoard = false;
-    let bInMoveAnalysis = false;
-    let bInCubeAnalysis = false;
-    let iPossibleMoves = 0;
-    let iPossibleCubes = 0;
-    let iWorseMoves = -1;
-    let dActualCheckerLostEquity = 0.0;
-    let dActualCubeLostEquity = 0.0;
+    let inHeader = false;
+    let inBoard = false;
+    let inMoveAnalysis = false;
+    let inCubeAnalysis = false;
 
     const lines = file.split('\n');
     for (let i = 0; i < lines.length; i++)
     {
-        var sLine = lines[i];
-        if (sLine != null)
+        let line = lines[i];
+        if (line != null)
         {
-            if (sLine == "") continue;
+            if (line == "") continue;
 
-            if (sLine.match(rgxComment))
+            if (line.match(rgxComment))
             {
-                if (!bInHeader && !bInMoveAnalysis && !bInCubeAnalysis)
+                if (!inHeader && !inMoveAnalysis && !inCubeAnalysis)
                 {
-                    if (sLine == "<!-- Header -->") {
+                    if (line == "<!-- Header -->") {
                         console.log("Found header");
                         ResetTempBlunderInfo();
-                        bInHeader = true;
+                        inHeader = true;
                     }
-                    if (sLine == "<!--  Board -->") {
-                        bInBoard = true;
+                    if (line == "<!--  Board -->") {
+                        inBoard = true;
                     }
-                    if (sLine == "<!-- Move Analysis -->")
+                    if (line == "<!-- Move Analysis -->")
                     {
-                        bInMoveAnalysis = true;
-                        iPossibleMoves = 0;
-                        iWorseMoves = -1;
-                        dActualCheckerLostEquity = 0.0;
+                        inMoveAnalysis = true;
                     }
-                    if (sLine == "<!-- Cube Analysis -->")
+                    if (line == "<!-- Cube Analysis -->")
                     {
-                        bInCubeAnalysis = true;
-                        iPossibleCubes = 0;
-                        dActualCubeLostEquity = 0.0;
+                        inCubeAnalysis = true;
                     }
-                    if (sLine == "<!-- Game Statistics -->") break;
+                    if (line == "<!-- Game Statistics -->") break;
                 }
-                else if (sLine.match(rgxEnd))
+                else if (line.match(rgxEnd))
                 {
-                    bInHeader = false;
-                    bInBoard = false;
-                    bInCubeAnalysis = false;
+                    inHeader = false;
+                    inBoard = false;
+                    inCubeAnalysis = false;
 
-                    if (bInMoveAnalysis)
+                    if (inMoveAnalysis)
                     {
                         readMatchID(matchID);
 
@@ -216,35 +195,23 @@ function ReadHTML(file)
                             });
                         }
 
-                        bInMoveAnalysis = false;
+                        inMoveAnalysis = false;
                     }
                     continue;
                 }
             }
 
-            if (!bInHeader && !bInMoveAnalysis && !bInCubeAnalysis)
+            if (inBoard)
             {
+                ExtractPositionMatchID(line);
             }
 
-            if (bInBoard)
+            if (inMoveAnalysis)
             {
-                ExtractPositionMatchID(sLine);
-            }
-
-            if (bInMoveAnalysis)
-            {
-                // ExtractBlunderJoker(sLine);
-                if (DetectActualMove(sLine))
-                {
-                    if (actualMove || iWorseMoves > -1) iWorseMoves++;
-                };
-
-                if (iWorseMoves <= nudWorseMovesToShow && iPossibleMoves <= 5) // Limit the shown worse moves
-                {
-                    ExtractMoveMove(sLine);
-                    ExtractMoveChances(sLine);
-                    ExtractMoveEquity(sLine);
-                }
+                DetectActualMove(line);
+                ExtractMoveMove(line);
+                ExtractMoveChances(line);
+                ExtractMoveEquity(line);
             }
         }
     }
@@ -267,10 +234,10 @@ async function openAnalysisFile() {
     }
 }
 
-function Middle(sLine, startFromBeginning, endFromEnd)
+function Middle(line, startFromBeginning, endFromEnd)
 {
-    if (typeof sLine !== 'string') return '';
+    if (typeof line !== 'string') return '';
     const beginIndex = Math.max(0, startFromBeginning);
-    const endIndex = Math.max(beginIndex, sLine.length - Math.max(0, endFromEnd));
-    return sLine.substring(beginIndex, endIndex);
+    const endIndex = Math.max(beginIndex, line.length - Math.max(0, endFromEnd));
+    return line.substring(beginIndex, endIndex);
 }
