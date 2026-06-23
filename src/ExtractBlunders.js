@@ -1,4 +1,4 @@
-let bActualMove = false;
+let actualMove = false;
 const nudWorseMovesToShow = 0;
 
 
@@ -8,6 +8,7 @@ let matchID = null;
 let alert = "";
 let moves = [];
 let level = 0;
+let actualLostEquity = 0.000;
 
 function ResetTempBlunderInfo()
 {
@@ -16,23 +17,25 @@ function ResetTempBlunderInfo()
     alert = "";
     moves = [];
     level = 0;
+    actualLostEquity = 0.000;
 }
 
 // temp move info
 let rank = 0;
 let move = '';
-let chances = '';
+let equity = '';
 let lostEquity = '';
-let lostEquityValue = 0.0;
+let chances = '';
 
 function ResetTempMoveInfo()
 {
     rank = 0;
     move = '';
-    chances = '';
+    equity = '';
     lostEquity = '';
-    lostEquityValue = 0.0;
+    chances = '';
 }
+
 
 
 //* Position ID & Match ID
@@ -62,56 +65,84 @@ function DetectActualMove(sLine)
     // Change the color for the used move
     if (sLine.match(rgxUsedMove))
     {
-        bActualMove = true;
+        actualMove = true;
         return true; // A new move has been detected
     }
 
     // Change the color for not used moves
     if (sLine.match(rgxNotUsedMove))
     {
-        bActualMove = false;
+        actualMove = false;
         return true; // A new move has been detected
     }
     return false; // No new move has been detected
 }
 
 
-//! Move Move
+//** Move Move
 
 //! <td class="movemove">8/3 7/3</td>
 const rgxMoveMove = new RegExp('^<td class="movemove');
-let bStartCheckerPlay = true;
-
-// let moves = [];
-let sMovesEquities = "";
-let sMovesChances = "";
 
 function ExtractMoveMove(sLine)
 {
     if (sLine.match(rgxMoveMove))
     {
-        sMoveMove = sLine.substring(21, 26);
-        if (bStartCheckerPlay)
-        {
-            console.log("Checker Play");
-            bStartCheckerPlay = false;
-        }
+        move = Middle(sLine, 21, 5);
 
-        moves.push(new Move(moves.length + 1, sMoveMove, '42.2 8.3 0.2 - 57.8 14.4 0.4', '-0.156', ''));
-        ResetTempMoveInfo();
+        if (actualMove) console.log("  Actual Move: " + move);
+        else             console.log("   Other Move : " + move);
+    }
+}
 
-        if (bActualMove)
-        {
-            console.log("   Actual Move: " + sMoveMove);
+//* Move Equity
+
+//! <td class="moveequity">+0.035</td>
+//! <td class="moveequity">+0.030 (-0.006)</td>
+const rgxMoveEquity = new RegExp('^<td class="moveequity');
+
+function ExtractMoveEquity(sLine)
+{
+    if (sLine.match(rgxMoveEquity))
+    {
+        const sMoveEquity = Middle(sLine, 23, 5);
+        [equity, lostEquity] = sMoveEquity.split(' ');
+        if ( lostEquity === undefined ) lostEquity = '';
+        
+        if ( actualMove ) {
+            actualLostEquity = Number(lostEquity.match(rgxLostEquity));
         }
-        else
-        {
-            console.log("   Other Move: " + sMoveMove);
-        }
+        console.log("   " + sMoveEquity);
     }
 }
 
 
+
+//* Move Chances
+
+//! <td colspan = "3" > &nbsp;</td>
+//! <td> 42.8   7.7   0.0 -  57.2   5.0   0.1</td>
+const rgxBeforeMoveChances = new RegExp('^<td colspan="3">&');
+let bMoveChancesNext = false;
+function ExtractMoveChances(sLine)
+{
+    if (bMoveChancesNext)
+    {
+        chances = Middle(sLine, 4, 5);
+        console.log("   " + chances);
+        actualMove = false;
+        bMoveChancesNext = false;
+        moves.push(new Move(moves.length + 1, move, chances, equity, lostEquity));
+        ResetTempMoveInfo();
+    }
+    if (rgxBeforeMoveChances.test(sLine))
+    {
+        bMoveChancesNext = true;
+    }
+}
+
+
+//* Parse the HTML file
 
 const rgxComment = /^<!-- /;
 const rgxEnd = /^<!-- End /;
@@ -130,8 +161,6 @@ function ReadHTML(file)
     let dActualCheckerLostEquity = 0.0;
     let dActualCubeLostEquity = 0.0;
 
-    // let blunder = new Blunder();
-
     const lines = file.split('\n');
     for (let i = 0; i < lines.length; i++)
     {
@@ -146,7 +175,7 @@ function ReadHTML(file)
                 {
                     if (sLine == "<!-- Header -->") {
                         console.log("Found header");
-                        // blunder = new Blunder();
+                        ResetTempBlunderInfo();
                         bInHeader = true;
                     }
                     if (sLine == "<!--  Board -->") {
@@ -175,14 +204,9 @@ function ReadHTML(file)
 
                     if (bInMoveAnalysis)
                     {
-                        // AddPlayerOnRoll(iMasterSlot);
-                        // AddCheckerER(iMasterSlot, dActualCheckerLostEquity, iPossibleMoves > 1);
-                        // AddCubeER(iMasterSlot, 0.0, false);  // Add a fake ER just to make sure
-                        // AddOverallER(iMasterSlot);
-
                         readMatchID(matchID);
 
-                        if ( matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0) {
+                        if ( actualLostEquity > 0.0 && matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
                             const blunder = new Blunder({ positionID, matchID, moves });
                             blunderStore.addBlunder(blunder).then((id) => {
                                 console.log('Blunder added with ID:', positionID, ':', matchID);
@@ -190,7 +214,6 @@ function ReadHTML(file)
                             }).catch((error) => {
                                 console.error('Failed to add blunder', error);
                             });
-                            ResetTempBlunderInfo();
                         }
 
                         bInMoveAnalysis = false;
@@ -213,23 +236,14 @@ function ReadHTML(file)
                 // ExtractBlunderJoker(sLine);
                 if (DetectActualMove(sLine))
                 {
-                    if (bActualMove || iWorseMoves > -1) iWorseMoves++;
+                    if (actualMove || iWorseMoves > -1) iWorseMoves++;
                 };
 
                 if (iWorseMoves <= nudWorseMovesToShow && iPossibleMoves <= 5) // Limit the shown worse moves
                 {
                     ExtractMoveMove(sLine);
-                //     ExtractEvaluation(sLine);
-
-                //     double dCheckerLostEquity = ExtractMoveEquity(sLine);
-                //     if (!double.IsNaN(dCheckerLostEquity))
-                //     {
-                //         iPossibleMoves++;
-                //         if (!double.IsNegativeInfinity(dCheckerLostEquity))
-                //         {
-                //             dActualCheckerLostEquity += dCheckerLostEquity;
-                //         }
-                //     }
+                    ExtractMoveChances(sLine);
+                    ExtractMoveEquity(sLine);
                 }
             }
         }
@@ -253,28 +267,10 @@ async function openAnalysisFile() {
     }
 }
 
-
-// add a sample blunder to the store for testing purposes
-function addSampleBlunder() {
-    const move1 = new Move(1, '18/13', '42.2 8.3 0.2 - 57.8 14.4 0.4', '-0.156', '');
-    const move2 = new Move(2, '13/8', '42.0 9.4 0.3 - 58.0 15.8 0.6', '-0.160', '(-0.030)');
-    const move3 = new Move(3, '6/1*', '41.0 8.8 0.2 - 59.0 15.7 0.8', '-0.179', '(-0.060)');
-    const move4 = new Move(4, '24/21 18/16', '41.0 8.3 0.3 - 59.0 16.8 0.6', '-0.181', '(-0.090)');
-    const move5 = new Move(5, '13/10 6/4', '40.1 9.2 0.4 - 59.9 20.4 1.5', '-0.197', '(-0.120)');
-    
-    const sampleBlunder = new Blunder({
-        id: '7LYBAB6zdwAAAA:UgmvAAAAAAAE',
-        positionID: '7LYBAB6zdwAAAA',
-        matchID: 'UgmvAAAAAAAE',
-        alert: 'Alert: bad move ( -0.025)',
-        moves: [move1, move2, move3, move4, move5],
-    });
-    
-    blunderStore.addBlunder(sampleBlunder).then((id) => {
-        console.log('Sample blunder added with ID:', id);
-    }).catch((error) => {
-        console.error('Failed to add sample blunder', error);
-    });
-
-    sampleBlunder.show();
+function Middle(sLine, startFromBeginning, endFromEnd)
+{
+    if (typeof sLine !== 'string') return '';
+    const beginIndex = Math.max(0, startFromBeginning);
+    const endIndex = Math.max(beginIndex, sLine.length - Math.max(0, endFromEnd));
+    return sLine.substring(beginIndex, endIndex);
 }

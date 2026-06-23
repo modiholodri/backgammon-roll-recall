@@ -6,7 +6,8 @@ class Move {
         this.rank = rank;
         this.move = move;
 
-        this.chances = chances;
+        // normalize chances: collapse duplicated whitespace to single spaces and trim
+        this.chances = String(chances).replace(/\s+/g, ' ').trim();
 
         this.equity = equity;
         this.lostEquity = lostEquity;
