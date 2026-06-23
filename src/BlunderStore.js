@@ -123,7 +123,71 @@ class BlunderStore extends Dexie {
         }
     }
 
-    
+    async importJSON() {
+        try {
+            let file;
+
+            if (window.showOpenFilePicker) {
+                const [handle] = await window.showOpenFilePicker({
+                    types: [{
+                        description: 'JSON Files',
+                        accept: { 'application/json': ['.json'] }
+                    }],
+                    multiple: false
+                });
+
+                file = await handle.getFile();
+            } else {
+                file = await new Promise((resolve, reject) => {
+                    const input = document.createElement('input');
+                    input.type = 'file';
+                    input.accept = 'application/json';
+                    input.style.display = 'none';
+
+                    input.addEventListener('change', () => {
+                        if (input.files && input.files[0]) {
+                            resolve(input.files[0]);
+                        } else {
+                            reject(new Error('No file selected'));
+                        }
+                    });
+
+                    input.addEventListener('cancel', () => reject(new Error('File selection canceled')));
+                    document.body.appendChild(input);
+                    input.click();
+                    document.body.removeChild(input);
+                });
+            }
+
+            const text = await file.text();
+            const data = JSON.parse(text);
+
+            if (!Array.isArray(data)) {
+                throw new Error('Invalid JSON format: expected an array of blunders');
+            }
+
+            const blundersToImport = data.filter((item) => {
+                return item && typeof item === 'object' && item.positionID != null && item.matchID != null;
+            });
+
+            if (!blundersToImport.length) {
+                return 0;
+            }
+
+            await this.transaction('rw', this.blunders, async () => {
+                await this.blunders.bulkPut(blundersToImport);
+            });
+
+            return blundersToImport.length;
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                return 0;
+            }
+            console.error('Import failed', error);
+            return 0;
+        }
+    }
+
 }
 
 const blunderStore = new BlunderStore();
