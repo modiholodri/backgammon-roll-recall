@@ -3,7 +3,6 @@ let actualMove = false;
 // temp blunder info
 let positionID = null;
 let matchID = null;
-let alert = "";
 let moves = [];
 let level = 0;
 let actualLostEquity = 0.000;
@@ -12,14 +11,12 @@ function ResetTempBlunderInfo()
 {
     positionID = null;
     matchID = null;
-    alert = "";
     moves = [];
     level = 0;
     actualLostEquity = 0.000;
 }
 
 // temp move info
-let rank = 0;
 let move = '';
 let equity = '';
 let lostEquity = '';
@@ -27,7 +24,6 @@ let chances = '';
 
 function ResetTempMoveInfo()
 {
-    rank = 0;
     move = '';
     equity = '';
     lostEquity = '';
@@ -124,7 +120,7 @@ function ExtractMoveChances(line)
         console.log("   " + chances);
         actualMove = false;
         moveChancesNext = false;
-        moves.push(new Move(moves.length + 1, move, chances, equity, lostEquity));
+        moves.push(new Move(move, chances, equity, lostEquity));
         ResetTempMoveInfo();
     }
     if (rgxBeforeMoveChances.test(line))

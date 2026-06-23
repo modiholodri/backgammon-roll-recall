@@ -2,8 +2,7 @@ let rgxNumber = /[0-9.,-]+/
 let rgxLostEquity = /[0-9.,]+/
 
 class Move {
-    constructor(rank, move, chances, equity, lostEquity) {
-        this.rank = rank;
+    constructor(move, chances, equity, lostEquity) {
         this.move = move;
 
         // normalize chances: collapse duplicated whitespace to single spaces and trim
@@ -18,13 +17,12 @@ class Move {
     }
 
     toString() {
-        return `Rank: ${this.rank}, Move: ${this.move}, Chances: ${this.chances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
+        return `Move: ${this.move}, Chances: ${this.chances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
     }
 
     toTableRow() {
         const blunderColor = moveColor(this.lostEquityValue);
 
-        const rank = `<span style="color: ${unimportantColor}">${this.rank}</span>`;
         const equity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
         const move = `<span style="color: ${blunderColor}">${this.move.replace(' ', '<br>')}</span>`;
         const [winningChancesRaw, losingChancesRaw] = this.chances.split(' - ');
@@ -33,15 +31,14 @@ class Move {
         const chances = `<span style="color: ${unimportantColor}">${winningChances[0]} - ${losingChances[0]}<br>` + 
                         `${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
 
-        // |#|Move|Chances|Equity|
-        return `|${rank}|${equity}|${move}|${chances}|`;
+        // |Move|Chances|Equity|
+        return `|${equity}|${move}|${chances}|`;
     }
 
     //! probably not needed, remove later
     equals(other) {
         return this instanceof Move &&
             other instanceof Move &&
-            this.rank === other.rank &&
             this.move === other.move &&
             this.chances === other.chances &&
             this.equity === other.equity &&

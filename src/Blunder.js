@@ -1,16 +1,15 @@
 
 class Blunder {
-    constructor({ positionID = null, matchID = null, alert = null, moves = [] } = {}) {
+    constructor({ positionID = null, matchID = null, moves = [] } = {}) {
         this.positionID = positionID;
         this.matchID = matchID;
-        this.alert = alert;
         this.moves = moves;
         this.level = 0;
     }
 
 
-    static create({ positionID, matchID, alert, moves = [] } = {}) {
-        return new Blunder({ positionID, matchID, alert, moves });
+    static create({ positionID, matchID, moves = [] } = {}) {
+        return new Blunder({ positionID, matchID, moves });
     }
 
     static movesToTable(moves) {
@@ -18,8 +17,8 @@ class Blunder {
             return '| No moves recorded |';
         }
 
-        const headers = '|#|Equity|- Move -|Chances|';
-        const separator = '|:-:|:-:|:-:|:-:|';
+        const headers = '|Equity|- Move -|Chances|';
+        const separator = '|:-:|:-:|:-:|';
 
         const rows = moves.map((move) => move.toTableRow()).join('\n');
 
