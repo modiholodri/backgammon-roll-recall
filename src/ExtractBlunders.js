@@ -4,7 +4,6 @@ let actualMove = false;
 let positionID = null;
 let matchID = null;
 let moves = [];
-let level = 0;
 let actualLostEquity = 0.000;
 
 function ResetTempBlunderInfo()
@@ -12,7 +11,6 @@ function ResetTempBlunderInfo()
     positionID = null;
     matchID = null;
     moves = [];
-    level = 0;
     actualLostEquity = 0.000;
 }
 

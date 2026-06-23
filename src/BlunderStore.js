@@ -72,14 +72,58 @@ class BlunderStore extends Dexie {
     //     return this.blunders.where('gameId').equals(gameId).toArray();
     //   }
 
-    async importBlunders(blunderArray) {
-        if (!Array.isArray(blunderArray)) {
-            throw new Error('importBlunders expects an array');
+    async exportJSON() {
+        try {
+            const blunders = await this.blunders.toArray();
+            const jsonData = JSON.stringify(blunders, null, 2);
+            const fileName = `blunders-${new Date().toISOString().split('T')[0]}.json`;
+
+            if (window.showSaveFilePicker) {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: fileName,
+                        types: [{
+                            description: 'JSON Files',
+                            accept: { 'application/json': ['.json'] }
+                        }]
+                    });
+
+                    const writable = await handle.createWritable();
+                    await writable.write(jsonData);
+                    await writable.close();
+                    return true;
+                } catch (error) {
+                    if (error.name === 'AbortError') {
+                        return false;
+                    }
+                    if (error.name !== 'SecurityError') {
+                        throw error;
+                    }
+                    console.warn('showSaveFilePicker failed, falling back to download link', error);
+                }
+            }
+
+            // fallback in case the file saving does not work
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.download = fileName;
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
+            URL.revokeObjectURL(url);
+
+            return true;
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Export failed', error);
+            }
+            return false;
         }
-        return this.transaction('rw', this.blunders, async () => {
-            return Promise.all(blunderArray.map((blunder) => this.blunders.add(blunder)));
-        });
     }
+
+    
 }
 
 const blunderStore = new BlunderStore();

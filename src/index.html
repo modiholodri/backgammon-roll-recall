@@ -29,8 +29,11 @@
             </h3>
             <div id="general" class="collapse show">
                 <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
-                <button id="openAnalysis" class="btn btn-outline-primary" onclick="openAnalysisFile()">Open Analysis</button>
                 <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next Blunder</button>
+                <br>
+                <button id="import" class="btn btn-outline-primary" onclick="importJSON()">Import</button>
+                <button id="openAnalysis" class="btn btn-outline-primary" onclick="openAnalysisFile()">Open Analysis</button>
+                <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
             </div>
         </section>
 
