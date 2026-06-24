@@ -52,7 +52,7 @@ class BlunderStore extends Dexie {
         return this.blunders.get(id);
     }
 
-    getAllBlunders() {
+    async getAllBlunders() {
         return this.blunders.toArray();
     }
 

@@ -1,11 +1,11 @@
 
 class Blunder {
-    constructor({ positionID = null, matchID = null, moves = [] } = {}) {
+    constructor({ positionID = null, matchID = null, level = 0, timesAsked = 0, totalLostEquity = 0, moves = [] } = {}) {
         this.positionID = positionID;
         this.matchID = matchID;
-        this.level = 0;
-        this.timesAsked = 0;
-        this.totalLostEquity = 0;
+        this.level = level;
+        this.timesAsked = timesAsked;
+        this.totalLostEquity = totalLostEquity;
         this.moves = moves;
     }
 
