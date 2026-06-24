@@ -46,7 +46,30 @@ class BlunderStore extends Dexie {
         return this.blunders.add(blunder);
     }
 
-    
+
+    // Simple Blunder model wrapper so returned values are instances of Blunder
+    // rather than plain objects.
+    createBlunderInstance(obj) {
+        if (!obj) return null;
+        return new Blunder(obj);
+    }
+
+    // Returns the Blunder instance that comes after the blunder with the given id
+    // in id order. If id is null/undefined, returns the first blunder.
+    async getNextBlunder(id) {
+        if (id == null) {
+            const first = await this.blunders.orderBy('id').first();
+            return this.createBlunderInstance(first);
+        }
+
+        // Find blunder with given id to ensure it exists and then get next
+        const next = await this.blunders
+            .orderBy('id')
+            .filter((b) => b.id > id)
+            .first();
+
+        return this.createBlunderInstance(next);
+    }
 
     async getBlunder(id) {
         return this.blunders.get(id);
