@@ -66,3 +66,43 @@ function showPreviousBlunderFromStore() {
 
     loadBlunders(blunderStore.getAllBlunders(), showPreviousBlunder);
 }
+
+function performDeleteCurrentBlunder() {
+    if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
+        console.log('No current blunder to delete');
+        return;
+    }
+
+    const removed = blunders.splice(currentBlunder, 1)[0];
+    console.log('Deleted blunder:', currentBlunder, removed);
+
+    // If store provides a delete method for a single blunder, prefer that
+    if (typeof blunderStore !== 'undefined') {
+        try {
+            // Dexie compound keys require an array key, not an object.
+            if (removed.positionID == null || removed.matchID == null) return;
+            const id = [removed.positionID, removed.matchID];
+            blunderStore.deleteBlunder(id);
+        } catch (e) {
+            console.log('blunderStore.deleteBlunder failed', e);
+        }
+    }
+
+    if (blunders.length === 0) {
+        currentBlunder = -1;
+        console.log('No blunders left');
+        return;
+    }
+
+    // adjust currentBlunder to point to a valid index (next item takes this index)
+    if (currentBlunder >= blunders.length) currentBlunder = 0;
+
+    // show the blunder now at currentBlunder
+    const blunder = new Blunder(blunders[currentBlunder]);
+    if (typeof blunder.show === 'function') blunder.show.call(blunder);
+}
+
+function deleteCurrentBlunder() {
+    loadBlunders(blunderStore.getAllBlunders(), performDeleteCurrentBlunder);
+}
+

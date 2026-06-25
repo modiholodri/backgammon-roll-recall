@@ -84,7 +84,18 @@ class BlunderStore extends Dexie {
     }
 
     async deleteBlunder(id) {
-        return this.blunders.delete(id);
+        if (id == null) {
+            console.warn('deleteBlunder called with invalid id', id);
+            return false;
+        }
+
+        try {
+            await this.blunders.delete(id);
+            return true;
+        } catch (error) {
+            console.error('deleteBlunder failed', error);
+            return false;
+        }
     }
 
     async deleteAllBlunders() {
