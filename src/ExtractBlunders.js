@@ -139,6 +139,9 @@ function ReadHTML(file)
     let inMoveAnalysis = false;
     let inCubeAnalysis = false;
 
+    const acceptedLostEquityElement = document.getElementById('acceptedLostEquity');
+    const acceptedLostEquity = Number(acceptedLostEquityElement.value);
+
     const lines = file.split('\n');
     for (let i = 0; i < lines.length; i++)
     {
@@ -159,12 +162,10 @@ function ReadHTML(file)
                     if (line == "<!--  Board -->") {
                         inBoard = true;
                     }
-                    if (line == "<!-- Move Analysis -->")
-                    {
+                    if (line == "<!-- Move Analysis -->") {
                         inMoveAnalysis = true;
                     }
-                    if (line == "<!-- Cube Analysis -->")
-                    {
+                    if (line == "<!-- Cube Analysis -->") {
                         inCubeAnalysis = true;
                     }
                     if (line == "<!-- Game Statistics -->") break;
@@ -179,7 +180,7 @@ function ReadHTML(file)
                     {
                         readMatchID(matchID);
 
-                        if ( actualLostEquity > 0.0 && matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
+                        if ( actualLostEquity > acceptedLostEquity && matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
                             const blunder = new Blunder({ positionID, matchID, moves });
                             blunderStore.addBlunder(blunder).then((id) => {
                                 console.log('Blunder added with ID:', positionID, ':', matchID);
@@ -221,7 +222,6 @@ async function extractBlunders() {
         const file = await fileHandle.getFile();
         const contents = await file.text();
         
-        // console.log("File content:", contents);
         ReadHTML(contents);
     } catch (err) {
         console.error("User cancelled or file access failed:", err);
