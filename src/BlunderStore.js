@@ -87,7 +87,7 @@ class BlunderStore extends Dexie {
         return this.blunders.delete(id);
     }
 
-    async clearBlunders() {
+    async deleteAllBlunders() {
         return this.blunders.clear();
     }
 
