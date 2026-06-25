@@ -37,9 +37,32 @@ function showNextBlunder() {
     }
 }
 
+function showPreviousBlunder() {
+    if (!Array.isArray(blunders) || blunders.length === 0) {
+        console.log('No blunders available');
+        return;
+    }
+
+    currentBlunder = (currentBlunder - 1 + blunders.length) % blunders.length;
+
+    const blunder = new Blunder(blunders[currentBlunder]);
+    console.log('Showing blunder:', currentBlunder, blunder);
+    
+    if (typeof blunder.show === 'function') {
+        blunder.show.call(blunder);
+    } else {
+        console.log('Blunder.show is not a function:', typeof blunder.show);
+    }
+}
+
 function showNextBlunderFromStore() {
     if (typeof blunderStore === 'undefined' || typeof blunderStore.getAllBlunders !== 'function') return;
 
     loadBlunders(blunderStore.getAllBlunders(), showNextBlunder);
 }
 
+function showPreviousBlunderFromStore() {
+    if (typeof blunderStore === 'undefined' || typeof blunderStore.getAllBlunders !== 'function') return;
+
+    loadBlunders(blunderStore.getAllBlunders(), showPreviousBlunder);
+}
