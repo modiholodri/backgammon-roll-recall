@@ -15,10 +15,6 @@ function loadBlunders(result, callback) {
     }
 }
 
-if (typeof blunderStore !== 'undefined' && typeof blunderStore.getAllBlunders === 'function') {
-    loadBlunders(blunderStore.getAllBlunders());
-}
-
 function showNextBlunder() {
     if (!Array.isArray(blunders) || blunders.length === 0) {
         console.log('No blunders available');
@@ -30,11 +26,7 @@ function showNextBlunder() {
     const blunder = new Blunder(blunders[currentBlunder]);
     console.log('Showing blunder:', currentBlunder, blunder);
     
-    if (typeof blunder.show === 'function') {
-        blunder.show.call(blunder);
-    } else {
-        console.log('Blunder.show is not a function:', typeof blunder.show);
-    }
+    blunder.show();
 }
 
 function showPreviousBlunder() {
@@ -48,22 +40,14 @@ function showPreviousBlunder() {
     const blunder = new Blunder(blunders[currentBlunder]);
     console.log('Showing blunder:', currentBlunder, blunder);
     
-    if (typeof blunder.show === 'function') {
-        blunder.show.call(blunder);
-    } else {
-        console.log('Blunder.show is not a function:', typeof blunder.show);
-    }
+    blunder.show();
 }
 
 function showNextBlunderFromStore() {
-    if (typeof blunderStore === 'undefined' || typeof blunderStore.getAllBlunders !== 'function') return;
-
     loadBlunders(blunderStore.getAllBlunders(), showNextBlunder);
 }
 
 function showPreviousBlunderFromStore() {
-    if (typeof blunderStore === 'undefined' || typeof blunderStore.getAllBlunders !== 'function') return;
-
     loadBlunders(blunderStore.getAllBlunders(), showPreviousBlunder);
 }
 
@@ -99,7 +83,7 @@ function performDeleteCurrentBlunder() {
 
     // show the blunder now at currentBlunder
     const blunder = new Blunder(blunders[currentBlunder]);
-    if (typeof blunder.show === 'function') blunder.show.call(blunder);
+    blunder.show();
 }
 
 function deleteCurrentBlunder() {
