@@ -21,41 +21,34 @@
             <div id="movesDisplay"></div>
         </section>
 
+        <!-- Move Options -->
+        <section id="moveOptionsSection" class="container">
+            <div class="d-flex flex-column gap-2">
+                <button id="moveOption1" class="btn btn-outline-primary">Move Option 1</button>
+                <button id="moveOption2" class="btn btn-outline-primary">Move Option 2</button>
+                <button id="moveOption3" class="btn btn-outline-primary">Move Option 3</button>
+                <button id="moveOption4" class="btn btn-outline-primary">Move Option 4</button>
+                <button id="moveOption5" class="btn btn-outline-primary">Move Option 5</button>
+            </div>
+        </section>
+
         <!-- General -->
-        <section id="generalSection" class="container">
+        <section id="blunderStoreSection" class="container">
             <hr class="rounded">
-            <h3 id="generalToggle" type="button" data-toggle="collapse" data-target="#general" aria-expanded="false" aria-controls="general">
-                General ⇅
+            <h3 id="blunderStoreToggle" type="button" data-toggle="collapse" data-target="#blunderStore" aria-expanded="false" aria-controls="blunderStore">
+                Blunder Store ⇅
             </h3>
-            <div id="general" class="collapse show">
+            <div id="blunderStore" class="collapse">
                 <button id="fullscreenBtn" class="btn btn-outline-primary">Go Fullscreen</button>
                 <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next Blunder</button>
+                <button id="deleteBlunder" class="btn btn-outline-primary">Delete Blunder</button>
                 <br>
                 <button id="import" class="btn btn-outline-primary" onclick="blunderStore.importJSON()">Import</button>
                 <button id="openAnalysis" class="btn btn-outline-primary" onclick="openAnalysisFile()">Open Analysis</button>
                 <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
+                <button id="deleteAll" class="btn btn-outline-primary" onclick="">Delete All</button>
             </div>
         </section>
-
-        <!-- Move Options -->
-        <section id="moveOptionsSection" class="container">
-            <hr class="rounded">
-            <h3 id="moveOptionsToggle" type="button" data-toggle="collapse" data-target="#moveOptions" aria-expanded="false" aria-controls="moveOptions">
-                Move Options ⇅
-            </h3>
-            <div id="moveOptions" class="collapse show">
-                <div class="d-flex flex-column gap-2">
-                    <button id="moveOption1" class="btn btn-outline-primary">Move Option 1</button>
-                    <button id="moveOption2" class="btn btn-outline-primary">Move Option 2</button>
-                    <button id="moveOption3" class="btn btn-outline-primary">Move Option 3</button>
-                    <button id="moveOption4" class="btn btn-outline-primary">Move Option 4</button>
-                    <button id="moveOption5" class="btn btn-outline-primary">Move Option 5</button>
-                    <button id="deletePosition" class="btn btn-outline-primary">Delete Position</button>
-                </div>
-            </div>
-        </section>
-
-
 
         <!-- Read Me -->
         <section id="readMeSection">
@@ -174,16 +167,16 @@
 
             switch (elementName) {
                 case 'readMe':
-                    collapseElements(['settings', 'general', 'tipOfTheDay']);
+                    collapseElements(['settings', 'blunderStore', 'tipOfTheDay']);
                     break;
                 case 'settings':
-                    collapseElements(['readMe', 'general', 'tipOfTheDay']);
+                    collapseElements(['readMe', 'blunderStore', 'tipOfTheDay']);
                     break;
-                case 'general':
+                case 'blunderStore':
                     collapseElements(['readMe', 'settings', 'tipOfTheDay']);
                     break;
                 case 'tipOfTheDay':
-                    collapseElements(['readMe', 'settings', 'general']);
+                    collapseElements(['readMe', 'settings', 'blunderStore']);
                     break;
             }
         }
@@ -241,8 +234,7 @@
             });
         }
 
-        addToggleListener('moveOptions');
-        addToggleListener('general');
+        addToggleListener('blunderStore');
         addToggleListener('readMe');
         addToggleListener('settings');
     </script>
