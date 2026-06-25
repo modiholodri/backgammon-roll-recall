@@ -212,7 +212,7 @@ function ReadHTML(file)
 }
 
 
-async function openAnalysisFile() {
+async function extractBlunders() {
     try {
         // Open the native system file picker
         const [fileHandle] = await window.showOpenFilePicker();
