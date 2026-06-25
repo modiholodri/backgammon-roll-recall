@@ -27,6 +27,26 @@ class Blunder {
         return `${headers}\n${separator}\n${rows}`;
     }
 
+    populateMoveOptions() {
+        const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
+
+        optionIds.forEach((id, index) => {
+            const button = document.getElementById(id);
+            if (!button) {
+                return;
+            }
+
+            const move = this.moves[index];
+            if (!move) {
+                button.style.display = 'none';
+                return;
+            }
+
+            button.style.display = '';
+            button.textContent = move.move;
+        });
+    }
+
     show() {
         if (this.positionID) {
             try {
@@ -45,6 +65,7 @@ class Blunder {
                 addCubeToBoard();
                 addDiceToBoard();
                 addAwayToBoard();
+                this.populateMoveOptions();
             } catch (err) {
                 console.error('Failed to load match ID:', err);
                 alert('Failed to load match ID. Please check the console for more details.');
