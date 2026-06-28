@@ -58,11 +58,10 @@ function checkSelectedMoveOption() {
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
     let selectedEl = document.querySelector('.selected, [data-selected="true"], button[aria-pressed="true"], button:focus');
 
-    let selectedMoveNotation = '';
+    let selectedMoveNotation = null;
     if (selectedEl) {
         selectedMoveNotation = selectedEl.textContent.trim();
     }
-
     if (!selectedMoveNotation) {
         console.log('No selected move notation found');
         return;
@@ -86,6 +85,7 @@ function checkSelectedMoveOption() {
         const moveEvaluation = moveToTable(selectedMove);
         const moveEvaluationTable = marked.parse(moveEvaluation);
         movesDisplay.innerHTML = moveEvaluationTable;
+        blunder.updateStatistics(selectedMove);
         blunder.showStatistics();
     }
     else {
@@ -95,7 +95,7 @@ function checkSelectedMoveOption() {
 
 
 function checkSelectedMoveOfCurrentBlunder() {
-    loadBlunders(blunderStore.getAllBlunders(), checkCurrentBlunder);
+    loadBlunders(blunderStore.getAllBlunders(), checkSelectedMoveOption);
 }
 
 function showNextBlunderFromStore() {

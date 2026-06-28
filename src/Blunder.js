@@ -25,11 +25,34 @@ class Blunder {
         let rows = '';
         moves.forEach((singleMove) => {
             rows += moveToTableRow(singleMove) + '\n';
-            // rows += singleMove.toTableRow() + '\n';
         });
-        // rows = rows.trim();
 
         return `${headers}\n${separator}\n${rows}`;
+    }
+
+    updateStatistics(selectedMove) {
+        const acceptedLostEquityElement = document.getElementById('acceptedLostEquity');
+        const acceptedLostEquity = Number(acceptedLostEquityElement.value);
+
+        this.timesAsked++;
+        if (selectedMove.lostEquityValue < acceptedLostEquity) {
+            this.level++;
+            showNextBlunderFromStore();
+        }
+        else {
+            if (this.level > 0 ) this.level--;
+            this.totalLostEquity += selectedMove.lostEquityValue;
+        }
+
+        blunderStore.updateBlunder([this.positionID, this.matchID], {
+            level: this.level,
+            timesAsked: this.timesAsked,
+            totalLostEquity: this.totalLostEquity
+        }).then(() => {
+            console.log('Blunder statistics updated successfully');
+        }).catch((error) => {
+            console.error('Failed to update blunder statistics', error);
+        });
     }
 
     showStatistics() {
@@ -38,13 +61,14 @@ class Blunder {
 
         const level = `<p>Level : ${this.level}</p>\n`;
         const timesAsked = `<p>Times Asked : ${this.timesAsked}</p>\n`;
-        const averageLostEquityValue = 0.000;
+        let averageLostEquityValue = 0.000;
         if ( this.timesAsked > 0 ) {
             averageLostEquityValue = this.totalLostEquity/this.timesAsked;
         }
         const averageLostEquity = `<p>Average Lost Equity : ${averageLostEquityValue.toFixed(3)}</p>\n`;
+        const totalLostEquity = `<p>Total Lost Equity : ${this.totalLostEquity.toFixed(3)}</p>\n`;
 
-        statistics.innerHTML = level + timesAsked + averageLostEquity;
+        statistics.innerHTML = level + timesAsked + averageLostEquity + totalLostEquity;
     }
 
 
@@ -97,15 +121,17 @@ class Blunder {
             alert('Invalid match ID.');
         }
 
+        this.showStatistics();
+
         // Show the all blunder moves
         // const moves = this.moves;
         // const movesTable = Blunder.movesToTable(moves);
         // const blunderTable = marked.parse(movesTable);
         // const movesHTML = blunderTable;
-        // const movesDisplay = document.getElementById('movesDisplay');
-        // if (movesDisplay) {
-        //     movesDisplay.innerHTML = movesHTML;
-        // }
+        const movesDisplay = document.getElementById('movesDisplay');
+        if (movesDisplay) {
+            movesDisplay.innerHTML = '';
+        }
     }
 }
 
