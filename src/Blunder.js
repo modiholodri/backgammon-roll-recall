@@ -79,13 +79,15 @@ class Blunder {
     populateMoveOptions() {
         const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
 
+        let moveIndex = Math.floor(Math.random() * 5);
+
         optionIds.forEach((id, index) => {
             const button = document.getElementById(id);
             if (!button) {
                 return;
             }
 
-            const move = this.moves[index];
+            const move = this.moves[(moveIndex + index) % this.moves.length];
             if (!move) {
                 button.style.display = 'none';
                 return;
