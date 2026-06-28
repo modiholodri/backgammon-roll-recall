@@ -32,9 +32,6 @@ class Blunder {
         return `${headers}\n${separator}\n${rows}`;
     }
 
-
-
-
     populateMoveOptions() {
         const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
 
@@ -84,14 +81,15 @@ class Blunder {
             alert('Invalid match ID.');
         }
 
-        const moves = this.moves;
-        const movesTable = Blunder.movesToTable(moves);
-        const blunderTable = marked.parse(movesTable);
-        const movesHTML = blunderTable;
-        const movesDisplay = document.getElementById('movesDisplay');
-        if (movesDisplay) {
-            movesDisplay.innerHTML = movesHTML;
-        }
+        // Show the all blunder moves
+        // const moves = this.moves;
+        // const movesTable = Blunder.movesToTable(moves);
+        // const blunderTable = marked.parse(movesTable);
+        // const movesHTML = blunderTable;
+        // const movesDisplay = document.getElementById('movesDisplay');
+        // if (movesDisplay) {
+        //     movesDisplay.innerHTML = movesHTML;
+        // }
     }
 }
 
@@ -113,3 +111,10 @@ function moveToTableRow(singleMove) {
 
     return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
 }
+
+function moveToTable(move) {
+        const headers = '|Equity|--- Move ---|Chances|';
+        const separator = '|:-:|:-:|:-:|';
+        const row = moveToTableRow(move) + '\n';
+        return `${headers}\n${separator}\n${row}`;
+    }

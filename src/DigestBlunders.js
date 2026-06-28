@@ -43,6 +43,58 @@ function showPreviousBlunder() {
     blunder.show();
 }
 
+function checkSelectedMoveOption() {
+    if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
+        console.log('No blunders available');
+        return;
+    }
+    const movesDisplay = document.getElementById('movesDisplay');
+    if (!movesDisplay) return;
+
+    const blunder = new Blunder(blunders[currentBlunder]);
+    console.log('Checking blunder:', currentBlunder, blunder);
+
+    // Try to find an explicitly selected element by common patterns
+    const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
+    let selectedEl = document.querySelector('.selected, [data-selected="true"], button[aria-pressed="true"], button:focus');
+
+    let selectedMoveNotation = '';
+    if (selectedEl) {
+        selectedMoveNotation = selectedEl.textContent.trim();
+    }
+
+    if (!selectedMoveNotation) {
+        console.log('No selected move notation found');
+        return;
+    }
+
+    const moves = Array.isArray(blunder.moves) ? blunder.moves : [];
+    if (moves.length === 0) {
+        console.log('No moves to check on current blunder');
+        return;
+    }
+
+    let foundMatch = false;
+    moves.forEach((move, index) => {
+        if (move.notation === selectedMoveNotation) {
+            foundMatch = true;
+            const moveEvaluation = moveToTable(move);
+            const moveEvaluationTable = marked.parse(moveEvaluation);
+            movesDisplay.innerHTML = moveEvaluationTable;
+            console.log(`Selected move matches blunder move ${index}:`, move);
+        }
+    });
+
+    if (!foundMatch) {
+        console.log('Selected move notation does not match any move in current blunder:', selectedMoveNotation);
+    }
+}
+
+
+function checkSelectedMoveOfCurrentBlunder() {
+    loadBlunders(blunderStore.getAllBlunders(), checkCurrentBlunder);
+}
+
 function showNextBlunderFromStore() {
     loadBlunders(blunderStore.getAllBlunders(), showNextBlunder);
 }
@@ -50,6 +102,8 @@ function showNextBlunderFromStore() {
 function showPreviousBlunderFromStore() {
     loadBlunders(blunderStore.getAllBlunders(), showPreviousBlunder);
 }
+
+
 
 function performDeleteCurrentBlunder() {
     if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
@@ -89,4 +143,3 @@ function performDeleteCurrentBlunder() {
 function deleteCurrentBlunder() {
     loadBlunders(blunderStore.getAllBlunders(), performDeleteCurrentBlunder);
 }
-
