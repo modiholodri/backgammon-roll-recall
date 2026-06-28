@@ -32,19 +32,30 @@
             </div>
         </section>
 
-        <!-- General -->
+        <!-- Statistics -->
+        <section id="statisticsSection" class="container">
+            <hr class="rounded">
+            <h3 id="statisticsToggle" type="button" data-toggle="collapse" data-target="#statistics" aria-expanded="false" aria-controls="statistics">
+                Statistics ⇅
+            </h3>
+            <div id="statistics" class="expanded">
+                <p>Statistics will be shown here...</p>
+            </div>
+        </section>
+
+        <!-- Blunder Store -->
         <section id="blunderStoreSection" class="container">
             <hr class="rounded">
             <h3 id="blunderStoreToggle" type="button" data-toggle="collapse" data-target="#blunderStore" aria-expanded="false" aria-controls="blunderStore">
                 Blunder Store ⇅
             </h3>
             <div id="blunderStore" class="collapse">
-                <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunderFromStore()">Previous Blunder</button>
-                <button id="deleteBlunder" class="btn btn-outline-primary" onclick="deleteCurrentBlunder()">Delete Blunder</button>
-                <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next Blunder</button>
+                <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunderFromStore()">Previous</button>
+                <button id="deleteBlunder" class="btn btn-outline-primary" onclick="deleteCurrentBlunder()">Delete</button>
+                <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next</button>
                 <br>
                 <button id="import" class="btn btn-outline-primary" onclick="blunderStore.importJSON()">Import</button>
-                <button id="extractBlunders" class="btn btn-outline-primary" onclick="extractBlunders()">Extract Blunders</button>
+                <button id="extractBlunders" class="btn btn-outline-primary" onclick="extractBlunders()">Extract</button>
                 <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
                 <button id="deleteAll" class="btn btn-outline-primary" onclick="blunderStore.deleteAllBlunders()">Delete All</button>
             </div>

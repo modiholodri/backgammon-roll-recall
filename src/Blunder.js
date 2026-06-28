@@ -27,10 +27,26 @@ class Blunder {
             rows += moveToTableRow(singleMove) + '\n';
             // rows += singleMove.toTableRow() + '\n';
         });
-        rows = rows.trim();
+        // rows = rows.trim();
 
         return `${headers}\n${separator}\n${rows}`;
     }
+
+    showStatistics() {
+        const statistics = document.getElementById('statistics');
+        if ( !statistics ) return;
+
+        const level = `<p>Level : ${this.level}</p>\n`;
+        const timesAsked = `<p>Times Asked : ${this.timesAsked}</p>\n`;
+        const averageLostEquityValue = 0.000;
+        if ( this.timesAsked > 0 ) {
+            averageLostEquityValue = this.totalLostEquity/this.timesAsked;
+        }
+        const averageLostEquity = `<p>Average Lost Equity : ${averageLostEquityValue.toFixed(3)}</p>\n`;
+
+        statistics.innerHTML = level + timesAsked + averageLostEquity;
+    }
+
 
     populateMoveOptions() {
         const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];

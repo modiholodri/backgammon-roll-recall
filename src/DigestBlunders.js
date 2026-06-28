@@ -52,7 +52,7 @@ function checkSelectedMoveOption() {
     if (!movesDisplay) return;
 
     const blunder = new Blunder(blunders[currentBlunder]);
-    console.log('Checking blunder:', currentBlunder, blunder);
+    // console.log('Checking blunder:', currentBlunder, blunder);
 
     // Try to find an explicitly selected element by common patterns
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
@@ -74,18 +74,21 @@ function checkSelectedMoveOption() {
         return;
     }
 
-    let foundMatch = false;
+    let selectedMove = null;
     moves.forEach((move, index) => {
-        if (move.notation === selectedMoveNotation) {
-            foundMatch = true;
-            const moveEvaluation = moveToTable(move);
-            const moveEvaluationTable = marked.parse(moveEvaluation);
-            movesDisplay.innerHTML = moveEvaluationTable;
-            console.log(`Selected move matches blunder move ${index}:`, move);
+        if (move.notation === selectedMoveNotation) { 
+            console.log(`Selected ${index}. best move :`, move);
+            selectedMove = move;
         }
     });
 
-    if (!foundMatch) {
+    if (selectedMove) {
+        const moveEvaluation = moveToTable(selectedMove);
+        const moveEvaluationTable = marked.parse(moveEvaluation);
+        movesDisplay.innerHTML = moveEvaluationTable;
+        blunder.showStatistics();
+    }
+    else {
         console.log('Selected move notation does not match any move in current blunder:', selectedMoveNotation);
     }
 }
