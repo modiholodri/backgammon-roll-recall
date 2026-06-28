@@ -59,16 +59,20 @@ class Blunder {
         const statistics = document.getElementById('statistics');
         if ( !statistics ) return;
 
-        const level = `<p>Level : ${this.level}</p>\n`;
-        const timesAsked = `<p>Times Asked : ${this.timesAsked}</p>\n`;
         let averageLostEquityValue = 0.000;
         if ( this.timesAsked > 0 ) {
             averageLostEquityValue = this.totalLostEquity/this.timesAsked;
         }
-        const averageLostEquity = `<p>Average Lost Equity : ${averageLostEquityValue.toFixed(3)}</p>\n`;
-        const totalLostEquity = `<p>Total Lost Equity : ${this.totalLostEquity.toFixed(3)}</p>\n`;
+        
+        const errorRate = averageLostEquityValue * 1000.0;
+        const performanceRate = averageLostEquityValue * 500.0;
+        const performance = getPerformance(averageLostEquityValue);
+        const performanceColor = getPerformanceColor(errorRate);
+        const performanceHTML = `<p style="color: ${performanceColor};">${errorRate.toFixed(1)} ER  ${performanceRate.toFixed(1)} PR  ->  ${performance}</p>\n`;
 
-        statistics.innerHTML = level + timesAsked + averageLostEquity + totalLostEquity;
+        const levelHTML = `<p>Level : ${this.level} -> ${this.timesAsked} asked</p>\n`;
+
+        statistics.innerHTML = performanceHTML + levelHTML;
     }
 
 
@@ -155,8 +159,46 @@ function moveToTableRow(singleMove) {
 }
 
 function moveToTable(move) {
-        const headers = '|Equity|--- Move ---|Chances|';
-        const separator = '|:-:|:-:|:-:|';
-        const row = moveToTableRow(move) + '\n';
-        return `${headers}\n${separator}\n${row}`;
+    const headers = '|Equity|--- Move ---|Chances|';
+    const separator = '|:-:|:-:|:-:|';
+    const row = moveToTableRow(move) + '\n';
+    return `${headers}\n${separator}\n${row}`;
+}
+
+function getPerformance(normalizedRate)
+{
+    if (normalizedRate <= 0.002) return 'Supernatural';
+    if (normalizedRate <= 0.005) return 'WorldClass';
+    if (normalizedRate <= 0.008) return 'Expert';
+    if (normalizedRate <= 0.012) return 'Advanced';
+    if (normalizedRate <= 0.018) return 'Intermediate';
+    if (normalizedRate <= 0.026) return 'CasualPlayer';
+    if (normalizedRate <= 0.035) return 'Beginner';
+    return 'Awful';
+}
+
+const dPerfectLevel = 2.0;
+const dAdvancedLevel = 12.0;
+const dAwfulLevel = 35.0;
+function getPerformanceColor(errorRate)
+{
+    if (errorRate <= dPerfectLevel) return `limegreen`;
+    if (errorRate <= dAdvancedLevel)
+    {
+        let red = 255 * (errorRate - dPerfectLevel) / (dAdvancedLevel - dPerfectLevel);
+        let blue = 255 * (errorRate - dPerfectLevel) / (dAdvancedLevel - dPerfectLevel);
+        red = Math.min(255.0, Math.max(0.0, red));
+        blue = Math.min(255.0, Math.max(0.0, blue));
+        return `rgb(${red}, 255, ${blue})`;
     }
+    else if (errorRate <= dAwfulLevel)
+    {
+        let green = 255 - 255 * (errorRate - dAdvancedLevel) / (dAwfulLevel - dAdvancedLevel);
+        let blue = 255 * (errorRate - dAdvancedLevel) / (dAwfulLevel - dAdvancedLevel);
+        green = Math.min(255.0, Math.max(0.0, green));
+        blue = Math.min(255.0, Math.max(0.0, blue));
+        return `rgb(255, ${green}, ${blue})`;
+    }
+    return `magenta`;
+}
+
