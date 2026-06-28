@@ -2,8 +2,8 @@ let rgxNumber = /[0-9.,-]+/
 let rgxLostEquity = /[0-9.,]+/
 
 class Move {
-    constructor(move, chances, equity, lostEquity) {
-        this.move = move;
+    constructor(notation, chances, equity, lostEquity) {
+        this.notation = notation;
 
         // normalize chances: collapse duplicated whitespace to single spaces and trim
         this.chances = String(chances).replace(/\s+/g, ' ').trim();
@@ -17,29 +17,28 @@ class Move {
     }
 
     toString() {
-        return `Move: ${this.move}, Chances: ${this.chances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
+        return `Move: ${this.notation}, Chances: ${this.chances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
     }
 
     toTableRow() {
         const blunderColor = moveColor(this.lostEquityValue);
 
-        const equity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
-        const move = `<span style="color: ${blunderColor}">${this.move.replace(' ', '<br>')}</span>`;
+        const coloredEquity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
+        const coloredMoveNotation = `<span style="color: ${blunderColor}">${this.notation.replace(' ', '<br>')}</span>`;
         const [winningChancesRaw, losingChancesRaw] = this.chances.split(' - ');
         const winningChances = winningChancesRaw.trim().split(/\s+/);
         const losingChances = losingChancesRaw.trim().split(/\s+/);
         const chances = `<span style="color: ${unimportantColor}">${winningChances[0]} - ${losingChances[0]}<br>` + 
                         `${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
 
-        // |Move|Chances|Equity|
-        return `|${equity}|${move}|${chances}|`;
+        return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
     }
 
     //! probably not needed, remove later
     equals(other) {
         return this instanceof Move &&
             other instanceof Move &&
-            this.move === other.move &&
+            this.notation === other.notation &&
             this.chances === other.chances &&
             this.equity === other.equity &&
             this.lostEquity === other.lostEquity;
