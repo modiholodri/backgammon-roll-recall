@@ -134,6 +134,8 @@ const rgxComment = /^<!-- /;
 const rgxEnd = /^<!-- End /;
 function ReadHTML(file)
 {
+    let addedBlunders = 0;
+
     let inHeader = false;
     let inBoard = false;
     let inMoveAnalysis = false;
@@ -181,10 +183,10 @@ function ReadHTML(file)
                         readMatchID(matchID);
 
                         if ( actualLostEquity > acceptedLostEquity && matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
+                            addedBlunders++;
                             const blunder = new Blunder({ positionID, matchID, moves });
                             blunderStore.addBlunder(blunder).then((id) => {
                                 console.log('Blunder added with ID:', positionID, ':', matchID);
-                                blunder.show();
                             }).catch((error) => {
                                 console.error('Failed to add blunder', error);
                             });
@@ -210,6 +212,7 @@ function ReadHTML(file)
             }
         }
     }
+    alert("Finished parsing HTML analysis file. Added " + addedBlunders + " blunders to the Blunder Store.");
 }
 
 
