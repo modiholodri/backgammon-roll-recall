@@ -68,7 +68,7 @@ class Blunder {
         const performanceRate = averageLostEquityValue * 500.0;
         const performance = getPerformance(averageLostEquityValue);
         const performanceColor = getPerformanceColor(errorRate);
-        const performanceHTML = `<p style="color: ${performanceColor};">${errorRate.toFixed(1)} ER  ${performanceRate.toFixed(1)} PR  ->  ${performance}</p>\n`;
+        const performanceHTML = `<p style="color: ${performanceColor};">${performance} -> ${errorRate.toFixed(1)} ER ${performanceRate.toFixed(1)} PR</p>\n`;
 
         const levelHTML = `<p>Level : ${this.level} -> ${this.timesAsked} asked</p>\n`;
 

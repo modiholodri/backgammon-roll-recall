@@ -94,6 +94,7 @@ function addDiceToBoard() {
     diceDotsData.length = 0;
     setDice(1, matchInfo.FirstDice);
     setDice(8, matchInfo.SecondDice);
+    boardChart.update();
 }
 
 function setDice(start, value)
@@ -443,7 +444,6 @@ function setCanvasHeight() {
         const width = window.innerWidth;
         const height = width * 0.66; // Maintain 3:2 aspect ratio (width:height)
         canvas.style.height = `${height}px`;
-        canvas.style.width = `${width}px`;
 
         checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 2; // Adjust checker size based on canvas size
         boardChart?.update();
