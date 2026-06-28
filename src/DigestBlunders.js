@@ -52,7 +52,6 @@ function checkSelectedMoveOption() {
     if (!movesDisplay) return;
 
     const blunder = new Blunder(blunders[currentBlunder]);
-    // console.log('Checking blunder:', currentBlunder, blunder);
 
     // Try to find an explicitly selected element by common patterns
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
@@ -86,7 +85,6 @@ function checkSelectedMoveOption() {
         const moveEvaluationTable = marked.parse(moveEvaluation);
         movesDisplay.innerHTML = moveEvaluationTable;
         blunder.updateStatistics(selectedMove);
-        blunder.showStatistics();
     }
     else {
         console.log('Selected move notation does not match any move in current blunder:', selectedMoveNotation);
