@@ -287,15 +287,15 @@ function addAwayToBoard()
 
     away.push({
         x: 7.0,
-        y: 0.4,
-        yAway: -0.3,
+        y: 0.55,
+        yAway: -0.4,
         label: player0Away.toString(),
         labelColor: player0ForeColor,
     });
     away.push({
         x: 7.0,
-        y: 10.5,
-        yAway: 11.3,
+        y: 10.25,
+        yAway: 11.4,
         label: player1Away.toString(),
         labelColor: player1ForeColor,
     });
