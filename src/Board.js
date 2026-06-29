@@ -550,7 +550,11 @@ function createBoard() {
                 legend: {
                     display: false,
                 },
+                tooltip: {
+                    enabled: showDebug 
+                },
             },
+            events: [], // This makes the chart completely "blind" to mouse hover and touch events
             layout: {
                 padding: { bottom: -20 }
             },
