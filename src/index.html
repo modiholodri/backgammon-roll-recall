@@ -18,7 +18,7 @@
                 <canvas id="boardChartCanvas" style="background-color: black; display: block; width: 100%;"></canvas>
                 <p id="boardChartMessage" class="centered">Not loaded yet...</p>
             </div>
-            <div id="movesDisplay"></div>
+            <div id="movesDisplay" onclick="showNextBlunderFromStore()"></div>
         </section>
 
         <!-- Move Options -->
@@ -209,13 +209,6 @@
             console.error(`Error attempting to toggle fullscreen: ${err.message}`);
         }
         });
-
-        // Sync button text if user exits manually via the Escape key
-        document.addEventListener('fullscreenchange', () => {
-        if (!document.fullscreenElement) {
-            btn.textContent = 'Go Fullscreen';
-        }
-        });        
 
         function collapseElement(elementName) {
             const element = document.getElementById(elementName);
