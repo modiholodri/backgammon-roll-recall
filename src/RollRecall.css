@@ -44,7 +44,6 @@ table {
 
 th {
     background-color: var(--bg-primary);
-    color: rgb(60, 60, 60);
     padding: 3px;
     text-align: center;
     white-space: nowrap;
@@ -53,6 +52,7 @@ th {
 td {
     padding: 3px;
     white-space: nowrap;
+    width: 30%;
 }
 
 tr:nth-child(odd) {

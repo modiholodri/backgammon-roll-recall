@@ -163,7 +163,7 @@ function moveToTableRow(singleMove) {
 }
 
 function moveToTable(move) {
-    const headers = '|Equity|--- Move ---|Chances|';
+    const headers = '| | | |';
     const separator = '|:-:|:-:|:-:|';
     const row = moveToTableRow(move) + '\n';
     return `${headers}\n${separator}\n${row}`;
