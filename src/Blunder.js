@@ -69,7 +69,7 @@ class Blunder {
         const performanceRate = averageLostEquityValue * 500.0;
         const performance = getPerformance(averageLostEquityValue);
         const performanceColor = getPerformanceColor(errorRate);
-        const performanceHTML = `<p style="color: ${performanceColor};">${performance} -> ${errorRate.toFixed(1)} ER ${performanceRate.toFixed(1)} PR</p>`;
+        const performanceHTML = `<p style="color: ${performanceColor};">${performanceRate.toFixed(1)} PR <-- ${performance} --> ER ${errorRate.toFixed(1)}</p>`;
         performanceMessage.innerHTML = performanceHTML;
 
         const statistics = document.getElementById('statistics');
@@ -170,11 +170,11 @@ function moveToTable(move) {
 function getPerformance(normalizedRate)
 {
     if (normalizedRate <= 0.002) return 'Supernatural';
-    if (normalizedRate <= 0.005) return 'WorldClass';
+    if (normalizedRate <= 0.005) return 'World Class';
     if (normalizedRate <= 0.008) return 'Expert';
     if (normalizedRate <= 0.012) return 'Advanced';
     if (normalizedRate <= 0.018) return 'Intermediate';
-    if (normalizedRate <= 0.026) return 'CasualPlayer';
+    if (normalizedRate <= 0.026) return 'Casual Player';
     if (normalizedRate <= 0.035) return 'Beginner';
     return 'Awful';
 }
