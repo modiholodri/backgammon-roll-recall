@@ -44,7 +44,7 @@ class Blunder {
             if (this.level > 0 ) this.level--;
             this.totalLostEquity += selectedMove.lostEquityValue;
         }
-        blunder.showStatistics();  //! Bug? this.showStatistics?
+        this.showStatistics();
 
         blunderStore.updateBlunder([this.positionID, this.matchID], {
             level: this.level,
@@ -58,8 +58,7 @@ class Blunder {
     }
 
     showStatistics() {
-        const statistics = document.getElementById('statistics');
-        if ( !statistics ) return;
+        const blunderPerformance = document.getElementById('performanceMessage');
 
         let averageLostEquityValue = 0.000;
         if ( this.timesAsked > 0 ) {
@@ -70,11 +69,13 @@ class Blunder {
         const performanceRate = averageLostEquityValue * 500.0;
         const performance = getPerformance(averageLostEquityValue);
         const performanceColor = getPerformanceColor(errorRate);
-        const performanceHTML = `<p style="color: ${performanceColor};">${performance} -> ${errorRate.toFixed(1)} ER ${performanceRate.toFixed(1)} PR</p>\n`;
+        const performanceHTML = `<p style="color: ${performanceColor};">${performance} -> ${errorRate.toFixed(1)} ER ${performanceRate.toFixed(1)} PR</p>`;
+        performanceMessage.innerHTML = performanceHTML;
 
-        const levelHTML = `<p>Level : ${this.level} -> ${this.timesAsked} asked</p>\n`;
+        const statistics = document.getElementById('statistics');
+        const levelHTML = `<p>Level : ${this.level} -> ${this.timesAsked} asked</p>`;
 
-        statistics.innerHTML = performanceHTML + levelHTML;
+        statistics.innerHTML = levelHTML;
     }
 
 
@@ -83,21 +84,18 @@ class Blunder {
 
         let moveIndex = Math.floor(Math.random() * 5);
 
-        optionIds.forEach((id, index) => {
-            const button = document.getElementById(id);
-            if (!button) {
-                return;
-            }
-
-            const move = this.moves[(moveIndex + index) % this.moves.length];
-            if (!move) {
-                button.style.display = 'none';
-                return;
-            }
+        let i = 0;
+        for( ; i < this.moves.length && i < 5; i++ ) {
+            const button = document.getElementById(optionIds[i]);
+            const move = this.moves[(moveIndex + i) % this.moves.length];
 
             button.style.display = '';
             button.textContent = move.notation;
-        });
+        }
+        for( ; i < 5; i++ ) {
+            const button = document.getElementById(optionIds[i]);
+            button.style.display = 'none';
+        }
     }
 
     show() {
