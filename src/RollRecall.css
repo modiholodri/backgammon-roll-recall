@@ -62,7 +62,6 @@ tr:nth-child(odd) {
 canvas {
     display: block; /* Prevent inline-block spacing issues */
     padding: 0;
-    height: auto; /* Adjust height automatically based on content */
 }
 
 .container-fluid {

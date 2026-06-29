@@ -44,7 +44,7 @@ class Blunder {
             if (this.level > 0 ) this.level--;
             this.totalLostEquity += selectedMove.lostEquityValue;
         }
-        blunder.showStatistics();
+        blunder.showStatistics();  //! Bug? this.showStatistics?
 
         blunderStore.updateBlunder([this.positionID, this.matchID], {
             level: this.level,

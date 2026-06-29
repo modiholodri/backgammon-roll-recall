@@ -13,13 +13,13 @@
         <h1 id="fullscreenBtn" type="button" onclick="">Backgammon Roll Recall</h1>
 
         <!-- Board -->
-        <section id="boardSection" class="container">
-            <div id="boardChart">
-                <canvas id="boardChartCanvas" style="background-color: black; display: block; width: 100%;"></canvas>
-                <p id="boardChartMessage" class="centered">Not loaded yet...</p>
-            </div>
-            <div id="movesDisplay" onclick="showNextBlunderFromStore()"></div>
-        </section>
+        <div id="boardChart">
+            <canvas id="boardChartCanvas" style="background-color: black; display: block; width: 100%;"></canvas>
+        </div>
+
+        <!-- Performance Evaluation -->
+        <p id="performanceMessage" class="centered">Blunder Performance</p>
+        <div id="movesDisplay" onclick="showNextBlunderFromStore()"></div>
 
         <!-- Move Options -->
         <section id="moveOptionsSection" class="container">
