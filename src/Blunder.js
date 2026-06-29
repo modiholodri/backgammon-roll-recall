@@ -38,7 +38,7 @@ class Blunder {
         if (selectedMove.lostEquityValue < acceptedLostEquity) {
             this.level++;
             // setTimeout(() => showNextBlunderFromStore(), 3333);
-            showNextBlunderFromStore();
+            // showNextBlunderFromStore();
         }
         else {
             if (this.level > 0 ) this.level--;
