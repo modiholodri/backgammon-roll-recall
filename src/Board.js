@@ -140,11 +140,11 @@ function addCheckerToBoard(series, moveNumber, point)
 
 function addOffCheckerToBoard(series, dOffCheckerNumber, player)
 {
-    let where = 14.0;
-    let stackedNumber = dOffCheckerNumber / 3 - 0.15;
-    if (player != 0) stackedNumber = 11 - stackedNumber;
-    series.push({ x: where - 0.4, y: stackedNumber });
-    series.push({ x: where + 0.4, y: stackedNumber });
+    let where = player != 0 ? 11.6 : -0.6;
+    let stackedNumber = 13.9 - dOffCheckerNumber / 3 - 0.15;
+    // if (player != 0) stackedNumber = 11 - stackedNumber;
+    series.push({ x: stackedNumber, y: where - 0.4 });
+    series.push({ x: stackedNumber, y: where + 0.4 });
     series.push({ x: NaN, y: NaN });
 }
 
@@ -238,7 +238,7 @@ function addCubeToBoard()
 
     // the cube
     cube.push({
-        x: 0.0,
+        x: 7.0,
         y: cubePosition,
         label: matchInfo.Cube.toString(),
         labelColor: cubeColor,
@@ -286,16 +286,16 @@ function addAwayToBoard()
     const player1Away = matchInfo.MatchLength - matchInfo.Player1Score;
 
     away.push({
-        x: 0.0,
-        y: 0.5,
-        yAway: 0.0,
+        x: 7.0,
+        y: 0.4,
+        yAway: -0.3,
         label: player0Away.toString(),
         labelColor: player0ForeColor,
     });
     away.push({
-        x: 0.0,
+        x: 7.0,
         y: 10.5,
-        yAway: 11.1,
+        yAway: 11.3,
         label: player1Away.toString(),
         labelColor: player1ForeColor,
     });
@@ -567,8 +567,8 @@ function createBoard() {
                         display: showDebug,
                     },                            
                     grid: gridColor,
-                    min: -0.1,
-                    max: 14.1,
+                    min: 0.4,
+                    max: 13.6,
                     display: showDebug,
                 },
                 y: {
@@ -576,8 +576,8 @@ function createBoard() {
                         display: showDebug,
                     },
                     beginAtZero: true,
-                    min: -0.1,
-                    max: 11.1,
+                    min: -0.7,
+                    max: 11.7,
                     grid: gridColor,
                     display: showDebug,
                 }
