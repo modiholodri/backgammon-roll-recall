@@ -5,8 +5,8 @@ const frameColor = 'rgb(75, 75, 75)';
 const pointsAForeColor = 'rgba(255, 255, 0, 0.3)';
 const pointsBForeColor = 'rgba(50, 205, 50, 0.3)';
 
-const player0ForeColor = 'rgba(0, 255, 255, 1)';
-const player0BackColor = 'rgba(0, 255, 255, 0.7)';
+const player0ForeColor = 'rgb(0, 66, 255)';
+const player0BackColor = 'rgba(0, 66, 255, 0.7)';
 
 const player1ForeColor = 'rgba(255, 0, 255, 1)';
 const player1BackColor = 'rgba(255, 0, 255, 0.7)';
