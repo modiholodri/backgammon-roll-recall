@@ -133,7 +133,7 @@ function addCheckerToBoard(series, moveNumber, point)
 {
     // if (series == blackCheckerData) point = 25 - point;
     let boardPosition = pointNumberToBoardPosition(point);
-    if (boardPosition == 7) moveNumber += 2;  // start the off checkers a little bit higher
+    if (boardPosition == 7) moveNumber += 3;  // start the off checkers a little bit higher
     let movePosition = moveNumberToBoardPosition(moveNumber, point);
     series.push({ x: boardPosition, y: movePosition });
 }
@@ -234,7 +234,7 @@ function addCubeToBoard()
 
     // the Cube
     const cubeColor = matchInfo.CubeOwner == 0 ? player1ForeColor : (matchInfo.CubeOwner == 1 ? player0ForeColor : frameColor);
-    const cubePosition = matchInfo.CubeOwner == 0 ? 8.5 : (matchInfo.CubeOwner == 1 ? 2.5 : 5.45);
+    const cubePosition = matchInfo.CubeOwner == 0 ? 9.0 : (matchInfo.CubeOwner == 1 ? 2.0 : 5.45);
 
     // the cube
     cube.push({
@@ -442,7 +442,7 @@ function setCanvasHeight() {
     const canvas = document.getElementById('boardChartCanvas');
     if (canvas) {
         const width = window.innerWidth;
-        const height = width * 0.66; // Maintain 3:2 aspect ratio (width:height)
+        const height = width * 0.7; // Maintain 3:2 aspect ratio (width:height)
         canvas.style.height = `${height}px`;
 
         checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 2; // Adjust checker size based on canvas size
@@ -567,7 +567,7 @@ function createBoard() {
                         display: showDebug,
                     },                            
                     grid: gridColor,
-                    min: 0.4,
+                    min: 0.1,
                     max: 13.6,
                     display: showDebug,
                 },
