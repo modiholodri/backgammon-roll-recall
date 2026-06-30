@@ -90,10 +90,17 @@ const baaDots = [[true, true, true, true, true, true, true], //! not rolled yet
                  [false, false, false, true, false, false, false], //! six
 ];
 
+let diceDotsTempData = [];
+
 function addDiceToBoard() {
     diceDotsData.length = 0;
+    diceDotsTempData = [];
+
     setDice(1, matchInfo.FirstDice);
     setDice(8, matchInfo.SecondDice);
+
+    diceDotsData = diceDotsTempData;
+    boardChart.data.datasets[7].data = diceDotsData;
     boardChart.update();
 }
 
@@ -110,7 +117,7 @@ function setDice(start, value)
         // Access the baaDots 2D array correctly and push when a dot is present
         if (baaDots[value] && baaDots[value][dotPosition] === false)
         {
-            diceDotsData.push(diceDots[i]);
+            diceDotsTempData.push(diceDots[i]);
         }
     }
 }
@@ -171,11 +178,14 @@ function setPositionID(sPositionID, player)
 
     let number = 1;
     let point = 1;
-    let checkers;
+    let checkers = [];
     let offCheckers = 15;
 
-    if (player === 0) checkers = player0CheckerData;
-    else checkers = player1CheckerData;
+    let player0TempChecker = []; // don't know why but it needs the temp checkers
+    let player1TempChecker = [];
+
+    if (player === 0) checkers = player0TempChecker;
+    else checkers = player1TempChecker;
     for (let iBinaryPosition = 0; iBinaryPosition < sBinary.length; iBinaryPosition++)
     {
         if (sBinary[iBinaryPosition] === '1')
@@ -195,17 +205,22 @@ function setPositionID(sPositionID, player)
             offCheckers = 15;
             if (player === 0)
             {
-                checkers = player1CheckerData;
+                checkers = player1TempChecker;
                 player = 1;
             }
             else
             {
-                checkers = player0CheckerData;
+                checkers = player0TempChecker;
                 player = 0;
             }
         }
     }
 
+    player0CheckerData = player0TempChecker;
+    player1CheckerData = player1TempChecker;
+
+    boardChart.data.datasets[0].data = player0CheckerData;
+    boardChart.data.datasets[1].data = player1CheckerData;
     boardChart.update();
 }
 
