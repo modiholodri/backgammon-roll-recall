@@ -183,8 +183,8 @@ function ReadHTML(file)
                     if (inMoveAnalysis)
                     {
                         readMatchID(matchID);
-
-                        if ( actualLostEquity > acceptedLostEquity && matchInfo.PlayerOnRoll === 1 && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
+                                                                        //! not sure if needed or not
+                        if ( actualLostEquity > acceptedLostEquity && /*matchInfo.PlayerOnRoll === 1 &&*/ matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
                             addedBlunders++;
                             const blunder = new Blunder({ positionID, matchID, moves });
                             blunderStore.addBlunder(blunder).then((id) => {
