@@ -118,7 +118,9 @@ function ExtractMoveChances(line)
         console.log("   " + chances);
         actualMove = false;
         moveChancesNext = false;
-        moves.push(new Move(move, chances, equity, lostEquity));
+        if (moves.length < 5) {
+            moves.push(new Move(move, chances, equity, lostEquity));
+        }
         ResetTempMoveInfo();
     }
     if (rgxBeforeMoveChances.test(line))
