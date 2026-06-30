@@ -220,14 +220,24 @@ function ReadHTML(file)
 
 async function extractBlunders() {
     try {
-        // Open the native system file picker
-        const [fileHandle] = await window.showOpenFilePicker();
-        
-        // Get the file object from the system handle
-        const file = await fileHandle.getFile();
-        const contents = await file.text();
-        
-        ReadHTML(contents);
+        // Open the native system file picker for multiple HTML files
+        const fileHandles = await window.showOpenFilePicker({
+            multiple: true,
+            types: [
+                {
+                    description: 'HTML files',
+                    accept: {
+                        'text/html': ['.html', '.htm']
+                    }
+                }
+            ]
+        });
+
+        for (const fileHandle of fileHandles) {
+            const file = await fileHandle.getFile();
+            const contents = await file.text();
+            ReadHTML(contents);
+        }
     } catch (err) {
         console.error("User cancelled or file access failed:", err);
     }
