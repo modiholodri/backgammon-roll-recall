@@ -43,15 +43,20 @@
             <h3 id="blunderStoreToggle" type="button" data-toggle="collapse" data-target="#blunderStore" aria-expanded="false" aria-controls="blunderStore">
                 Blunder Store ⇅
             </h3>
-            <div id="blunderStore" class="collapse">
-                <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunderFromStore()">Previous</button>
-                <button id="deleteBlunder" class="btn btn-outline-primary" onclick="deleteCurrentBlunder()">Delete</button>
-                <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next</button>
-                <br>
-                <button id="import" class="btn btn-outline-primary" onclick="blunderStore.importJSON()">Import</button>
-                <button id="extractBlunders" class="btn btn-outline-primary" onclick="extractBlunders()">Extract</button>
-                <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
-                <button id="deleteAll" class="btn btn-outline-primary" onclick="blunderStore.deleteAllBlunders()">Delete All</button>
+            <div id="blunderStore" class="collapse centered">
+                <div>
+                    <button id="import" class="btn btn-outline-primary" onclick="blunderStore.importJSON()">Import</button>
+                    <button id="extractBlunders" class="btn btn-outline-primary" onclick="extractBlunders()">Extract</button>
+                    <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
+                    <br><br>
+                    <p style="color: red;">Caution</p>
+                    <button id="deleteBlunder" class="btn btn-outline-primary" onclick="deleteCurrentBlunder()">Delete Current</button>
+                    <button id="deleteAll" class="btn btn-outline-primary" onclick="blunderStore.deleteAllBlunders()">Delete All</button>
+                </div>
+                    <br>
+                    <p>Debug Stuff</p>
+                    <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunderFromStore()">Previous</button>
+                    <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next</button>
             </div>
         </section>
 
