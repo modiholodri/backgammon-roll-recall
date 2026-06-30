@@ -37,8 +37,6 @@ class Blunder {
         this.timesAsked++;
         if (selectedMove.lostEquityValue < acceptedLostEquity) {
             this.level++;
-            // setTimeout(() => showNextBlunderFromStore(), 3333);
-            // showNextBlunderFromStore();
         }
         else {
             if (this.level > 0 ) this.level--;
@@ -49,7 +47,7 @@ class Blunder {
         blunderStore.updateBlunder([this.positionID, this.matchID], {
             level: this.level,
             timesAsked: this.timesAsked,
-            totalLostEquity: this.totalLostEquity
+            totalLostEquity: Math.round(this.totalLostEquity * 1000.0) / 1000.0,
         }).then(() => {
             console.log('Blunder statistics updated successfully');
         }).catch((error) => {
