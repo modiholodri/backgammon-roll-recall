@@ -99,6 +99,11 @@ class BlunderStore extends Dexie {
     }
 
     async deleteAllBlunders() {
+        const confirmed = window.confirm('Are you sure you want to delete all blunders?');
+        if (!confirmed) {
+            return false;
+        }
+
         return this.blunders.clear();
     }
 

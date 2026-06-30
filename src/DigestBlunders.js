@@ -142,5 +142,10 @@ function performDeleteCurrentBlunder() {
 }
 
 function deleteCurrentBlunder() {
+    const confirmed = window.confirm('Are you sure you want to delete this blunder?');
+    if (!confirmed) {
+        return false;
+    }
+
     loadBlunders(blunderStore.getAllBlunders(), performDeleteCurrentBlunder);
 }

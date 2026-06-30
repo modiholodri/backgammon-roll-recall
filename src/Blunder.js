@@ -42,13 +42,13 @@ class Blunder {
             if (this.level > 0 ) this.level--;
             this.totalLostEquity += selectedMove.lostEquityValue;
         }
-        this.showStatistics();
 
         blunderStore.updateBlunder([this.positionID, this.matchID], {
             level: this.level,
             timesAsked: this.timesAsked,
             totalLostEquity: Math.round(this.totalLostEquity * 1000.0) / 1000.0,
         }).then(() => {
+            this.showStatistics();
             console.log('Blunder statistics updated successfully');
         }).catch((error) => {
             console.error('Failed to update blunder statistics', error);
