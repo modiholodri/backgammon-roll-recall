@@ -12,17 +12,17 @@
     <div class="container">
         <h1 id="fullscreenBtn" type="button" onclick="">Backgammon Roll Recall</h1>
 
+        <!-- Performance Evaluation -->
+        <p id="performanceMessage" class="centered" style="margin-bottom: 0;">Blunder Performance</p>
+
         <!-- Board -->
         <div id="boardChart">
             <canvas id="boardChartCanvas" style="background-color: black; display: block; width: 100%;"></canvas>
         </div>
 
-        <!-- Performance Evaluation -->
-        <p id="performanceMessage" class="centered">Blunder Performance</p>
-        <div id="movesDisplay" onclick="showNextBlunderFromStore()"></div>
-
         <!-- Move Options -->
         <section id="moveOptionsSection" class="container">
+            <div id="movesDisplay" onclick="showNextBlunderFromStore()"></div>
             <div class="d-flex flex-column gap-2">
                 <button id="moveOption1" class="btn btn-outline-primary" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 1</button>
                 <button id="moveOption2" class="btn btn-outline-primary" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 2</button>
