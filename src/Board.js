@@ -367,7 +367,7 @@ const pointNumberAnnotations = {
         pointNumbers.forEach(point => {
             if (point.label) {
                 ctx.fillStyle = point.labelColor;
-                ctx.font = 'bold 12px Arial';
+                ctx.font = 'bold 14px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
                 const xPos = chart.scales.x.getPixelForValue(point.x);
