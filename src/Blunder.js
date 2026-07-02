@@ -152,10 +152,39 @@ function moveToTableRow(singleMove) {
     const [winningChancesRaw, losingChancesRaw] = singleMove.chances.split(' - ');
     const winningChances = winningChancesRaw.trim().split(/\s+/);
     const losingChances = losingChancesRaw.trim().split(/\s+/);
-    const chances = `<span style="color: ${unimportantColor}">${winningChances[0]} - ${losingChances[0]}<br>` + 
-                    `${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
+
+    const winningChancesColor = getColorWithLevels(Number(winningChances[0]), 0, 50, 100);
+    const losingChancesColor = getColorWithLevels(Number(losingChances[0]), 0, 50, 100);
+
+    const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` + 
+                    `<span style="color: ${unimportantColor}">${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
 
     return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
+}
+
+// Variant that accepts custom level thresholds
+function getColorWithLevels(value, awfulLevel, mediumLevel, perfectLevel)
+{
+    if (value >= perfectLevel) {
+        return `limegreen`;
+    }
+
+    if (value >= mediumLevel) {
+        const t = (value - mediumLevel) / (perfectLevel - mediumLevel);
+        const hue = 60 + 60 * t; // yellow -> limegreen
+        return `hsl(${hue}, 100%, 50%)`;
+    }
+
+    if (value >= awfulLevel) {
+        const t = (value - awfulLevel) / (mediumLevel - awfulLevel);
+        let hue = 300 + 120 * t; // magenta -> yellow via 360 boundary
+        if (hue >= 360) {
+            hue -= 360;
+        }
+        return `hsl(${hue}, 100%, 50%)`;
+    }
+
+    return `magenta`;
 }
 
 function moveToTable(move) {
@@ -177,28 +206,40 @@ function getPerformance(normalizedRate)
     return 'Awful';
 }
 
-const dPerfectLevel = 2.0;
-const dAdvancedLevel = 12.0;
-const dAwfulLevel = 35.0;
-function getPerformanceColor(errorRate)
+function interpolateHue(startHue, endHue, value, minValue, maxValue)
 {
-    if (errorRate <= dPerfectLevel) return `limegreen`;
-    if (errorRate <= dAdvancedLevel)
-    {
-        let red = 255 * (errorRate - dPerfectLevel) / (dAdvancedLevel - dPerfectLevel);
-        let blue = 255 * (errorRate - dPerfectLevel) / (dAdvancedLevel - dPerfectLevel);
-        red = Math.min(255.0, Math.max(0.0, red));
-        blue = Math.min(255.0, Math.max(0.0, blue));
-        return `rgb(${red}, 255, ${blue})`;
+    if (value <= minValue) {
+        return startHue;
     }
-    else if (errorRate <= dAwfulLevel)
-    {
-        let green = 255 - 255 * (errorRate - dAdvancedLevel) / (dAwfulLevel - dAdvancedLevel);
-        let blue = 255 * (errorRate - dAdvancedLevel) / (dAwfulLevel - dAdvancedLevel);
-        green = Math.min(255.0, Math.max(0.0, green));
-        blue = Math.min(255.0, Math.max(0.0, blue));
-        return `rgb(255, ${green}, ${blue})`;
+
+    if (value >= maxValue) {
+        return endHue;
     }
-    return `magenta`;
+
+    const t = (value - minValue) / (maxValue - minValue);
+    const easedT = t * t;
+    return startHue + (endHue - startHue) * easedT;
 }
 
+function getPerformanceColor(errorRate)
+{
+    const perfectPerformance = 2.0;
+    const mediumLevel = 12.0;
+    const awfulPerformance = 35.0;
+
+    if (errorRate <= perfectPerformance) {
+        return 'limegreen';
+    }
+
+    if (errorRate <= mediumLevel) {
+        const hue = interpolateHue(150, 60, errorRate, perfectPerformance, mediumLevel);
+        return `hsl(${hue}, 100%, 50%)`; // limegreen -> yellow
+    }
+
+    if (errorRate <= awfulPerformance) {
+        const hue = interpolateHue(60, -40, errorRate, mediumLevel, awfulPerformance);
+        return `hsl(${hue}, 100%, 50%)`; // yellow -> magenta
+    }
+
+    return 'magenta';
+}

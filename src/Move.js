@@ -26,10 +26,15 @@ class Move {
         const coloredEquity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
         const coloredMoveNotation = `<span style="color: ${blunderColor}">${this.notation.replace(' ', '<br>')}</span>`;
         const [winningChancesRaw, losingChancesRaw] = this.chances.split(' - ');
+
         const winningChances = winningChancesRaw.trim().split(/\s+/);
         const losingChances = losingChancesRaw.trim().split(/\s+/);
-        const chances = `<span style="color: ${unimportantColor}">${winningChances[0]} - ${losingChances[0]}<br>` + 
-                        `${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
+
+        const winningChancesColor = getColorWithLevels(Number(winningChances[0]), 0, 50, 100);
+        const losingChancesColor = getColorWithLevels(Number(losingChances[0]), 0, 50, 100);
+
+    const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` + 
+                    `<span style="color: ${unimportantColor}">${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
 
         return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
     }
@@ -47,26 +52,23 @@ class Move {
 
 function moveColor(lostEquity)
 {
-    const dGoodMoveEquity = 0.030;
-    const dBigBlunderEquity = 0.120;
+    const perfectLostEquity = 0.000;
+    const mediumLostEquity = 0.030;
+    const awfulLostEquity = 0.120;
 
-    if (lostEquity < 0.002) {
-        return `rgb(2, 255, 0)`;
-    }
-    if (lostEquity < dGoodMoveEquity)
-    {
-        const red = 255 * lostEquity / dGoodMoveEquity;
-        clrIntensified = `rgb(${red}, 255, 0)`;
-    }
-    else if (lostEquity < dBigBlunderEquity)
-    {
-        const green = 255 - 255 * (lostEquity - dGoodMoveEquity) / (dBigBlunderEquity - dGoodMoveEquity);
-        clrIntensified = `rgb(255, ${green}, 0)`;
-    }
-    else
-    {
-        clrIntensified = `rgb(255, 0, 0)`;
+    if (lostEquity <= perfectLostEquity) {
+        return 'limegreen';
     }
 
-    return clrIntensified;
+    if (lostEquity <= mediumLostEquity) {
+        const hue = interpolateHue(150, 60, lostEquity, perfectLostEquity, mediumLostEquity);
+        return `hsl(${hue}, 100%, 50%)`;
+    }
+
+    if (lostEquity <= awfulLostEquity) {
+        const hue = interpolateHue(60, -40, lostEquity, mediumLostEquity, awfulLostEquity);
+        return `hsl(${hue}, 100%, 50%)`;
+    }
+
+    return 'magenta';
 }
