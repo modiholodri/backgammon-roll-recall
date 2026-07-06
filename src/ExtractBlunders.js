@@ -214,7 +214,7 @@ function ReadHTML(file)
             }
         }
     }
-    alert("Finished parsing HTML analysis file. Added " + addedBlunders + " blunders to the Blunder Store.");
+    return addedBlunders;
 }
 
 
@@ -233,12 +233,15 @@ async function extractBlunders() {
             ]
         });
 
+        let addedBlunders = 0;
         for (const fileHandle of fileHandles) {
             const file = await fileHandle.getFile();
             const contents = await file.text();
-            ReadHTML(contents);
+            addedBlunders += ReadHTML(contents);
         }
-    } catch (err) {
+        alert("Finished parsing HTML analysis file. Added " + addedBlunders + " blunders to the Blunder Store.");
+    } 
+    catch (err) {
         console.error("User cancelled or file access failed:", err);
     }
 }
