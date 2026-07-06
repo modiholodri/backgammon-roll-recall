@@ -70,10 +70,9 @@ class Blunder {
         const performanceHTML = `<span style="color: ${performanceColor};">${performanceRate.toFixed(1)} PR <-- ${performance} --> ER ${errorRate.toFixed(1)}</span>`;
         performanceMessage.innerHTML = performanceHTML;
 
-        const statistics = document.getElementById('statistics');
+        const blunderStatistics = document.getElementById('blunderStatistics');
         const levelHTML = `<p>Level : ${this.level} -> ${this.timesAsked} asked</p>`;
-
-        statistics.innerHTML = levelHTML;
+        blunderStatistics.innerHTML = levelHTML;
     }
 
 

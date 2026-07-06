@@ -79,6 +79,27 @@ class BlunderStore extends Dexie {
         return this.blunders.orderBy('level').toArray();
     }
 
+    // Returns a statistics string like "L0:1 L1:21 L2:12" counting blunders per level
+    async getLevelStats() {
+        const all = await this.blunders.toArray();
+        const counts = all.reduce((acc, b) => {
+            const lvl = (b && b.level != null) ? b.level : 0;
+            acc[lvl] = (acc[lvl] || 0) + 1;
+            return acc;
+        }, {});
+
+        const parts = Object.keys(counts)
+            .map(k => ({ k: Number(k), v: counts[k] }))
+            .sort((a, b) => a.k - b.k)
+            .map(entry => `L${entry.k}: ${entry.v}`);
+
+        const blunderStoreStatistics = document.getElementById('blunderStoreStatistics');
+        const partsString = parts.join(' - ');
+        blunderStoreStatistics.innerHTML = `<p>${partsString}</p>`;
+
+        return partsString;
+    }
+
     async updateBlunder(id, changes) {
         return this.blunders.update(id, changes);
     }
@@ -228,6 +249,9 @@ class BlunderStore extends Dexie {
     }
 
 }
+
+
+
 
 const blunderStore = new BlunderStore();
 

@@ -30,18 +30,22 @@
             <button id="moveOption5" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 5</button>
         </div>
 
-        <!-- Boring Statistics -->
-        <div id="statistics" class="text-center mt-4 mb-2 expanded" style="color: gray;">
-            <p>Statistics will be shown here...</p>
+        <!-- Blunder Statistics -->
+        <div id="blunderStatistics" class="text-center mt-4 mb-2 expanded" style="color: gray;">
+            <p>Blunder statistics will be shown here...</p>
         </div>
 
         <!-- Blunder Store -->
         <section id="blunderStoreSection" class="container">
             <hr class="rounded">
-            <h3 id="blunderStoreToggle" type="button" data-toggle="collapse" data-target="#blunderStore" aria-expanded="false" aria-controls="blunderStore">
+            <h3 id="blunderStoreToggle" type="button" data-toggle="collapse" data-target="#blunderStore" aria-expanded="false" aria-controls="blunderStore" onclick="blunderStore.getLevelStats()">
                 Blunder Store ⇅
             </h3>
-            <div id="blunderStore" class="collapse centered">
+            <div id="blunderStore" class="collapse centered" data-bs-toggle="collapse">
+                <!-- Blunder Store Statistics -->
+                <div id="blunderStoreStatistics" class="text-center" style="color: gray;">
+                    <p>Blunder store statistics will be shown here...</p>
+                </div>
                 <div>
                     <button id="import" class="btn btn-outline-primary" onclick="blunderStore.importJSON()">Import</button>
                     <button id="extractBlunders" class="btn btn-outline-primary" onclick="extractBlunders()">Extract</button>
