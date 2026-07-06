@@ -42,7 +42,7 @@ function saveCheckedSetting(elementName) {
 function loadSettings() {
     // Theme Selection
     loadValueSetting('themeSelection', 'system-theme');
-    loadValueSetting('acceptedLostEquity', '0.010');
+    loadValueSetting('acceptedLostEquity', '0.011');
     themeSelectionChanged();
 }
 

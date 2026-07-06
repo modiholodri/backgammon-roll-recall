@@ -3,14 +3,14 @@ if (typeof Dexie === 'undefined') {
 }
 
 const DB_NAME = 'RollRecallDB';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const TABLE_NAME = 'blunders';
 
 class BlunderStore extends Dexie {
     constructor() {
         super(DB_NAME);
         this.version(DB_VERSION).stores({
-            blunders: '[positionID+matchID]'
+            blunders: '[positionID+matchID], level'
         });
             this.blunders = this.table(TABLE_NAME);
     }
@@ -76,7 +76,7 @@ class BlunderStore extends Dexie {
     }
 
     async getAllBlunders() {
-        return this.blunders.toArray();
+        return this.blunders.orderBy('level').toArray();
     }
 
     async updateBlunder(id, changes) {

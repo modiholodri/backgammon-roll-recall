@@ -75,7 +75,7 @@ function checkSelectedMoveOption() {
     let selectedMove = null;
     moves.forEach((move, index) => {
         if (move.notation === selectedMoveNotation) { 
-            console.log(`Selected ${index}. best move :`, move);
+            console.log(`Selected ${index + 1}. best move :`, move);
             selectedMove = move;
         }
     });
