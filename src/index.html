@@ -17,17 +17,17 @@
 
         <!-- Board -->
         <div id="boardChart">
-            <canvas id="boardChartCanvas" style="background-color: black; display: block; width: 100%;" onclick="showNextBlunderFromStore()"></canvas>
+            <canvas id="boardChartCanvas" style="background-color: black; display: block; width: 100%;" onclick="showNextBlunder()"></canvas>
         </div>
 
         <!-- Move Options -->
-        <div id="movesDisplay" style="padding-bottom: 10px;" onclick="showNextBlunderFromStore()"></div>
+        <div id="movesDisplay" style="padding-bottom: 10px;" onclick="showNextBlunder()"></div>
         <div class="d-flex flex-column gap-2">
-            <button id="moveOption1" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 1</button>
-            <button id="moveOption2" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 2</button>
-            <button id="moveOption3" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 3</button>
-            <button id="moveOption4" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 4</button>
-            <button id="moveOption5" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOfCurrentBlunder()">Move Option 5</button>
+            <button id="moveOption1" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOption()">Move Option 1</button>
+            <button id="moveOption2" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOption()">Move Option 2</button>
+            <button id="moveOption3" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOption()">Move Option 3</button>
+            <button id="moveOption4" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOption()">Move Option 4</button>
+            <button id="moveOption5" class="btn btn-outline-primary" style="font-size: 1.25rem;" onclick="checkSelectedMoveOption()">Move Option 5</button>
         </div>
 
         <!-- Blunder Statistics -->
@@ -52,8 +52,8 @@
                     <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
                     <br><br>
                     <p>Debug Stuff</p>
-                    <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunderFromStore()">Previous</button>
-                    <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunderFromStore()">Next</button>
+                    <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunder()">Previous</button>
+                    <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunder()">Next</button>
                 </div>
                 <br>
                 <p style="color: red;">Danger Area</p>
@@ -164,7 +164,13 @@
 
             checkLocalStorageAvailable();
             createBoard();
-            showNextBlunderFromStore();
+
+            // Ensure loadBlunders completes before continuing (without making this function async)
+            const _blunders = blunderStore.getAllBlunders();
+            Promise.resolve(_blunders)
+                .then(res => Promise.resolve(loadBlunders(res)))
+                .then(() => { showNextBlunder(); })
+                .catch(err => { console.error('Failed to load blunders:', err); });
 
             // call setCanvasHeight when the window is resized
             window.addEventListener('resize', function() {

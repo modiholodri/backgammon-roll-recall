@@ -92,20 +92,6 @@ function checkSelectedMoveOption() {
 }
 
 
-function checkSelectedMoveOfCurrentBlunder() {
-    loadBlunders(blunderStore.getAllBlunders(), checkSelectedMoveOption);
-}
-
-function showNextBlunderFromStore() {
-    loadBlunders(blunderStore.getAllBlunders(), showNextBlunder);
-}
-
-function showPreviousBlunderFromStore() {
-    loadBlunders(blunderStore.getAllBlunders(), showPreviousBlunder);
-}
-
-
-
 function performDeleteCurrentBlunder() {
     if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
         console.log('No current blunder to delete');
@@ -147,5 +133,5 @@ function deleteCurrentBlunder() {
         return false;
     }
 
-    loadBlunders(blunderStore.getAllBlunders(), performDeleteCurrentBlunder);
+    performDeleteCurrentBlunder();
 }

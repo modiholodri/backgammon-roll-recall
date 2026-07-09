@@ -107,8 +107,6 @@ class Blunder {
             alert('Invalid GNUbg ID.');
         }
 
-        // console.log(this.moves);
-
         if (this.matchID) {
             try {
                 readMatchID(this.matchID);
@@ -126,11 +124,6 @@ class Blunder {
 
         this.showStatistics();
 
-        // Show the all blunder moves
-        // const moves = this.moves;
-        // const movesTable = Blunder.movesToTable(moves);
-        // const blunderTable = marked.parse(movesTable);
-        // const movesHTML = blunderTable;
         const movesDisplay = document.getElementById('movesDisplay');
         if (movesDisplay) {
             movesDisplay.innerHTML = '';
