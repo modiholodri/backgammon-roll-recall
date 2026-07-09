@@ -75,9 +75,6 @@ function ExtractMoveMove(line)
     if (line.match(rgxMoveMove))
     {
         move = Middle(line, 21, 5);
-
-        if (actualMove) console.log("  Actual Move: " + move);
-        else            console.log("   Other Move: " + move);
     }
 }
 
@@ -98,7 +95,6 @@ function ExtractMoveEquity(line)
         if ( actualMove ) {
             actualLostEquity = Number(lostEquity.match(rgxLostEquity));
         }
-        console.log("   " + sMoveEquity);
     }
 }
 
@@ -115,7 +111,6 @@ function ExtractMoveChances(line)
     if (moveChancesNext)
     {
         chances = Middle(line, 4, 5);
-        console.log("   " + chances);
         actualMove = false;
         moveChancesNext = false;
         if (moves.length < 5) {
@@ -159,7 +154,6 @@ function ReadHTML(file)
                 if (!inHeader && !inMoveAnalysis && !inCubeAnalysis)
                 {
                     if (line == "<!-- Header -->") {
-                        console.log("Found header");
                         ResetTempBlunderInfo();
                         inHeader = true;
                     }
@@ -235,11 +229,12 @@ async function extractBlunders() {
 
         let addedBlunders = 0;
         for (const fileHandle of fileHandles) {
+            console.log("Extracting blunders from " + fileHandle.name);
             const file = await fileHandle.getFile();
             const contents = await file.text();
             addedBlunders += ReadHTML(contents);
         }
-        alert("Finished parsing HTML analysis file. Added " + addedBlunders + " blunders to the Blunder Store.");
+        alert("Finished parsing GNU HTML analysis file(s). Added " + addedBlunders + " blunders to the Blunder Store.");
     } 
     catch (err) {
         console.error("User cancelled or file access failed:", err);
