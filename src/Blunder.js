@@ -32,7 +32,7 @@ class Blunder {
 
     updateStatistics(selectedMove) {
         const acceptedLostEquityElement = document.getElementById('acceptedLostEquity');
-        const acceptedLostEquity = Number(acceptedLostEquityElement.value);
+        const acceptedLostEquity = Math.abs(Number(acceptedLostEquityElement.value));
 
         this.timesAsked++;
         if (selectedMove.lostEquityValue < acceptedLostEquity) {

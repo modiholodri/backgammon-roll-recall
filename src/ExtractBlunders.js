@@ -144,7 +144,7 @@ function ReadHTML(file)
     let inCubeAnalysis = false;
 
     const acceptedLostEquityElement = document.getElementById('acceptedLostEquity');
-    const acceptedLostEquity = Number(acceptedLostEquityElement.value);
+    const acceptedLostEquity = Math.abs(Number(acceptedLostEquityElement.value));
 
     const lines = file.split('\n');
     for (let i = 0; i < lines.length; i++)
@@ -184,7 +184,7 @@ function ReadHTML(file)
                     {
                         readMatchID(matchID);
                                                                         //! not sure if needed or not
-                        if ( actualLostEquity > acceptedLostEquity && /*matchInfo.PlayerOnRoll === 1 &&*/ matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
+                        if ( actualLostEquity > acceptedLostEquity && matchInfo.FirstDice !== 0 && matchInfo.SecondDice !== 0 ) {
                             addedBlunders++;
                             const blunder = new Blunder({ positionID, matchID, moves });
                             blunderStore.addBlunder(blunder).then((id) => {
