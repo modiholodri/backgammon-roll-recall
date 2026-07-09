@@ -15,6 +15,15 @@ function loadBlunders(result, callback) {
     }
 }
 
+function fetchBlundersFromStore() {
+    // Ensure loadBlunders completes before continuing (without making this function async)
+    const _blunders = blunderStore.getAllBlunders();
+    Promise.resolve(_blunders)
+        .then(res => Promise.resolve(loadBlunders(res)))
+        .then(() => { showNextBlunder(); })
+        .catch(err => { console.error('Failed to load blunders:', err); });
+}
+
 function showNextBlunder() {
     if (!Array.isArray(blunders) || blunders.length === 0) {
         console.log('No blunders available');
@@ -22,20 +31,6 @@ function showNextBlunder() {
     }
 
     currentBlunder = (currentBlunder + 1) % blunders.length;
-
-    const blunder = new Blunder(blunders[currentBlunder]);
-    console.log('Showing blunder:', currentBlunder, blunder);
-    
-    blunder.show();
-}
-
-function showPreviousBlunder() {
-    if (!Array.isArray(blunders) || blunders.length === 0) {
-        console.log('No blunders available');
-        return;
-    }
-
-    currentBlunder = (currentBlunder - 1 + blunders.length) % blunders.length;
 
     const blunder = new Blunder(blunders[currentBlunder]);
     console.log('Showing blunder:', currentBlunder, blunder);

@@ -50,13 +50,9 @@
                     <button id="import" class="btn btn-outline-primary" onclick="blunderStore.importJSON()">Import</button>
                     <button id="extractBlunders" class="btn btn-outline-primary" onclick="extractBlunders()">Extract</button>
                     <button id="export" class="btn btn-outline-primary" onclick="blunderStore.exportJSON()">Export</button>
-                    <br><br>
-                    <p>Debug Stuff</p>
-                    <button id="previousBlunder" class="btn btn-outline-primary" onclick="showPreviousBlunder()">Previous</button>
-                    <button id="nextBlunder" class="btn btn-outline-primary" onclick="showNextBlunder()">Next</button>
                 </div>
                 <br>
-                <p style="color: red;">Danger Area</p>
+                <p style="color: red;"><b>Danger Area</b></p>
                 <button id="deleteBlunder" class="btn btn-outline-primary" style="color: red;" onclick="deleteCurrentBlunder()">Delete Current</button>
                 <button id="deleteAll" class="btn btn-outline-primary" style="color: red;" onclick="blunderStore.deleteAllBlunders()">Delete All</button>
             </div>
@@ -165,12 +161,7 @@
             checkLocalStorageAvailable();
             createBoard();
 
-            // Ensure loadBlunders completes before continuing (without making this function async)
-            const _blunders = blunderStore.getAllBlunders();
-            Promise.resolve(_blunders)
-                .then(res => Promise.resolve(loadBlunders(res)))
-                .then(() => { showNextBlunder(); })
-                .catch(err => { console.error('Failed to load blunders:', err); });
+            fetchBlundersFromStore();
 
             // call setCanvasHeight when the window is resized
             window.addEventListener('resize', function() {
