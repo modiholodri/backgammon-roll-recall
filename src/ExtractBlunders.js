@@ -236,6 +236,7 @@ async function extractBlunders() {
         }
 
         // Update blunder store statistics
+        fetchBlundersFromStore();
         await blunderStore.updateLevelStats();
         
         alert("Finished parsing GNU HTML analysis file(s). Added " + addedBlunders + " blunders to the Blunder Store.");

@@ -211,6 +211,7 @@ class BlunderStore extends Dexie {
             });
 
             await this.updateLevelStats();
+            fetchBlundersFromStore();
             return blundersToImport.length;
         } catch (error) {
             if (error.name === 'AbortError') {
