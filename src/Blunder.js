@@ -14,22 +14,6 @@ class Blunder {
         return new Blunder({ positionID, matchID, moves });
     }
 
-    static movesToTable(moves) {
-        if (!moves || moves.length === 0) {
-            return '| No moves recorded |';
-        }
-
-        const headers = '|Equity|- Move -|Chances|';
-        const separator = '|:-:|:-:|:-:|';
-
-        let rows = '';
-        moves.forEach((singleMove) => {
-            rows += moveToTableRow(singleMove) + '\n';
-        });
-
-        return `${headers}\n${separator}\n${rows}`;
-    }
-
     updateStatistics(selectedMove) {
         const acceptedLostEquityElement = document.getElementById('acceptedLostEquity');
         const acceptedLostEquity = Math.abs(Number(acceptedLostEquityElement.value));
