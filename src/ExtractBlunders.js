@@ -234,6 +234,10 @@ async function extractBlunders() {
             const contents = await file.text();
             addedBlunders += ReadHTML(contents);
         }
+
+        // Update blunder store statistics
+        await blunderStore.updateLevelStats();
+        
         alert("Finished parsing GNU HTML analysis file(s). Added " + addedBlunders + " blunders to the Blunder Store.");
     } 
     catch (err) {

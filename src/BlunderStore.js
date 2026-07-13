@@ -51,7 +51,7 @@ class BlunderStore extends Dexie {
     }
 
     // Returns a statistics string like "L0:1 L1:21 L2:12" counting blunders per level
-    async getLevelStats() {
+    async updateLevelStats() {
         const all = await this.blunders.toArray();
         const counts = all.reduce((acc, b) => {
             const lvl = (b && b.level != null) ? b.level : 0;
@@ -206,6 +206,7 @@ class BlunderStore extends Dexie {
                 await this.blunders.bulkPut(blundersToImport);
             });
 
+            await this.updateLevelStats();
             return blundersToImport.length;
         } catch (error) {
             if (error.name === 'AbortError') {
