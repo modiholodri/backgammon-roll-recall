@@ -38,6 +38,37 @@ function showNextBlunder() {
     blunder.show();
 }
 
+function colorMoveOptions() {
+    const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
+
+    optionIds.forEach(id => {
+        const option = document.getElementById(id);
+        const notation = option.textContent.trim();
+
+        const blunder = new Blunder(blunders[currentBlunder]);
+        const moves = Array.isArray(blunder.moves) ? blunder.moves : [];
+        if (moves.length === 0) {
+            return;
+        }
+        try {
+            let color = 'gray';
+            moves.forEach((move, index) => {
+                if (move.notation === notation) { 
+                    color = moveColor(move.lostEquityValue);
+                }
+            });
+
+            if (color) {
+                option.style.color = color;
+            } else {
+                option.style.removeProperty('color');
+            }
+        } catch (err) {
+            console.error('Failed to color move option', id, err);
+        }
+    });
+}
+
 function checkSelectedMoveOption() {
     if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
         console.log('No blunders available');
@@ -46,7 +77,6 @@ function checkSelectedMoveOption() {
     const movesDisplay = document.getElementById('movesDisplay');
     if (!movesDisplay) return;
 
-    const blunder = new Blunder(blunders[currentBlunder]);
 
     // Try to find an explicitly selected element by common patterns
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
@@ -61,6 +91,7 @@ function checkSelectedMoveOption() {
         return;
     }
 
+    const blunder = new Blunder(blunders[currentBlunder]);
     const moves = Array.isArray(blunder.moves) ? blunder.moves : [];
     if (moves.length === 0) {
         console.log('No moves to check on current blunder');
@@ -80,11 +111,14 @@ function checkSelectedMoveOption() {
         const moveEvaluationTable = marked.parse(moveEvaluation);
         movesDisplay.innerHTML = moveEvaluationTable;
         blunder.updateStatistics(selectedMove);
+        colorMoveOptions();
     }
     else {
         console.log('Selected move notation does not match any move in current blunder:', selectedMoveNotation);
     }
 }
+
+
 
 
 function performDeleteCurrentBlunder() {

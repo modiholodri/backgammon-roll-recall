@@ -71,6 +71,7 @@ class Blunder {
             const move = this.moves[(moveIndex + i) % this.moves.length];
 
             button.style.display = '';
+            button.style.removeProperty('color');
             button.textContent = move.notation;
         }
         for( ; i < 5; i++ ) {
