@@ -64,8 +64,9 @@ class BlunderStore extends Dexie {
             .sort((a, b) => a.k - b.k)
             .map(entry => `L${entry.k}: ${entry.v}`);
 
+        const total = all.length;
         const blunderStoreStatistics = document.getElementById('blunderStoreStatistics');
-        const partsString = parts.join(' - ');
+        const partsString = parts.join(' - ') + ` - Total: ${total}`;
         blunderStoreStatistics.innerHTML = `<p>${partsString}</p>`;
 
         return partsString;
