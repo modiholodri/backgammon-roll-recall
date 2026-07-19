@@ -67,13 +67,15 @@ class BlunderStore extends Dexie {
         const parts = Object.keys(counts)
             .map(k => ({ k: Number(k), v: counts[k] }))
             .sort((a, b) => a.k - b.k)
-            .map(entry => `L${entry.k}: ${entry.v}`);
+            .map(entry => `|${entry.k}|${entry.v}|`);
 
         const total = all.length;
-        const partsString = parts.join(' - ') + ` - Total: ${total}`;
+        const levels = parts.join('\n');
+        const statisticsTable = `|Level|Blunders|\n|:-:|:-:|\n${levels}\n|∑|${total}|`;
+        const htmlStatisticsTable = marked.parse(statisticsTable);
 
         const blunderStoreStatistics = document.getElementById('blunderStoreStatistics');
-        blunderStoreStatistics.innerHTML = `<p>${partsString}</p>`;
+        blunderStoreStatistics.innerHTML = htmlStatisticsTable;
     }
 
     async updateBlunder(id, changes) {
