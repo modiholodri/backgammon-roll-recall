@@ -70,8 +70,9 @@ class BlunderStore extends Dexie {
             .map(entry => `|${entry.k}|${entry.v}|`);
 
         const total = all.length;
-        const levels = parts.join('\n');
-        const statisticsTable = `|Level|Blunders|\n|:-:|:-:|\n${levels}\n|∑|${total}|`;
+        let levels = '';
+        if (total > 0) levels = parts.join('\n') + '\n';
+        const statisticsTable = `|Level|Blunders|\n|:-:|:-:|\n${levels}|∑|${total}|`;
         const htmlStatisticsTable = marked.parse(statisticsTable);
 
         const blunderStoreStatistics = document.getElementById('blunderStoreStatistics');
