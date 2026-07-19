@@ -70,7 +70,11 @@ function colorMoveOptions() {
     });
 }
 
-function checkSelectedMoveOption() {
+function revealBestMoveOption() {
+    checkSelectedMoveOption(true);
+}
+
+function checkSelectedMoveOption(revealBestMove = false) {
     if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
         console.log('No blunders available');
         return;
@@ -101,9 +105,16 @@ function checkSelectedMoveOption() {
 
     let selectedMove = null;
     moves.forEach((move, index) => {
-        if (move.notation === selectedMoveNotation) { 
-            console.log(`Selected ${index + 1}. best move :`, move);
-            selectedMove = move;
+        if (revealBestMove) {
+            if (move.lostEquityValue === 0.0) { 
+                selectedMove = move;
+            }
+        }
+        else {
+            if (move.notation === selectedMoveNotation) { 
+                console.log(`Selected ${index + 1}. best move :`, move);
+                selectedMove = move;
+            }
         }
     });
 
@@ -112,7 +123,9 @@ function checkSelectedMoveOption() {
         const moveEvaluationTable = marked.parse(moveEvaluation);
         movesDisplay.innerHTML = moveEvaluationTable;
         if (lastCheckedBlunder != currentBlunder) {
-            blunder.updateStatistics(selectedMove);
+            if (!revealBestMove) {
+                blunder.updateStatistics(selectedMove);
+            }
             colorMoveOptions();
             lastCheckedBlunder = currentBlunder;
         }
