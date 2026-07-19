@@ -51,11 +51,15 @@ class Blunder {
         const performanceRate = averageLostEquityValue * 500.0;
         const performance = getPerformance(averageLostEquityValue);
         const performanceColor = getPerformanceColor(errorRate);
-        const performanceHTML = `<span style="color: ${performanceColor};">${performanceRate.toFixed(1)} PR <-- ${performance} --> ER ${errorRate.toFixed(1)}</span>`;
+        const performanceHTML = `<span style="display: flex; justify-content: space-between; width: 100%; color: ${performanceColor};">
+            <span style="text-align: left; flex: 1;">${performanceRate.toFixed(1)} PR</span>
+            <span style="text-align: center; flex: 1;">${performance}</span>
+            <span style="text-align: right; flex: 1;">ER ${errorRate.toFixed(1)}</span>
+        </span>`;
         performanceMessage.innerHTML = performanceHTML;
 
         const blunderStatistics = document.getElementById('blunderStatistics');
-        const levelHTML = `<p>Level : ${this.level} -> ${this.timesAsked} asked</p>`;
+        const levelHTML = `<p>${this.timesAsked} x asked -> Level ${this.level}</p>`;
         blunderStatistics.innerHTML = levelHTML;
     }
 
