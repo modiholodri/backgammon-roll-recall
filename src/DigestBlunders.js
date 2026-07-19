@@ -1,5 +1,6 @@
 let blunders = [];
 let currentBlunder = -1; // start before first so showNext moves to 0
+let lastCheckedBlunder = -1;
 
 function loadBlunders(result, callback) {
     if (result && typeof result.then === 'function') {
@@ -110,8 +111,11 @@ function checkSelectedMoveOption() {
         const moveEvaluation = moveToTable(selectedMove);
         const moveEvaluationTable = marked.parse(moveEvaluation);
         movesDisplay.innerHTML = moveEvaluationTable;
-        blunder.updateStatistics(selectedMove);
-        colorMoveOptions();
+        if (lastCheckedBlunder != currentBlunder) {
+            blunder.updateStatistics(selectedMove);
+            colorMoveOptions();
+            lastCheckedBlunder = currentBlunder;
+        }
     }
     else {
         console.log('Selected move notation does not match any move in current blunder:', selectedMoveNotation);
