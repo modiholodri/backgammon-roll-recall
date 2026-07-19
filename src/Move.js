@@ -20,6 +20,7 @@ class Move {
         return `Move: ${this.notation}, Chances: ${this.chances}, Equity: ${this.equity}, Lost Equity: ${this.lostEquity}`;
     }
 
+    //! not used at the moment, remove later?
     toTableRow() {
         const blunderColor = moveColor(this.lostEquityValue);
 
@@ -30,11 +31,17 @@ class Move {
         const winningChances = winningChancesRaw.trim().split(/\s+/);
         const losingChances = losingChancesRaw.trim().split(/\s+/);
 
-        const winningChancesColor = getColorWithLevels(Number(winningChances[0]), 0, 50, 100);
-        const losingChancesColor = getColorWithLevels(Number(losingChances[0]), 0, 50, 100);
+        const winningChancesColor = getGradientColor(Number(winningChances[0]), 75, 'lime');
+        const losingChancesColor = getGradientColor(Number(losingChances[0]), 75, 'magenta');
 
-        const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` + 
-                        `<span style="color: ${unimportantColor}">${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
+        const winningGammonColor = getGradientColor(Number(winningChances[1]), 37, 'lime');
+        const losingGammonColor = getGradientColor(Number(losingChances[1]), 37, 'magenta');
+        const winningBackgammonColor = getGradientColor(Number(winningChances[2]), 25, 'lime');
+        const losingBackgammonColor = getGradientColor(Number(losingChances[2]), 25, 'magenta');
+
+        const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` +
+                        `<span style="color: ${winningGammonColor}">${winningChances[1]}</span> - <span style="color: ${losingGammonColor}">${losingChances[1]}</span><br>` +
+                        `<span style="color: ${winningBackgammonColor}">${winningChances[2]}</span> - <span style="color: ${losingBackgammonColor}">${losingChances[2]}</span>`;
 
         return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
     }
