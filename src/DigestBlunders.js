@@ -82,8 +82,8 @@ function checkSelectedMoveOption(revealBestMove = false) {
         console.log('No blunders available');
         return;
     }
-    const movesDisplay = document.getElementById('movesDisplay');
-    if (!movesDisplay) return;
+    const moveDisplay = document.getElementById('moveDisplay');
+    if (!moveDisplay) return;
 
 
     // Try to find an explicitly selected element by common patterns
@@ -124,7 +124,7 @@ function checkSelectedMoveOption(revealBestMove = false) {
     if (selectedMove) {
         const moveEvaluation = moveToTable(selectedMove);
         const moveEvaluationTable = marked.parse(moveEvaluation);
-        movesDisplay.innerHTML = moveEvaluationTable;
+        moveDisplay.innerHTML = moveEvaluationTable;
         if (lastCheckedBlunder != currentBlunder) {
             if (!revealBestMove) {
                 blunder.updateStatistics(selectedMove);
