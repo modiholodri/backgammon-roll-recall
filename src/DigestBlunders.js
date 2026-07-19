@@ -71,6 +71,9 @@ function colorMoveOptions() {
 }
 
 function revealBestMoveOption() {
+    if (lastCheckedBlunder === currentBlunder) {
+        showNextBlunder();
+    }
     checkSelectedMoveOption(true);
 }
 
