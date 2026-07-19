@@ -115,7 +115,7 @@ class Blunder {
 
         const moveDisplay = document.getElementById('moveDisplay');
         if (moveDisplay) {
-            moveDisplay.innerHTML = '';
+            moveDisplay.innerHTML = '<p> <br> <br> </p>';
         }
     }
 }
@@ -226,7 +226,7 @@ function getPerformance(normalizedRate)
     if (normalizedRate <= 0.008) return 'Expert';
     if (normalizedRate <= 0.012) return 'Advanced';
     if (normalizedRate <= 0.018) return 'Intermediate';
-    if (normalizedRate <= 0.026) return 'Casual Player';
+    if (normalizedRate <= 0.026) return 'Hobbyist';
     if (normalizedRate <= 0.035) return 'Beginner';
     return 'Awful';
 }
