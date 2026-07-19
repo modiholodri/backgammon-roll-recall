@@ -31,9 +31,14 @@
         </div>
 
         <!-- Blunder Statistics -->
-        <div id="blunderStatistics" class="text-center mt-4 mb-2 expanded" style="color: gray;">
-            <p>Blunder statistics will be shown here...</p>
+        <div class="input-group">
+            <button id="deleteBlunder" type="button" class="btn btn-secondary" style="color: red; display: inline-flex; align-items: center; gap: 0.5rem;" onclick="deleteCurrentBlunder()">🗑️</button>
+            <span id="blunderStatistics" title="Blunder Statistics" class="form-control centered" style="color: gray; background-color: black; border: 0cap;">
+                <p>Blunder statistics will be shown here...</p>
+            </span>
+            <button id="submit" type="button" class="btn btn-secondary float-right">♻️</button>
         </div>
+
 
         <!-- Blunder Store -->
         <section id="blunderStoreSection" class="container">
@@ -51,7 +56,6 @@
                 </div>
                 <br>
                 <p style="color: red;"><b>Danger Area</b></p>
-                <button id="deleteBlunder" class="btn btn-outline-primary" style="color: red;" onclick="deleteCurrentBlunder()">Delete Current</button>
                 <button id="deleteAll" class="btn btn-outline-primary" style="color: red;" onclick="blunderStore.deleteAllBlunders()">Delete All</button>
             </div>
         </section>
