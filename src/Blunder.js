@@ -130,14 +130,58 @@ function moveToTableRow(singleMove) {
     const winningChances = winningChancesRaw.trim().split(/\s+/);
     const losingChances = losingChancesRaw.trim().split(/\s+/);
 
-    const winningChancesColor = getColorWithLevels(Number(winningChances[0]), 0, 50, 100);
-    const losingChancesColor = getColorWithLevels(Number(losingChances[0]), 0, 50, 100);
+    const winningChancesColor = getGradientColor(Number(winningChances[0]), 75, 'lime');
+    const losingChancesColor = getGradientColor(Number(losingChances[0]), 75, 'magenta');
 
-    const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` + 
-                    `<span style="color: ${unimportantColor}">${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
+    const winningGammonColor = getGradientColor(Number(winningChances[1]), 37, 'lime');
+    const losingGammonColor = getGradientColor(Number(losingChances[1]), 37, 'magenta');
+    const winningBackgammonColor = getGradientColor(Number(winningChances[2]), 25, 'lime');
+    const losingBackgammonColor = getGradientColor(Number(losingChances[2]), 25, 'magenta');
+
+    const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` +
+                    `<span style="color: ${winningGammonColor}">${winningChances[1]}</span> - <span style="color: ${losingGammonColor}">${losingChances[1]}</span><br>` +
+                    `<span style="color: ${winningBackgammonColor}">${winningChances[2]}</span> - <span style="color: ${losingBackgammonColor}">${losingChances[2]}</span>`;
 
     return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
 }
+
+    // Returns a color interpolated from gray to a target color based on value/maxValue.
+    // targetColor may be a hex string like '#RRGGBB' or one of: 'lime', 'limegreen', 'magenta'
+    function getGradientColor(value, maxValue, targetColor) {
+        const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+        const t = maxValue > 0 ? clamp(value / maxValue, 0, 1) : 0;
+
+        // gray base
+        const base = [128, 128, 128];
+
+        // resolve target color to RGB
+        let target = [0, 255, 0]; // default lime
+        if (typeof targetColor === 'string') {
+            const s = targetColor.toLowerCase();
+            if (s === 'magenta') target = [255, 0, 255];
+            else if (s === 'lime' || s === 'limegreen') target = [0, 255, 0];
+            else if (s === 'yellow') target = [255, 255, 0];
+            else if (s === 'orange') target = [255, 165, 0];
+            else if (s === 'cyan') target = [0, 255, 255];
+            else if (s === 'red') target = [255, 0, 0];
+            else if (s[0] === '#') {
+                const hex = s.replace('#','');
+                if (hex.length === 6) {
+                    target = [parseInt(hex.slice(0,2),16), parseInt(hex.slice(2,4),16), parseInt(hex.slice(4,6),16)];
+                }
+            }
+        }
+
+        // interpolate each channel (ease with quadratic easing for nicer gradient)
+        const eased = t * t;
+        const r = Math.round(base[0] + (target[0] - base[0]) * eased);
+        const g = Math.round(base[1] + (target[1] - base[1]) * eased);
+        const b = Math.round(base[2] + (target[2] - base[2]) * eased);
+
+        return `rgb(${r}, ${g}, ${b})`;
+    }
+
+
 
 // Variant that accepts custom level thresholds
 function getColorWithLevels(value, awfulLevel, mediumLevel, perfectLevel)

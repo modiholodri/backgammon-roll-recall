@@ -33,8 +33,8 @@ class Move {
         const winningChancesColor = getColorWithLevels(Number(winningChances[0]), 0, 50, 100);
         const losingChancesColor = getColorWithLevels(Number(losingChances[0]), 0, 50, 100);
 
-    const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` + 
-                    `<span style="color: ${unimportantColor}">${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
+        const chances = `<span style="color: ${winningChancesColor}">${winningChances[0]}</span> - <span style="color: ${losingChancesColor}">${losingChances[0]}</span><br>` + 
+                        `<span style="color: ${unimportantColor}">${winningChances[1]} - ${losingChances[1]}<br>${winningChances[2]} - ${losingChances[2]}</span>`;
 
         return `|${coloredEquity}|${coloredMoveNotation}|${chances}|`;
     }
