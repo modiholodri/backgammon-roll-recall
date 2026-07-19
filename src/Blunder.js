@@ -146,7 +146,7 @@ function moveToTableRow(singleMove) {
 }
 
     // Returns a color interpolated from gray to a target color based on value/maxValue.
-    // targetColor may be a hex string like '#RRGGBB' or one of: 'lime', 'limegreen', 'magenta'
+    // targetColor may be a hex string like '#RRGGBB' or one of: 'lime', 'lime', 'magenta'
     function getGradientColor(value, maxValue, targetColor) {
         const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
         const t = maxValue > 0 ? clamp(value / maxValue, 0, 1) : 0;
@@ -159,7 +159,7 @@ function moveToTableRow(singleMove) {
         if (typeof targetColor === 'string') {
             const s = targetColor.toLowerCase();
             if (s === 'magenta') target = [255, 0, 255];
-            else if (s === 'lime' || s === 'limegreen') target = [0, 255, 0];
+            else if (s === 'lime' || s === 'lime') target = [0, 255, 0];
             else if (s === 'yellow') target = [255, 255, 0];
             else if (s === 'orange') target = [255, 165, 0];
             else if (s === 'cyan') target = [0, 255, 255];
@@ -187,12 +187,12 @@ function moveToTableRow(singleMove) {
 function getColorWithLevels(value, awfulLevel, mediumLevel, perfectLevel)
 {
     if (value >= perfectLevel) {
-        return `limegreen`;
+        return `lime`;
     }
 
     if (value >= mediumLevel) {
         const t = (value - mediumLevel) / (perfectLevel - mediumLevel);
-        const hue = 60 + 60 * t; // yellow -> limegreen
+        const hue = 60 + 60 * t; // yellow -> lime
         return `hsl(${hue}, 100%, 50%)`;
     }
 
@@ -249,12 +249,12 @@ function getPerformanceColor(errorRate)
     const awfulPerformance = 35.0;
 
     if (errorRate <= perfectPerformance) {
-        return 'limegreen';
+        return 'lime';
     }
 
     if (errorRate <= mediumLevel) {
         const hue = interpolateHue(150, 60, errorRate, perfectPerformance, mediumLevel);
-        return `hsl(${hue}, 100%, 50%)`; // limegreen -> yellow
+        return `hsl(${hue}, 100%, 50%)`; // lime -> yellow
     }
 
     if (errorRate <= awfulPerformance) {

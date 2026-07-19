@@ -60,20 +60,20 @@ class Move {
 function moveColor(lostEquity)
 {
     const perfectLostEquity = 0.000;
-    const mediumLostEquity = 0.030;
-    const awfulLostEquity = 0.120;
+    const doubtfulLostEquity = Math.abs(Number(document.getElementById('doubtfulLostEquity').value));
+    const veryBadLostEquity = Math.abs(Number(document.getElementById('veryBadLostEquity').value));
 
     if (lostEquity <= perfectLostEquity) {
-        return 'limegreen';
+        return 'lime';
     }
 
-    if (lostEquity <= mediumLostEquity) {
-        const hue = interpolateHue(150, 60, lostEquity, perfectLostEquity, mediumLostEquity);
+    if (lostEquity <= doubtfulLostEquity) {
+        const hue = interpolateHue(150, 60, lostEquity, perfectLostEquity, doubtfulLostEquity);
         return `hsl(${hue}, 100%, 50%)`;
     }
 
-    if (lostEquity <= awfulLostEquity) {
-        const hue = interpolateHue(60, -40, lostEquity, mediumLostEquity, awfulLostEquity);
+    if (lostEquity <= veryBadLostEquity) {
+        const hue = interpolateHue(60, -40, lostEquity, doubtfulLostEquity, veryBadLostEquity);
         return `hsl(${hue}, 100%, 50%)`;
     }
 

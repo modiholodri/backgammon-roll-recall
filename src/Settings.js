@@ -43,6 +43,9 @@ function loadSettings() {
     // Theme Selection
     loadValueSetting('themeSelection', 'system-theme');
     loadValueSetting('acceptedLostEquity', '0.011');
+    loadValueSetting('doubtfulLostEquity', '0.030');
+    loadValueSetting('prettyBadLostEquity', '0.060');
+    loadValueSetting('veryBadLostEquity', '0.120');
     themeSelectionChanged();
 }
 
@@ -51,4 +54,7 @@ function saveSettings() {
     // Settings
     saveValueSetting('themeSelection'); 
     saveValueSetting('acceptedLostEquity'); 
+    saveValueSetting('doubtfulLostEquity'); 
+    saveValueSetting('prettyBadLostEquity'); 
+    saveValueSetting('veryBadLostEquity'); 
 }
