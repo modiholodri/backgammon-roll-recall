@@ -75,9 +75,15 @@ canvas {
     margin-top: 15px;
 }
 
-.btn-primary {
-    background-color: var(--button-primary);
+.btn-outline-primary {
+    border-color: blue;
     margin-top: 15px;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:focus {
+    background-color: darkblue;
 }
 
 .btn-secondary {
