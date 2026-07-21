@@ -78,6 +78,8 @@ canvas {
 .btn-outline-primary {
     border-color: blue;
     margin-top: 15px;
+    font-size: 1.25rem;
+    margin: 0.3rem;
 }
 
 .btn-outline-primary:hover,
