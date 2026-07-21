@@ -13,7 +13,13 @@
         <h1 id="fullscreenBtn" type="button" onclick="">Roll Recall</h1>
 
         <!-- Performance Evaluation -->
-        <p id="performanceMessage" class="centered" style="margin-bottom: 0; font-size: 1.25rem;">Unrated</p>
+        <span style="display: flex; width: 100%; color: blue; font-size: 0.5rem">
+            <span style="text-align: left; flex: 1;">Performance Rating</span>
+            <span style="text-align: center; flex: 1;">Ego-Bruising Scale</span>
+            <span style="text-align: right; flex: 1;">Error Rate</span>
+        </span>
+            
+        <p id="performanceMessage" type="button" class="centered" style="margin-bottom: 0; font-size: 1.25rem;" onclick="toggleStatistics()">Unrated</p>
 
         <!-- Board -->
         <div id="boardChart">
@@ -31,12 +37,12 @@
 
         <!-- Blunder Statistics -->
         <div class="input-group" style="padding: 0px; margin: 0px;">
-            <button id="deleteBlunder" type="button" class="btn btn-outline-primary" style="display: inline-flex; align-items: center; margin-top: 15%;" onclick="deleteCurrentBlunder()">🗑️</button>
+            <button id="deleteBlunder" type="button" class="btn btn-outline-primary" onclick="deleteCurrentBlunder()">🗑️</button>
             <span title="Blunder Statistics" class="form-control centered" style="color: gray; background-color: black; border: 0cap; padding:0px; margin: 0px;">
                 <span id="moveDisplay" style="padding-bottom: 10px;" onclick="showNextBlunder()"><p></p></span>
                 <p id="blunderStatistics" style="color: gray;">Blunder statistics will be shown here...</p>
             </span>
-            <button id="submit" type="button" class="btn btn-outline-primary float-right" style="margin-top: 15%;" onclick="revealBestMoveOption()">♻️</button>
+            <button id="submit" type="button" class="btn btn-outline-primary" onclick="revealBestMoveOption()">♻️</button>
         </div>
 
 

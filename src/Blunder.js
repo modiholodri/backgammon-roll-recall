@@ -49,29 +49,33 @@ class Blunder {
         if ( this.timesAsked > 0 ) {
             const averageLostEquityValue = this.totalLostEquity/this.timesAsked;
             const errorRate = averageLostEquityValue * 1000.0;
-            const performanceRate = averageLostEquityValue * 500.0;
+            const performanceRating = averageLostEquityValue * 500.0;
             const performance = getPerformance(averageLostEquityValue);
             const performanceColor = getPerformanceColor(errorRate);
 
-            const titleHTML = `<span style="display: flex; width: 100%; color: blue; font-size: 0.5rem">
-                                    <span style="text-align: left; flex: 1;">Performance Rating</span>
-                                    <span style="text-align: center; flex: 1;">Ego-Bruising Scale</span>
-                                    <span style="text-align: right; flex: 1;">Error Rate</span>
-                                </span>`;
-            
+            let performanceRatingHTML = "";
+            let errorRateHTML = "";
+            if (showStatisticDetails) {
+                performanceRatingHTML = `<span style="text-align: left; flex: 1;">${performanceRating.toFixed(1)}</span>`;
+                errorRateHTML = `<span style="text-align: right; flex: 1;">${errorRate.toFixed(1)}</span>`;
 
-            performanceHTML =   titleHTML + `<span style="display: flex; width: 100%; color: ${performanceColor};">
-                                    <span style="text-align: left; flex: 1;">${performanceRate.toFixed(1)}</span>
+            }
+
+            performanceHTML = `<span style="display: flex; width: 100%; color: ${performanceColor};">
+                                    ${performanceRatingHTML}
                                     <span style="text-align: center; flex: 1;">${performance}</span>
-                                    <span style="text-align: right; flex: 1;">${errorRate.toFixed(1)}</span>
-                                </span>`;
+                                    ${errorRateHTML}
+                               </span>`;
         }
         
         performanceMessage.innerHTML = performanceHTML;
 
         const blunderStatistics = document.getElementById('blunderStatistics');
-        const levelHTML = `<p>${this.timesAsked} x asked -> Level ${this.level}</p>`;
-        blunderStatistics.innerHTML = levelHTML;
+        if (showStatisticDetails) {
+            const levelHTML = `<p>${this.timesAsked} x asked -> Level ${this.level}</p>`;
+            blunderStatistics.innerHTML = levelHTML;
+        }
+        else blunderStatistics.innerHTML = "";
     }
 
 
@@ -129,6 +133,14 @@ class Blunder {
             moveDisplay.innerHTML = '<p> <br> <br> </p>';
         }
     }
+}
+
+let showStatisticDetails = false;
+
+function toggleStatistics() {
+    showStatisticDetails = !showStatisticDetails;
+    const blunder = new Blunder(blunders[currentBlunder]);
+    blunder.showStatistics();
 }
 
 // Export for use elsewhere
