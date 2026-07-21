@@ -456,10 +456,10 @@ function setCanvasHeight() {
     const canvas = document.getElementById('boardChartCanvas');
     if (canvas) {
         const width = window.innerWidth;
-        const height = width * 0.75; // Maintain 3:2 aspect ratio (width:height)
+        const height = width * 0.85; // Maintain 3:2 aspect ratio (width:height)
         canvas.style.height = `${height}px`;
 
-        checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 2; // Adjust checker size based on canvas size
+        checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 1.8; // Adjust checker size based on canvas size
         boardChart?.update();
     }
 }
