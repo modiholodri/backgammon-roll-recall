@@ -52,10 +52,18 @@ class Blunder {
             const performanceRate = averageLostEquityValue * 500.0;
             const performance = getPerformance(averageLostEquityValue);
             const performanceColor = getPerformanceColor(errorRate);
-            performanceHTML =   `<span style="display: flex; width: 100%; color: ${performanceColor};">
-                                    <span style="text-align: left; flex: 1;">${performanceRate.toFixed(1)} PR</span>
+
+            const titleHTML = `<span style="display: flex; width: 100%; color: blue; font-size: 0.5rem">
+                                    <span style="text-align: left; flex: 1;">Performance Rating</span>
+                                    <span style="text-align: center; flex: 1;">Ego-Bruising Scale</span>
+                                    <span style="text-align: right; flex: 1;">Error Rate</span>
+                                </span>`;
+            
+
+            performanceHTML =   titleHTML + `<span style="display: flex; width: 100%; color: ${performanceColor};">
+                                    <span style="text-align: left; flex: 1;">${performanceRate.toFixed(1)}</span>
                                     <span style="text-align: center; flex: 1;">${performance}</span>
-                                    <span style="text-align: right; flex: 1;">ER ${errorRate.toFixed(1)}</span>
+                                    <span style="text-align: right; flex: 1;">${errorRate.toFixed(1)}</span>
                                 </span>`;
         }
         
