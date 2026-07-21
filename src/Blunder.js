@@ -42,20 +42,23 @@ class Blunder {
     showStatistics() {
         const blunderPerformance = document.getElementById('performanceMessage');
 
-        let averageLostEquityValue = 0.000;
+        let performanceHTML =   `<span style="display: flex; width: 100%; color: gray;">
+                                    <span style="text-align: center; flex: 1;">Unrated</span>
+                                </span>`;
+
         if ( this.timesAsked > 0 ) {
-            averageLostEquityValue = this.totalLostEquity/this.timesAsked;
+            const averageLostEquityValue = this.totalLostEquity/this.timesAsked;
+            const errorRate = averageLostEquityValue * 1000.0;
+            const performanceRate = averageLostEquityValue * 500.0;
+            const performance = getPerformance(averageLostEquityValue);
+            const performanceColor = getPerformanceColor(errorRate);
+            performanceHTML =   `<span style="display: flex; width: 100%; color: ${performanceColor};">
+                                    <span style="text-align: left; flex: 1;">${performanceRate.toFixed(1)} PR</span>
+                                    <span style="text-align: center; flex: 1;">${performance}</span>
+                                    <span style="text-align: right; flex: 1;">ER ${errorRate.toFixed(1)}</span>
+                                </span>`;
         }
         
-        const errorRate = averageLostEquityValue * 1000.0;
-        const performanceRate = averageLostEquityValue * 500.0;
-        const performance = getPerformance(averageLostEquityValue);
-        const performanceColor = getPerformanceColor(errorRate);
-        const performanceHTML = `<span style="display: flex; width: 100%; color: ${performanceColor};">
-            <span style="text-align: left; flex: 1;">${performanceRate.toFixed(1)} PR</span>
-            <span style="text-align: center; flex: 1;">${performance}</span>
-            <span style="text-align: right; flex: 1;">ER ${errorRate.toFixed(1)}</span>
-        </span>`;
         performanceMessage.innerHTML = performanceHTML;
 
         const blunderStatistics = document.getElementById('blunderStatistics');

@@ -349,6 +349,7 @@ function addPointNumberToBoard(point)
     let movePosition = moveNumberToBoardPosition(0, point);
 
     if (point > 12) movePosition -= 0.1; // adjust the top
+    else movePosition += 0.06;
 
     pointNumbers.push({
         x: boardPosition,
