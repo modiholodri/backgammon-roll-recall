@@ -348,8 +348,7 @@ function addPointNumberToBoard(point)
     const boardPosition = pointNumberToBoardPosition(point);
     let movePosition = moveNumberToBoardPosition(0, point);
 
-    if (point > 12) movePosition -= 0.15; // move the numbers closer to the board
-    else movePosition += 0.1;
+    if (point > 12) movePosition -= 0.1; // adjust the top
 
     pointNumbers.push({
         x: boardPosition,
@@ -525,7 +524,7 @@ function createBoard() {
                     label: 'Board Frame',
                     data: boardFrameData,
                     borderColor: frameColor,
-                    borderWidth: 3,
+                    borderWidth: 2,
                     showLine: true,
                     pointRadius: 0,
                 },
