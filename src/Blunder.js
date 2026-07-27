@@ -70,12 +70,18 @@ class Blunder {
         
         performanceMessage.innerHTML = performanceHTML;
 
-        const blunderStatistics = document.getElementById('blunderStatistics');
+
+
+        const timesAsked = document.getElementById('timesAsked');
+        const questionLevel = document.getElementById('questionLevel');
         if (showStatisticDetails) {
-            const levelHTML = `<p>${this.timesAsked} x asked -> Level ${this.level}</p>`;
-            blunderStatistics.innerHTML = levelHTML;
+            timesAsked.textContent = this.timesAsked + " x asked";
+            questionLevel.textContent = "Q Level " + this.level;
         }
-        else blunderStatistics.innerHTML = "";
+        else {
+            timesAsked.textContent = '';
+            questionLevel.textContent = '';
+        }
     }
 
 

@@ -10,7 +10,11 @@
 </head>
 <body>
     <div class="container">
-        <h1 id="fullscreenBtn" type="button" onclick="">Roll Recall</h1>
+        <div class="d-flex justify-content-between align-items-start">
+            <div id="questionLevel" style="font-size: 0.75rem; color: gray;"></div>
+            <h1 id="fullscreenBtn" type="button" onclick="" style="margin: 0 1rem;">Roll Recall</h1>
+            <div id="timesAsked" style="font-size: 0.75rem; color: gray;"></div>
+        </div>
 
         <!-- Performance Evaluation -->
         <span style="display: flex; width: 100%; color: blue; font-size: 0.5rem">
@@ -40,7 +44,6 @@
             <button id="deleteBlunder" type="button" class="btn btn-outline-primary" onclick="deleteCurrentBlunder()">🗑️</button>
             <span title="Blunder Statistics" class="form-control centered" style="color: gray; background-color: black; border: 0cap; padding:0px; margin: 0px;">
                 <span id="moveDisplay" style="padding-bottom: 10px;" onclick="showNextBlunder()"><p></p></span>
-                <p id="blunderStatistics" style="color: gray;">Blunder statistics will be shown here...</p>
             </span>
             <button id="submit" type="button" class="btn btn-outline-primary" onclick="revealBestMoveOption()">♻️</button>
         </div>
