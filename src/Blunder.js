@@ -157,7 +157,9 @@ if (typeof module !== 'undefined' && module.exports) {
 function moveToTableRow(singleMove) {
     const blunderColor = moveColor(singleMove.lostEquityValue);
 
-    const coloredEquity = `<span style="color: ${unimportantColor}">${singleMove.equity}</span><br><span style="color: ${blunderColor}">${singleMove.lostEquity}</span><br><br>`;
+    const equity = Number(singleMove.equity);
+    const equityColor = getColorWithLevels(equity, -1.000, 0.000, 1.000);
+    const coloredEquity = `<span style="color: ${equityColor}">${singleMove.equity}</span><br><span style="color: ${blunderColor}">${singleMove.lostEquity}</span><br><br>`;
     const coloredMoveNotation = `<span style="color: ${blunderColor}">${singleMove.notation.replace(' ', '<br>')}</span>`;
     const [winningChancesRaw, losingChancesRaw] = singleMove.chances.split(' - ');
     const winningChances = winningChancesRaw.trim().split(/\s+/);

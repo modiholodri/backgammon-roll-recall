@@ -24,7 +24,9 @@ class Move {
     toTableRow() {
         const blunderColor = moveColor(this.lostEquityValue);
 
-        const coloredEquity = `<span style="color: ${unimportantColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
+        const equity = Number(this.equity.match(rgxNumber));
+        const equityColor = getColorWithLevels(equity, -1.000, 0.000, 1.000);
+        const coloredEquity = `<span style="color: ${equityColor}">${this.equity}</span><br><span style="color: ${blunderColor}">${this.lostEquity}</span><br><br>`;
         const coloredMoveNotation = `<span style="color: ${blunderColor}">${this.notation.replace(' ', '<br>')}</span>`;
         const [winningChancesRaw, losingChancesRaw] = this.chances.split(' - ');
 
