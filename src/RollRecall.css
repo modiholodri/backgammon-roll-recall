@@ -43,7 +43,7 @@ table {
 }
 
 th {
-    background-color: var(--bg-primary);
+    color: var(--button-primary);
     padding: 3px;
     text-align: center;
     white-space: nowrap;
@@ -55,7 +55,7 @@ td {
     width: 30%;
 }
 
-tr:nth-child(odd) {
+tr:nth-child(even) {
     background-color: var(--bg-secondary);
 }
 

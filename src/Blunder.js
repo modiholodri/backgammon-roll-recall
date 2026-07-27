@@ -75,7 +75,7 @@ class Blunder {
         const timesAsked = document.getElementById('timesAsked');
         const questionLevel = document.getElementById('questionLevel');
         if (showStatisticDetails) {
-            timesAsked.textContent = this.timesAsked + " x asked";
+            timesAsked.textContent = this.timesAsked + " x Asked";
             questionLevel.textContent = "Q Level " + this.level;
         }
         else {
