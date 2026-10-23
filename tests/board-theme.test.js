@@ -68,3 +68,27 @@ test('unknown board themes restore the classic selection', () => {
     assert.equal(canvas.style.backgroundColor, 'black');
     assert.equal(selection.value, 'classic');
 });
+
+test('green felt and ocean themes use their greener and bluer palettes', () => {
+    const chart = {
+        data: { datasets: Array.from({ length: 8 }, () => ({})) },
+        options: { scales: { x: { grid: {} }, y: { grid: {} } } },
+        update() {},
+    };
+    context.testChart = chart;
+    vm.runInContext('boardChart = testChart', context);
+
+    vm.runInContext("setBoardTheme('felt')", context);
+
+    assert.equal(chart.data.datasets[4].borderColor, 'rgba(116, 176, 92, 0.9)');
+    assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(92, 176, 79, 0.65)');
+    assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(34, 105, 51, 0.75)');
+
+    vm.runInContext("setBoardTheme('ocean')", context);
+
+    assert.equal(chart.data.datasets[4].borderColor, 'rgba(110, 190, 225, 0.9)');
+    assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(95, 190, 225, 0.65)');
+    assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(40, 105, 175, 0.75)');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(139, 211, 242, 0.85)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(100, 127, 240, 0.85)');
+});
