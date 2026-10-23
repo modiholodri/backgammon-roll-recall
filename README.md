@@ -75,6 +75,7 @@ Click on the Blunder Store heading to refresh the statistics.
 - **Import** reads blunders stored as JSON file.
 - **Extract** gets the blunders from a GNU Analysis file in HTML format.
 - **Export** exports the blunders in the Blunder Store as JSON file.
+- Select **Reset performance on import/export** to clear the times asked and total lost equity for imported or exported blunders. This does not change the saved data when exporting.
 - **Delete All** deletes all blunders in the Blunder Store.
 
 ##### Read Me
