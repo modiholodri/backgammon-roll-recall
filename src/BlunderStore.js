@@ -46,7 +46,21 @@ class BlunderStore extends Dexie {
         return this.blunders.add(blunder);
     }
 
-    async getAllBlunders() {
+    async getAllBlunders(order = 'level') {
+        if (order === 'performance') {
+            const blunders = await this.blunders.toArray();
+            return blunders.sort((a, b) => {
+                const timesAskedA = Number(a.timesAsked) || 0;
+                const timesAskedB = Number(b.timesAsked) || 0;
+                if (timesAskedA === 0 && timesAskedB !== 0) return -1;
+                if (timesAskedB === 0 && timesAskedA !== 0) return 1;
+
+                const performanceA = timesAskedA > 0 ? (Number(a.totalLostEquity) || 0) / timesAskedA : 0;
+                const performanceB = timesAskedB > 0 ? (Number(b.totalLostEquity) || 0) / timesAskedB : 0;
+                return performanceB - performanceA || (Number(a.level) || 0) - (Number(b.level) || 0);
+            });
+        }
+
         return this.blunders.orderBy('level').toArray();
     }
 

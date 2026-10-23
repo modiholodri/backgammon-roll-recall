@@ -42,6 +42,7 @@ function saveCheckedSetting(elementName) {
 function loadSettings() {
     // Theme Selection
     loadValueSetting('themeSelection', 'system-theme');
+    loadValueSetting('challengeOrder', 'level');
     if (localStorage.getItem('boardThemeSelection') === 'felt') {
         localStorage.setItem('boardThemeSelection', 'moss');
     }
@@ -58,6 +59,7 @@ function loadSettings() {
 function saveSettings() {
     // Settings
     saveValueSetting('themeSelection'); 
+    saveValueSetting('challengeOrder');
     saveValueSetting('boardThemeSelection');
     saveValueSetting('acceptedLostEquity'); 
     saveValueSetting('doubtfulLostEquity'); 

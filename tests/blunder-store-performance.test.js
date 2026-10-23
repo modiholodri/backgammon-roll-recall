@@ -11,6 +11,15 @@ function createBlunderStore({ resetPerformance, records = [], importData = [] })
         async toArray() {
             return records.map((record) => ({ ...record }));
         },
+        orderBy(field) {
+            return {
+                async toArray() {
+                    return records
+                        .map((record) => ({ ...record }))
+                        .sort((a, b) => Number(a[field]) - Number(b[field]));
+                },
+            };
+        },
         async bulkPut(blunders) {
             importedBlunders = JSON.parse(JSON.stringify(blunders));
         },
@@ -152,4 +161,34 @@ test('export preserves performance data when the option is unchecked', async () 
 
     assert.equal(await harness.store.exportJSON(), true);
     assert.deepEqual(harness.getExportedBlunders(), [blunder]);
+});
+
+test('challenge ordering defaults to level', async () => {
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        records: [
+            { positionID: 'higher', matchID: 'match', level: 3 },
+            { positionID: 'lower', matchID: 'match', level: 1 },
+        ],
+    });
+
+    const blunders = await harness.store.getAllBlunders();
+
+    assert.deepEqual(blunders.map(({ positionID }) => positionID), ['lower', 'higher']);
+});
+
+test('performance challenge order prioritizes unasked and higher average lost equity', async () => {
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        records: [
+            { positionID: 'good', matchID: 'match', level: 2, timesAsked: 4, totalLostEquity: 0.04 },
+            { positionID: 'bad', matchID: 'match', level: 1, timesAsked: 2, totalLostEquity: 0.12 },
+            { positionID: 'unasked', matchID: 'match', level: 0, timesAsked: 0, totalLostEquity: 0 },
+            { positionID: 'tie', matchID: 'match', level: 0, timesAsked: 1, totalLostEquity: 0.05 },
+        ],
+    });
+
+    const blunders = await harness.store.getAllBlunders('performance');
+
+    assert.deepEqual(blunders.map(({ positionID }) => positionID), ['unasked', 'bad', 'tie', 'good']);
 });
