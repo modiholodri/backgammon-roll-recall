@@ -42,6 +42,9 @@ function saveCheckedSetting(elementName) {
 function loadSettings() {
     // Theme Selection
     loadValueSetting('themeSelection', 'system-theme');
+    if (localStorage.getItem('boardThemeSelection') === 'felt') {
+        localStorage.setItem('boardThemeSelection', 'moss');
+    }
     loadValueSetting('boardThemeSelection', 'classic');
     loadValueSetting('acceptedLostEquity', '0.011');
     loadValueSetting('doubtfulLostEquity', '0.030');

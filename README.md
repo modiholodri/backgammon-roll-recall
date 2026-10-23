@@ -92,7 +92,7 @@ In the Settings you can adjust the equity values to your skills level.
 - **Very Bad Lost Equity** is used to indicate the severity of the mistake and shown in magenta color.
 
 You can select a dark, light or system theme.
-The board background stays black in every theme; Classic, Green Felt, Walnut and Ocean themes change the points and checker colors.
+The board background stays black in every theme; Classic, Moss, Walnut and Ocean themes change the points and checker colors.
 
 ##### Tip of the Day
 
