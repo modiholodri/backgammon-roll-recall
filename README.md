@@ -86,6 +86,7 @@ The Read Me section just shows the information you are reading now.
 
 In the Settings you can adjust the equity values to your skills level.
 
+- **Challenge Order** selects whether challenges are ordered by Level or by Blunder Performance. Performance order shows unasked blunders first, then sorts by average lost equity per attempt from highest to lowest.
 - **Accepted Lost Equity** Mistakes with less lost equity are not extracted from the HTML analysis.
   If an option with less lost equity is selected it is counted as passed.
 - **Doubtful Lost Equity** is used to indicate the severity of the mistake and shown in yellow color.

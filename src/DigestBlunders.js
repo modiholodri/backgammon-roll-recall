@@ -18,11 +18,17 @@ function loadBlunders(result, callback) {
 
 function fetchBlundersFromStore() {
     // Ensure loadBlunders completes before continuing (without making this function async)
-    const _blunders = blunderStore.getAllBlunders();
+    const challengeOrder = document.getElementById('challengeOrder')?.value || 'level';
+    const _blunders = blunderStore.getAllBlunders(challengeOrder);
     Promise.resolve(_blunders)
         .then(res => Promise.resolve(loadBlunders(res)))
         .then(() => { showNextBlunder(); })
         .catch(err => { console.error('Failed to load blunders:', err); });
+}
+
+function challengeOrderChanged() {
+    currentBlunder = -1;
+    fetchBlundersFromStore();
 }
 
 function showNextBlunder() {

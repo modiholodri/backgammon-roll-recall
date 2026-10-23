@@ -4,10 +4,11 @@ const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
 
-test('legacy felt board theme settings migrate to moss', () => {
+test('settings migrate legacy board theme and persist challenge ordering', () => {
     const values = new Map([['boardThemeSelection', 'felt']]);
     const elements = new Map([
         ['themeSelection', { value: '' }],
+        ['challengeOrder', { value: '' }],
         ['boardThemeSelection', { value: '' }],
         ['acceptedLostEquity', { value: '' }],
         ['doubtfulLostEquity', { value: '' }],
@@ -40,4 +41,9 @@ test('legacy felt board theme settings migrate to moss', () => {
 
     assert.equal(elements.get('boardThemeSelection').value, 'moss');
     assert.equal(values.get('boardThemeSelection'), 'moss');
+    assert.equal(elements.get('challengeOrder').value, 'level');
+
+    elements.get('challengeOrder').value = 'performance';
+    vm.runInContext('saveSettings()', context);
+    assert.equal(values.get('challengeOrder'), 'performance');
 });
