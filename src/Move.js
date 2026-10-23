@@ -70,7 +70,7 @@ function moveColor(lostEquity)
     }
 
     if (lostEquity <= doubtfulLostEquity) {
-        const hue = interpolateHue(150, 60, lostEquity, perfectLostEquity, doubtfulLostEquity);
+        const hue = interpolateHue(120, 60, lostEquity, perfectLostEquity, doubtfulLostEquity);
         return `hsl(${hue}, 100%, 50%)`;
     }
 
