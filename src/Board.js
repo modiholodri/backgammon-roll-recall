@@ -12,15 +12,15 @@ const boardThemes = {
         player1Fore: 'rgba(255, 0, 255, 1)',
         player1Back: 'rgba(255, 0, 255, 0.7)',
     },
-    felt: {
+    moss: {
         frame: 'rgba(116, 176, 92, 0.9)',
         pointsA: 'rgba(92, 176, 79, 0.65)',
         pointsB: 'rgba(34, 105, 51, 0.75)',
         grid: 'rgba(255, 255, 255, 0.12)',
-        player0Fore: '#5eff00',
-        player0Back: 'rgba(0, 255, 55, 0.85)',
-        player1Fore: '#00660c',
-        player1Back: 'rgba(0, 108, 25, 0.86)',
+        player0Fore: '#7cfc00',
+        player0Back: 'rgba(124, 252, 0, 0.95)',
+        player1Fore: '#d9f99d',
+        player1Back: 'rgba(217, 249, 157, 0.95)',
     },
     walnut: {
         frame: 'rgba(255, 223, 167, 0.9)',
@@ -493,8 +493,9 @@ function destroyBoardChart(message) {
 }
 
 function setBoardTheme(themeName) {
-    const isKnownTheme = Object.prototype.hasOwnProperty.call(boardThemes, themeName);
-    const theme = isKnownTheme ? boardThemes[themeName] : boardThemes.classic;
+    const selectedThemeName = themeName === 'felt' ? 'moss' : themeName;
+    const isKnownTheme = Object.prototype.hasOwnProperty.call(boardThemes, selectedThemeName);
+    const theme = isKnownTheme ? boardThemes[selectedThemeName] : boardThemes.classic;
     const canvas = document.getElementById('boardChartCanvas');
     if (canvas) canvas.style.backgroundColor = 'black';
 
@@ -538,10 +539,8 @@ function setBoardTheme(themeName) {
         boardChart.update();
     }
 
-    if (!isKnownTheme) {
-        const selection = document.getElementById('boardThemeSelection');
-        if (selection) selection.value = 'classic';
-    }
+    const selection = document.getElementById('boardThemeSelection');
+    if (selection) selection.value = isKnownTheme ? selectedThemeName : 'classic';
 }
 
 function wholeNumbersOnly(value) {

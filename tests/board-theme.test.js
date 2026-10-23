@@ -47,7 +47,7 @@ test('board theme changes update the canvas and chart palette', () => {
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(242, 196, 110, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(88, 45, 24, 0.7)');
     assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(242, 196, 110, 0.85)');
-    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(121, 188, 224, 0.85)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(129, 84, 0, 0.85)');
     assert.equal(chart.options.scales.x.grid.color, 'rgba(255, 255, 255, 0.12)');
     assert.equal(chart.options.scales.y.grid.color, 'rgba(255, 255, 255, 0.12)');
     assert.equal(updates, 1);
@@ -69,7 +69,7 @@ test('unknown board themes restore the classic selection', () => {
     assert.equal(selection.value, 'classic');
 });
 
-test('green felt and ocean themes use their greener and bluer palettes', () => {
+test('moss and ocean themes use their greener and bluer palettes', () => {
     const chart = {
         data: { datasets: Array.from({ length: 8 }, () => ({})) },
         options: { scales: { x: { grid: {} }, y: { grid: {} } } },
@@ -78,17 +78,26 @@ test('green felt and ocean themes use their greener and bluer palettes', () => {
     context.testChart = chart;
     vm.runInContext('boardChart = testChart', context);
 
-    vm.runInContext("setBoardTheme('felt')", context);
+    vm.runInContext("setBoardTheme('moss')", context);
 
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(116, 176, 92, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(92, 176, 79, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(34, 105, 51, 0.75)');
+    assert.equal(chart.data.datasets[0].borderColor, '#7cfc00');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(124, 252, 0, 0.95)');
+    assert.equal(chart.data.datasets[1].borderColor, '#d9f99d');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(217, 249, 157, 0.95)');
+
+    vm.runInContext("setBoardTheme('felt')", context);
+
+    assert.equal(selection.value, 'moss');
+    assert.equal(chart.data.datasets[4].borderColor, 'rgba(116, 176, 92, 0.9)');
 
     vm.runInContext("setBoardTheme('ocean')", context);
 
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(110, 190, 225, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(95, 190, 225, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(40, 105, 175, 0.75)');
-    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(139, 211, 242, 0.85)');
-    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(100, 127, 240, 0.85)');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(38, 139, 255, 0.85)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(0, 46, 230, 0.85)');
 });
