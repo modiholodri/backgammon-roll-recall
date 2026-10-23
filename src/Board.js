@@ -1,19 +1,62 @@
 // default colors
 const showDebug = false;
 
-const frameColor = 'rgb(75, 75, 75)';
-const pointsAForeColor = 'rgba(255, 255, 0, 0.3)';
-const pointsBForeColor = 'rgba(50, 205, 50, 0.3)';
+const boardThemes = {
+    classic: {
+        frame: 'rgb(75, 75, 75)',
+        pointsA: 'rgba(255, 255, 0, 0.3)',
+        pointsB: 'rgba(50, 205, 50, 0.3)',
+        grid: 'rgba(255, 255, 0, 0.1)',
+        player0Fore: 'rgb(0, 99, 255)',
+        player0Back: 'rgba(0, 99, 255, 0.7)',
+        player1Fore: 'rgba(255, 0, 255, 1)',
+        player1Back: 'rgba(255, 0, 255, 0.7)',
+    },
+    felt: {
+        frame: 'rgba(222, 184, 135, 0.9)',
+        pointsA: 'rgba(245, 222, 179, 0.55)',
+        pointsB: 'rgba(189, 75, 53, 0.6)',
+        grid: 'rgba(255, 255, 255, 0.12)',
+        player0Fore: '#f5deb3',
+        player0Back: 'rgba(245, 222, 179, 0.85)',
+        player1Fore: '#d95f45',
+        player1Back: 'rgba(217, 95, 69, 0.85)',
+    },
+    walnut: {
+        frame: 'rgba(255, 223, 167, 0.9)',
+        pointsA: 'rgba(242, 196, 110, 0.65)',
+        pointsB: 'rgba(88, 45, 24, 0.7)',
+        grid: 'rgba(255, 255, 255, 0.12)',
+        player0Fore: '#f2c46e',
+        player0Back: 'rgba(242, 196, 110, 0.85)',
+        player1Fore: '#79bce0',
+        player1Back: 'rgba(121, 188, 224, 0.85)',
+    },
+    ocean: {
+        frame: 'rgba(190, 215, 230, 0.85)',
+        pointsA: 'rgba(126, 200, 227, 0.6)',
+        pointsB: 'rgba(220, 130, 102, 0.65)',
+        grid: 'rgba(255, 255, 255, 0.12)',
+        player0Fore: '#7ec8e3',
+        player0Back: 'rgba(126, 200, 227, 0.85)',
+        player1Fore: '#dc8266',
+        player1Back: 'rgba(220, 130, 102, 0.85)',
+    },
+};
 
-const player0ForeColor = 'rgb(0, 99, 255)';
-const player0BackColor = 'rgba(0, 99, 255, 0.7)';
+let frameColor = boardThemes.classic.frame;
+let pointsAForeColor = boardThemes.classic.pointsA;
+let pointsBForeColor = boardThemes.classic.pointsB;
 
-const player1ForeColor = 'rgba(255, 0, 255, 1)';
-const player1BackColor = 'rgba(255, 0, 255, 0.7)';
+let player0ForeColor = boardThemes.classic.player0Fore;
+let player0BackColor = boardThemes.classic.player0Back;
+
+let player1ForeColor = boardThemes.classic.player1Fore;
+let player1BackColor = boardThemes.classic.player1Back;
 
 const unimportantColor = 'rgba(255, 255, 255, 0.3)';
 
-const gridColor = { color: 'rgba(255, 255, 0, 0.1)' };
+const gridColor = { color: boardThemes.classic.grid };
 
 Chart.defaults.color = unimportantColor;  // default text color
 Chart.defaults.borderColor = 'rgba(0, 0, 0, 0.0)';  // don't show the default grid
@@ -449,6 +492,58 @@ function destroyBoardChart(message) {
     }
 }
 
+function setBoardTheme(themeName) {
+    const isKnownTheme = Object.prototype.hasOwnProperty.call(boardThemes, themeName);
+    const theme = isKnownTheme ? boardThemes[themeName] : boardThemes.classic;
+    const canvas = document.getElementById('boardChartCanvas');
+    if (canvas) canvas.style.backgroundColor = 'black';
+
+    const previousFrameColor = frameColor;
+    const previousPlayer0ForeColor = player0ForeColor;
+    const previousPlayer1ForeColor = player1ForeColor;
+    frameColor = theme.frame;
+    pointsAForeColor = theme.pointsA;
+    pointsBForeColor = theme.pointsB;
+    player0ForeColor = theme.player0Fore;
+    player0BackColor = theme.player0Back;
+    player1ForeColor = theme.player1Fore;
+    player1BackColor = theme.player1Back;
+    gridColor.color = theme.grid;
+    cube.forEach(point => {
+        if (point.labelColor === previousPlayer0ForeColor) point.labelColor = player0ForeColor;
+        else if (point.labelColor === previousPlayer1ForeColor) point.labelColor = player1ForeColor;
+        else if (point.labelColor === previousFrameColor) point.labelColor = frameColor;
+    });
+    away.forEach(point => {
+        if (point.labelColor === previousPlayer0ForeColor) point.labelColor = player0ForeColor;
+        else if (point.labelColor === previousPlayer1ForeColor) point.labelColor = player1ForeColor;
+    });
+
+    if (boardChart) {
+        boardChart.data.datasets[0].borderColor = player0ForeColor;
+        boardChart.data.datasets[0].backgroundColor = player0BackColor;
+        boardChart.data.datasets[1].borderColor = player1ForeColor;
+        boardChart.data.datasets[1].backgroundColor = player1BackColor;
+        boardChart.data.datasets[2].borderColor = player0ForeColor;
+        boardChart.data.datasets[3].borderColor = player1ForeColor;
+        boardChart.data.datasets[4].borderColor = frameColor;
+        boardChart.data.datasets[5].borderColor = pointsAForeColor;
+        boardChart.data.datasets[5].backgroundColor = pointsAForeColor;
+        boardChart.data.datasets[6].borderColor = pointsBForeColor;
+        boardChart.data.datasets[6].backgroundColor = pointsBForeColor;
+        boardChart.data.datasets[7].borderColor = player0ForeColor;
+        boardChart.data.datasets[7].backgroundColor = player0BackColor;
+        boardChart.options.scales.x.grid.color = gridColor.color;
+        boardChart.options.scales.y.grid.color = gridColor.color;
+        boardChart.update();
+    }
+
+    if (!isKnownTheme) {
+        const selection = document.getElementById('boardThemeSelection');
+        if (selection) selection.value = 'classic';
+    }
+}
+
 function wholeNumbersOnly(value) {
     return Number.isInteger(value) ? value.toLocaleString() : null;
 }
@@ -603,4 +698,7 @@ function createBoard() {
             }
         }
     });
+
+    const themeSelection = document.getElementById('boardThemeSelection');
+    setBoardTheme(themeSelection ? themeSelection.value : 'classic');
 }

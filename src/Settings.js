@@ -42,17 +42,20 @@ function saveCheckedSetting(elementName) {
 function loadSettings() {
     // Theme Selection
     loadValueSetting('themeSelection', 'system-theme');
+    loadValueSetting('boardThemeSelection', 'classic');
     loadValueSetting('acceptedLostEquity', '0.011');
     loadValueSetting('doubtfulLostEquity', '0.030');
     loadValueSetting('prettyBadLostEquity', '0.060');
     loadValueSetting('veryBadLostEquity', '0.120');
     themeSelectionChanged();
+    setBoardTheme(document.getElementById('boardThemeSelection').value);
 }
 
 // Save settings to localStorage
 function saveSettings() {
     // Settings
     saveValueSetting('themeSelection'); 
+    saveValueSetting('boardThemeSelection');
     saveValueSetting('acceptedLostEquity'); 
     saveValueSetting('doubtfulLostEquity'); 
     saveValueSetting('prettyBadLostEquity'); 
