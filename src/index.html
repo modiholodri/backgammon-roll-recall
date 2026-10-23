@@ -96,8 +96,26 @@
                 ⚙ Settings ⇅
             </h3>
             <div id="settings" class="collapse">
-                <!-- Your Name -->
+                <!-- Theme Selection -->
+                <div class="input-group">
+                    <span class="input-group-text">Board Theme</span>
+                    <select id="boardThemeSelection" title="Board Theme" class="form-select" onchange="setBoardTheme(this.value)">
+                        <option class="centered" value="classic">Classic</option>
+                        <option class="centered" value="felt">Green Felt</option>
+                        <option class="centered" value="walnut">Walnut</option>
+                        <option class="centered" value="ocean">Ocean</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-text">Theme</span>
+                    <select id="themeSelection" title="Theme Selection" class="form-select" onchange="themeSelectionChanged()">
+                        <option class="centered" value="system-theme">Follow System</option>
+                        <option class="centered" value="dark-theme">Dark</option>
+                        <option class="centered" value="light-theme">Light</option>
+                    </select>
+                </div>
 
+                <!-- Lost Equity Colors -->
                 <div class="input-group">
                     <span class="input-group-text" style="color: lime;">Accepted Lost Equity</span>
                     <label for="acceptedLostEquity"></label><input id="acceptedLostEquity" type="number" class="form-control centered" inputmode="decimal" step="0.005">
@@ -115,24 +133,6 @@
                     <label for="veryBadLostEquity"></label><input id="veryBadLostEquity" type="number" class="form-control centered" inputmode="decimal" step="0.005">
                 </div>
 
-                <!-- Theme Selection -->
-                <div class="input-group">
-                    <span class="input-group-text">Theme</span>
-                    <select id="themeSelection" title="Theme Selection" class="form-select" onchange="themeSelectionChanged()">
-                        <option class="centered" value="system-theme">Follow System</option>
-                        <option class="centered" value="dark-theme">Dark</option>
-                        <option class="centered" value="light-theme">Light</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-text">Board Theme</span>
-                    <select id="boardThemeSelection" title="Board Theme" class="form-select" onchange="setBoardTheme(this.value)">
-                        <option value="classic">Classic</option>
-                        <option value="felt">Green Felt</option>
-                        <option value="walnut">Walnut</option>
-                        <option value="ocean">Ocean</option>
-                    </select>
-                </div>
                 <p class="mt-3" style="color: gray;">Note: The settings are saved locally on your device. 
                                 They will be loaded automatically the next time you visit the page.
                                 Refresh the page after making changes.</p>
