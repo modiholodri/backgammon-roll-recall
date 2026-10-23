@@ -110,7 +110,11 @@ class BlunderStore extends Dexie {
     async exportJSON() {
         try {
             const blunders = await this.blunders.toArray();
-            const jsonData = JSON.stringify(blunders, null, 2);
+            const resetPerformance = document.getElementById('resetBlunderPerformance').checked;
+            const blundersToExport = resetPerformance
+                ? blunders.map((blunder) => ({ ...blunder, timesAsked: 0, totalLostEquity: 0 }))
+                : blunders;
+            const jsonData = JSON.stringify(blundersToExport, null, 2);
             const fileName = `blunders-${new Date().toISOString().split('T')[0]}.json`;
 
             if (window.showSaveFilePicker) {
@@ -207,6 +211,13 @@ class BlunderStore extends Dexie {
 
             if (!blundersToImport.length) {
                 return 0;
+            }
+
+            if (document.getElementById('resetBlunderPerformance').checked) {
+                blundersToImport.forEach((blunder) => {
+                    blunder.timesAsked = 0;
+                    blunder.totalLostEquity = 0;
+                });
             }
 
             await this.transaction('rw', this.blunders, async () => {
