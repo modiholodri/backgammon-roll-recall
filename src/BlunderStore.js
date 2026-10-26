@@ -46,6 +46,52 @@ class BlunderStore extends Dexie {
         return this.blunders.add(blunder);
     }
 
+    async importSampleBlundersIfEmpty() {
+        if (await this.blunders.count() > 0) {
+            return 0;
+        }
+
+        const confirmed = await window.confirm(
+            'Your Blunder Store is empty. Would you like to download and import the sample blunders?'
+        );
+        if (!confirmed) {
+            return 0;
+        }
+
+        const response = await fetch(
+            `https://api.github.com/repos/${repoOwner}/${repoName}/contents/SampleBlunders.json`
+        );
+        if (!response.ok) {
+            throw new Error(`Failed to download sample blunders: ${response.status}`);
+        }
+
+        const file = await response.json();
+        if (typeof file.content !== 'string') {
+            throw new Error('Invalid sample blunders response: missing file content');
+        }
+
+        const data = JSON.parse(window.atob(file.content));
+        if (!Array.isArray(data)) {
+            throw new Error('Invalid sample blunders format: expected an array');
+        }
+
+        const sampleBlunders = data.filter((item) => {
+            return item && typeof item === 'object' && item.positionID != null && item.matchID != null;
+        });
+        if (sampleBlunders.length === 0) {
+            throw new Error('The sample blunders file contains no valid blunders');
+        }
+
+        return this.transaction('rw', this.blunders, async () => {
+            if (await this.blunders.count() > 0) {
+                return 0;
+            }
+
+            await this.blunders.bulkPut(sampleBlunders);
+            return sampleBlunders.length;
+        });
+    }
+
     async getAllBlunders(order = 'level') {
         if (order === 'performance') {
             const blunders = await this.blunders.toArray();
@@ -258,8 +304,21 @@ class BlunderStore extends Dexie {
 
 const blunderStore = new BlunderStore();
 
-blunderStore.init().then(() => {
+blunderStore.init().then(async (initialized) => {
+    if (!initialized) {
+        fetchBlundersFromStore();
+        return;
+    }
+
     console.log('BlunderStore initialized successfully');
+    try {
+        await blunderStore.importSampleBlundersIfEmpty();
+    } catch (error) {
+        console.error('Failed to import sample blunders', error);
+    }
+
+    fetchBlundersFromStore();
 }).catch((error) => {
     console.error('Failed to initialize BlunderStore', error);
+    fetchBlundersFromStore();
 });

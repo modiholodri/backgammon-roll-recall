@@ -211,8 +211,6 @@
             checkLocalStorageAvailable();
             createBoard();
 
-            fetchBlundersFromStore();
-
             // call setCanvasHeight when the window is resized
             window.addEventListener('resize', function() {
                 try { setCanvasHeight(); } catch (e) { /* ignore if not defined */ }
