@@ -108,7 +108,7 @@ class Blunder {
     show() {
         if (this.positionID) {
             try {
-                setPositionID(this.positionID, 1);
+                setPositionID(this.positionID, 1, false);
             } catch (err) {
                 console.error('Failed to load board Position ID:', err);
                 alert('Failed to load board. Please check the console for more details.');
@@ -121,7 +121,7 @@ class Blunder {
             try {
                 readMatchID(this.matchID);
                 addCubeToBoard();
-                addDiceToBoard();
+                addDiceToBoard(false);
                 addAwayToBoard();
                 this.populateMoveOptions();
             } catch (err) {
@@ -132,6 +132,7 @@ class Blunder {
             alert('Invalid match ID.');
         }
 
+        boardChart?.update();
         this.showStatistics();
 
         const moveDisplay = document.getElementById('moveDisplay');
