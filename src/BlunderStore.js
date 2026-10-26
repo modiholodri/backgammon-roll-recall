@@ -126,7 +126,7 @@ class BlunderStore extends Dexie {
             const blunders = await this.blunders.toArray();
             const resetPerformance = document.getElementById('resetBlunderPerformance').checked;
             const blundersToExport = resetPerformance
-                ? blunders.map((blunder) => ({ ...blunder, timesAsked: 0, totalLostEquity: 0 }))
+                ? blunders.map((blunder) => ({ ...blunder, level: 0, timesAsked: 0, totalLostEquity: 0 }))
                 : blunders;
             const jsonData = JSON.stringify(blundersToExport, null, 2);
             const fileName = `blunders-${new Date().toISOString().split('T')[0]}.json`;
@@ -229,6 +229,7 @@ class BlunderStore extends Dexie {
 
             if (document.getElementById('resetBlunderPerformance').checked) {
                 blundersToImport.forEach((blunder) => {
+                    blunder.level = 0;
                     blunder.timesAsked = 0;
                     blunder.totalLostEquity = 0;
                 });
