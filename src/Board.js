@@ -135,7 +135,7 @@ const baaDots = [[true, true, true, true, true, true, true], //! not rolled yet
 
 let diceDotsTempData = [];
 
-function addDiceToBoard() {
+function addDiceToBoard(updateChart = true) {
     diceDotsData.length = 0;
     diceDotsTempData = [];
 
@@ -144,7 +144,7 @@ function addDiceToBoard() {
 
     diceDotsData = diceDotsTempData;
     boardChart.data.datasets[7].data = diceDotsData;
-    boardChart.update();
+    if (updateChart) boardChart.update();
 }
 
 function setDice(start, value)
@@ -211,7 +211,7 @@ function addOffCheckersToBoard(offCheckers, player)
 }
 
 
-function setPositionID(sPositionID, player)
+function setPositionID(sPositionID, player, updateChart = true)
 {
     if (sPositionID.length < 10) return;
 
@@ -264,7 +264,7 @@ function setPositionID(sPositionID, player)
 
     boardChart.data.datasets[0].data = player0CheckerData;
     boardChart.data.datasets[1].data = player1CheckerData;
-    boardChart.update();
+    if (updateChart) boardChart.update();
 }
 
 function positionIDToBinaryString(sPositionID)
