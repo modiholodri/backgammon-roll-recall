@@ -4,12 +4,22 @@ const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
 
-function createBlunderStore({ resetPerformance, records = [], importData = [] }) {
+function createBlunderStore({
+    resetPerformance,
+    records = [],
+    importData = [],
+    confirmSampleImport = false,
+    sampleData = [],
+}) {
     let exportedJSON = '';
     let importedBlunders = [];
+    let sampleFetchCount = 0;
     const table = {
         async toArray() {
             return records.map((record) => ({ ...record }));
+        },
+        async count() {
+            return records.length;
         },
         orderBy(field) {
             return {
@@ -22,6 +32,7 @@ function createBlunderStore({ resetPerformance, records = [], importData = [] })
         },
         async bulkPut(blunders) {
             importedBlunders = JSON.parse(JSON.stringify(blunders));
+            records.push(...blunders.map((blunder) => ({ ...blunder })));
         },
     };
 
@@ -50,6 +61,12 @@ function createBlunderStore({ resetPerformance, records = [], importData = [] })
             },
         },
         window: {
+            async confirm() {
+                return confirmSampleImport;
+            },
+            atob(encoded) {
+                return Buffer.from(encoded, 'base64').toString('binary');
+            },
             async showSaveFilePicker() {
                 return {
                     async createWritable() {
@@ -70,6 +87,17 @@ function createBlunderStore({ resetPerformance, records = [], importData = [] })
                 }];
             },
         },
+        fetch: async (url) => {
+            sampleFetchCount++;
+            assert.equal(
+                url,
+                'https://api.github.com/repos/modiholodri/backgammon-roll-recall/contents/SampleBlunders.json'
+            );
+            const content = Buffer.from(JSON.stringify(sampleData), 'binary').toString('base64');
+            return { ok: true, async json() { return { content }; } };
+        },
+        repoOwner: 'modiholodri',
+        repoName: 'backgammon-roll-recall',
         fetchBlundersFromStore() {},
         console: { log() {}, error() {}, warn() {} },
     });
@@ -81,10 +109,53 @@ function createBlunderStore({ resetPerformance, records = [], importData = [] })
 
     return {
         store,
+        context,
         getExportedBlunders: () => JSON.parse(exportedJSON),
         getImportedBlunders: () => importedBlunders,
+        getSampleFetchCount: () => sampleFetchCount,
     };
 }
+
+test('sample blunders are downloaded and imported after confirmation when the store is empty', async () => {
+    const sampleBlunder = { positionID: 'sample-position', matchID: 'sample-match', moves: [] };
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        sampleData: [sampleBlunder],
+    });
+
+    await new Promise((resolve) => setImmediate(resolve));
+    harness.context.window.confirm = async () => true;
+    const result = await harness.store.importSampleBlundersIfEmpty();
+
+    assert.equal(result, 1);
+    assert.equal(harness.getSampleFetchCount(), 1);
+    assert.deepEqual(harness.getImportedBlunders(), [sampleBlunder]);
+});
+
+test('sample blunders are not downloaded when the store already has data', async () => {
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        records: [{ positionID: 'existing', matchID: 'match' }],
+        confirmSampleImport: true,
+        sampleData: [{ positionID: 'sample', matchID: 'match' }],
+    });
+
+    assert.equal(await harness.store.importSampleBlundersIfEmpty(), 0);
+    assert.equal(harness.getSampleFetchCount(), 0);
+    assert.deepEqual(harness.getImportedBlunders(), []);
+});
+
+test('sample blunders are not downloaded when import is declined', async () => {
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        confirmSampleImport: false,
+        sampleData: [{ positionID: 'sample', matchID: 'match' }],
+    });
+
+    assert.equal(await harness.store.importSampleBlundersIfEmpty(), 0);
+    assert.equal(harness.getSampleFetchCount(), 0);
+    assert.deepEqual(harness.getImportedBlunders(), []);
+});
 
 test('import resets performance data when the option is checked', async () => {
     const blunder = {
