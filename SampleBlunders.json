@@ -2,7 +2,7 @@
   {
     "positionID": "0HPkESCwZ/ABMA",
     "matchID": "cAmrAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -46,7 +46,7 @@
   {
     "positionID": "0PPgAQywZ/ABMA",
     "matchID": "8AmpAAAAIAAE",
-    "level": 3,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -354,7 +354,7 @@
   {
     "positionID": "23EHBgC23YABAw",
     "matchID": "UYm2AAAAAAAE",
-    "level": 9,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -398,7 +398,7 @@
   {
     "positionID": "23IwEChs28ABQQ",
     "matchID": "QQmuAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -662,7 +662,7 @@
   {
     "positionID": "25oQAB5s284AAA",
     "matchID": "QQmqAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -706,7 +706,7 @@
   {
     "positionID": "27QQAC5s22YCAA",
     "matchID": "QYmlAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -750,7 +750,7 @@
   {
     "positionID": "27YAKBiz7w4AAA",
     "matchID": "8AmmAAAAIAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -926,7 +926,7 @@
   {
     "positionID": "29wDBgB2dwMABg",
     "matchID": "UYmmACAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1322,7 +1322,7 @@
   {
     "positionID": "2LYLAQOzucADIA",
     "matchID": "UYmuAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1366,7 +1366,7 @@
   {
     "positionID": "2LYbAEHbZgsCIA",
     "matchID": "UQmlAAAAAAAE",
-    "level": 6,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1417,7 +1417,7 @@
   {
     "positionID": "2LYbAGDb1g0AIA",
     "matchID": "UYmyAAAAAAAE",
-    "level": 5,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1461,7 +1461,7 @@
   {
     "positionID": "2LYbAGDb1gYCIA",
     "matchID": "UQmuAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1505,7 +1505,7 @@
   {
     "positionID": "2LYbAGDvbgYAIA",
     "matchID": "UYmkAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1894,7 +1894,7 @@
   {
     "positionID": "2zQYADZs22YgAA",
     "matchID": "QYmlAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1938,7 +1938,7 @@
   {
     "positionID": "2zgYAGps2yYBAg",
     "matchID": "QQmqAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -1982,7 +1982,7 @@
   {
     "positionID": "2zgYAGps2yYgAg",
     "matchID": "QQmmAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -2026,7 +2026,7 @@
   {
     "positionID": "2zgYCFRs28BBAg",
     "matchID": "QYmmAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -2943,7 +2943,7 @@
   {
     "positionID": "4HPwAQXg28EBMA",
     "matchID": "UYmyADAAIAAE",
-    "level": 3,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3207,7 +3207,7 @@
   {
     "positionID": "4HPwBSDg2+ABMA",
     "matchID": "UYmpADAAIAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3427,7 +3427,7 @@
   {
     "positionID": "4LcNQwBsu4EBBQ",
     "matchID": "UYmmADAAIAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3603,7 +3603,7 @@
   {
     "positionID": "4NsmAxBsu4EBKA",
     "matchID": "UQmqADAAIAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3647,7 +3647,7 @@
   {
     "positionID": "4NsxBwBw5+ABIg",
     "matchID": "cImpACAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3735,7 +3735,7 @@
   {
     "positionID": "4NuRAxAZz8EDIA",
     "matchID": "cImpAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3779,7 +3779,7 @@
   {
     "positionID": "4NvBASTg8+ABJA",
     "matchID": "cIm2AAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -3999,7 +3999,7 @@
   {
     "positionID": "4NvCERC03YIBMA",
     "matchID": "UYmmADAAIAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -4439,7 +4439,7 @@
   {
     "positionID": "4POFCwBstokBMA",
     "matchID": "8AmpAEAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -4483,7 +4483,7 @@
   {
     "positionID": "4PPBBwDQ6+CABQ",
     "matchID": "cImtAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -4527,7 +4527,7 @@
   {
     "positionID": "4PPgASHgc/ABMA",
     "matchID": "cAmlAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -4703,7 +4703,7 @@
   {
     "positionID": "4PPgAwjQM/iACQ",
     "matchID": "cAm3AAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -4835,7 +4835,7 @@
   {
     "positionID": "4PPgQSDQM/iAMA",
     "matchID": "cAmqAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -5502,7 +5502,7 @@
   {
     "positionID": "7x4AAB5z2x0AAA",
     "matchID": "QYmkACAAEAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -5782,7 +5782,7 @@
   {
     "positionID": "GT8HAxBsdwcASA",
     "matchID": "8ImqAEAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -5914,7 +5914,7 @@
   {
     "positionID": "HM8PBgDM1uACAw",
     "matchID": "cImtAAAAAAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -6398,7 +6398,7 @@
   {
     "positionID": "NrcBAixs7wwKAA",
     "matchID": "8AmmAAAAIAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -6442,7 +6442,7 @@
   {
     "positionID": "NtsEAE7YOyMTAA",
     "matchID": "8ImuAAAAIAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -6706,7 +6706,7 @@
   {
     "positionID": "RufgAQzYZswBMA",
     "matchID": "8AmlAAAAIAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -8190,7 +8190,7 @@
   {
     "positionID": "bbYBAC7s7kYBAA",
     "matchID": "8ImyAAAAIAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -9540,7 +9540,7 @@
   {
     "positionID": "f68CAEDb3Q0AAA",
     "matchID": "UYmmAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -9584,7 +9584,7 @@
   {
     "positionID": "f68CAEDb3QYCAA",
     "matchID": "UQmnAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -9628,7 +9628,7 @@
   {
     "positionID": "f68CAEDbdgsCAA",
     "matchID": "UQmmAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -10193,7 +10193,7 @@
   {
     "positionID": "jGfMACzYzuABIQ",
     "matchID": "QYmuAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -10413,7 +10413,7 @@
   {
     "positionID": "jJ8HAxBsu0MAMA",
     "matchID": "8AmnAEAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -10501,7 +10501,7 @@
   {
     "positionID": "jM+DAxBs21IAMA",
     "matchID": "8AmmAEAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -10633,7 +10633,7 @@
   {
     "positionID": "jOfBBwDM1uAgAw",
     "matchID": "cImlAAAAAAAE",
-    "level": 3,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -12863,7 +12863,7 @@
   {
     "positionID": "sLeDAxAZz5EDBA",
     "matchID": "cAmvAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -12907,7 +12907,7 @@
   {
     "positionID": "sNsNIAPB82CAKQ",
     "matchID": "UYmlAAAAEAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -13384,7 +13384,7 @@
   {
     "positionID": "t20AAB7sdjcAAA",
     "matchID": "QYmuAAAAAAAE",
-    "level": 1,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -14310,7 +14310,7 @@
   {
     "positionID": "uJ0BAFds22IBCA",
     "matchID": "QYmmACAAEAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
@@ -14354,7 +14354,7 @@
   {
     "positionID": "uJ0BBC5su2EARA",
     "matchID": "QYmlACAAEAAE",
-    "level": 2,
+    "level": 0,
     "timesAsked": 0,
     "totalLostEquity": 0,
     "moves": [
