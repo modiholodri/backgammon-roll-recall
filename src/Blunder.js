@@ -217,7 +217,6 @@ function moveToTableRow(singleMove) {
     }
 
 
-//! not used at the moment, remove later?
 // Variant that accepts custom level thresholds
 function getColorWithLevels(value, awfulLevel, mediumLevel, perfectLevel)
 {
