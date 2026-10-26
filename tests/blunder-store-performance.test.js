@@ -132,6 +132,20 @@ test('sample blunders are downloaded and imported after confirmation when the st
     assert.deepEqual(harness.getImportedBlunders(), [sampleBlunder]);
 });
 
+test('download sample blunders imports the sample data without confirmation', async () => {
+    const sampleBlunder = { positionID: 'sample-position', matchID: 'sample-match', moves: [] };
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        sampleData: [sampleBlunder],
+    });
+
+    const result = await harness.store.downloadSampleBlunders();
+
+    assert.equal(result, 1);
+    assert.equal(harness.getSampleFetchCount(), 1);
+    assert.deepEqual(harness.getImportedBlunders(), [sampleBlunder]);
+});
+
 test('sample blunders are not downloaded when the store already has data', async () => {
     const harness = createBlunderStore({
         resetPerformance: false,

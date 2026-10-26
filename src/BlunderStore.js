@@ -46,18 +46,7 @@ class BlunderStore extends Dexie {
         return this.blunders.add(blunder);
     }
 
-    async importSampleBlundersIfEmpty() {
-        if (await this.blunders.count() > 0) {
-            return 0;
-        }
-
-        const confirmed = await window.confirm(
-            'Your Blunder Store is empty. Would you like to download and import the sample blunders?'
-        );
-        if (!confirmed) {
-            return 0;
-        }
-
+    async downloadSampleBlunders() {
         const response = await fetch(
             `https://api.github.com/repos/${repoOwner}/${repoName}/contents/SampleBlunders.json`
         );
@@ -82,14 +71,29 @@ class BlunderStore extends Dexie {
             throw new Error('The sample blunders file contains no valid blunders');
         }
 
-        return this.transaction('rw', this.blunders, async () => {
-            if (await this.blunders.count() > 0) {
-                return 0;
-            }
-
+        const importedCount = await this.transaction('rw', this.blunders, async () => {
             await this.blunders.bulkPut(sampleBlunders);
             return sampleBlunders.length;
         });
+
+        await this.updateLevelStats();
+        fetchBlundersFromStore();
+        return importedCount;
+    }
+
+    async importSampleBlundersIfEmpty() {
+        if (await this.blunders.count() > 0) {
+            return 0;
+        }
+
+        const confirmed = await window.confirm(
+            'Your Blunder Store is empty. Would you like to download and import the sample blunders?'
+        );
+        if (!confirmed) {
+            return 0;
+        }
+
+        return this.downloadSampleBlunders();
     }
 
     async getAllBlunders(order = 'level') {
