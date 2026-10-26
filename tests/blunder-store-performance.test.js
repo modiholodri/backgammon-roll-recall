@@ -102,6 +102,7 @@ test('import resets performance data when the option is checked', async () => {
     assert.equal(await harness.store.importJSON(), 1);
     assert.deepEqual(harness.getImportedBlunders(), [{
         ...blunder,
+        level: 0,
         timesAsked: 0,
         totalLostEquity: 0,
     }]);
@@ -140,6 +141,7 @@ test('export resets performance data without changing the stored blunder', async
     assert.equal(await harness.store.exportJSON(), true);
     assert.deepEqual(harness.getExportedBlunders(), [{
         ...blunder,
+        level: 0,
         timesAsked: 0,
         totalLostEquity: 0,
     }]);
