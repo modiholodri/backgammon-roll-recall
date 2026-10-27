@@ -15,10 +15,10 @@ const boardThemes = {
     moss: {
         frame: 'rgba(116, 176, 92, 0.9)',
         pointsA: 'rgba(92, 176, 79, 0.65)',
-        pointsB: 'rgba(34, 105, 51, 0.75)',
+        pointsB: 'rgba(0, 82, 19, 0.75)',
         grid: 'rgba(255, 255, 255, 0.12)',
-        player0Fore: '#7cfc00',
-        player0Back: 'rgba(124, 252, 0, 0.95)',
+        player0Fore: '#3d7a00',
+        player0Back: 'rgba(96, 192, 0, 0.95)',
         player1Fore: '#d9f99d',
         player1Back: 'rgba(217, 249, 157, 0.95)',
     },
