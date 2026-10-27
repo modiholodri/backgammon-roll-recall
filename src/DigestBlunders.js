@@ -31,7 +31,13 @@ function challengeOrderChanged() {
     fetchBlundersFromStore();
 }
 
+function collapseDigestSections() {
+    collapseElements(['blunderStore', 'settings']);
+}
+
 function showNextBlunder() {
+    collapseDigestSections();
+
     if (!Array.isArray(blunders) || blunders.length === 0) {
         console.log('No blunders available');
         return;
@@ -84,6 +90,8 @@ function revealBestMoveOption() {
 }
 
 function checkSelectedMoveOption(revealBestMove = false) {
+    collapseDigestSections();
+
     if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
         console.log('No blunders available');
         return;
@@ -183,6 +191,8 @@ function performDeleteCurrentBlunder() {
 }
 
 function deleteCurrentBlunder() {
+    collapseDigestSections();
+
     const confirmed = window.confirm('Are you sure you want to delete this blunder?');
     if (!confirmed) {
         return false;
