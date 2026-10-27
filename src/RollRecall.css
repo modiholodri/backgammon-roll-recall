@@ -82,6 +82,12 @@ canvas {
     margin: 0.3rem;
 }
 
+.btn-outline-primary.best-move-option {
+    background-color: darkblue;
+    border-color: darkblue;
+    color: white;
+}
+
 .btn-outline-primary:hover,
 .btn-outline-primary:active,
 .btn-outline-primary:focus {

@@ -88,6 +88,8 @@ class Blunder {
     populateMoveOptions() {
         const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
 
+        clearBestMoveOptionHighlight();
+
         let moveIndex = Math.floor(Math.random() * 5);
 
         let i = 0;
@@ -97,11 +99,13 @@ class Blunder {
 
             button.style.display = '';
             button.style.removeProperty('color');
+            button.classList.remove('best-move-option');
             button.textContent = move.notation;
         }
         for( ; i < 5; i++ ) {
             const button = document.getElementById(optionIds[i]);
             button.style.display = 'none';
+            button.classList.remove('best-move-option');
         }
     }
 
