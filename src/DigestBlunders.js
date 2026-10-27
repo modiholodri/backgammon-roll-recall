@@ -51,6 +51,35 @@ function showNextBlunder() {
     blunder.show();
 }
 
+function clearBestMoveOptionHighlight() {
+    const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
+
+    optionIds.forEach((id) => {
+        const option = document.getElementById(id);
+        if (!option) return;
+
+        option.classList.remove('best-move-option');
+        option.setAttribute('aria-pressed', 'false');
+    });
+}
+
+function highlightBestMoveOption(bestMoveNotation) {
+    clearBestMoveOptionHighlight();
+    if (!bestMoveNotation) return;
+
+    const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
+    for (const id of optionIds) {
+        const option = document.getElementById(id);
+        if (!option) continue;
+
+        if (option.textContent.trim() === bestMoveNotation) {
+            option.classList.add('best-move-option');
+            option.setAttribute('aria-pressed', 'true');
+            return;
+        }
+    }
+}
+
 function colorMoveOptions() {
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
 
@@ -108,7 +137,7 @@ function checkSelectedMoveOption(revealBestMove = false) {
     if (selectedEl) {
         selectedMoveNotation = selectedEl.textContent.trim();
     }
-    if (!selectedMoveNotation) {
+    if (!selectedMoveNotation && !revealBestMove) {
         console.log('No selected move notation found');
         return;
     }
@@ -142,6 +171,9 @@ function checkSelectedMoveOption(revealBestMove = false) {
         if (lastCheckedBlunder != currentBlunder) {
             if (!revealBestMove) {
                 blunder.updateStatistics(selectedMove);
+            }
+            else {
+                highlightBestMoveOption(selectedMove.notation);
             }
             colorMoveOptions();
             lastCheckedBlunder = currentBlunder;
