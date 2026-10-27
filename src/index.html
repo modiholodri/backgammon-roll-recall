@@ -76,6 +76,7 @@
                 </div>
                 <br>
                 <p style="color: red;"><b>Danger Area</b></p>
+                <button id="deleteIndubitable" class="btn btn-outline-primary" style="color: red;" onclick="blunderStore.deleteIndubitableBlunders().then(() => fetchBlundersFromStore()).catch((error) => console.error('Failed to delete indubitable blunders', error));">Delete Indubitable</button>
                 <button id="deleteAll" class="btn btn-outline-primary" style="color: red;" onclick="blunderStore.deleteAllBlunders()">Delete All</button>
             </div>
         </section>

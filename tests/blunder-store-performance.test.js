@@ -36,6 +36,18 @@ function createBlunderStore({
             importedBlunders = JSON.parse(JSON.stringify(blunders));
             records.push(...blunders.map((blunder) => ({ ...blunder })));
         },
+        async delete(id) {
+            const index = records.findIndex((record) => {
+                return record.positionID === id[0] && record.matchID === id[1];
+            });
+            if (index === -1) {
+                return;
+            }
+            records.splice(index, 1);
+        },
+        async clear() {
+            records.length = 0;
+        },
     };
 
     class FakeDexie {
@@ -164,6 +176,35 @@ test('download sample blunders imports the sample data without confirmation', as
     assert.equal(result, 1);
     assert.equal(harness.getSampleFetchCount(), 1);
     assert.deepEqual(harness.getImportedBlunders(), [sampleBlunder]);
+});
+
+test('delete indubitable blunders prompts for each candidate and keeps only the questionable ones', async () => {
+    const prompts = [];
+    const records = [
+        { positionID: 'safe1', matchID: 'm1', moves: [{ lostEquityValue: 0.025 }, { lostEquityValue: 0.050 }] },
+        { positionID: 'safe2', matchID: 'm2', moves: [{ lostEquityValue: 0.090 }] },
+        { positionID: 'bad', matchID: 'm3', moves: [{ lostEquityValue: 0.120 }, { lostEquityValue: 0.200 }] },
+    ];
+    const harness = createBlunderStore({ resetPerformance: false, records });
+    harness.context.document.getElementById = (id) => {
+        if (id === 'doubtfulLostEquity') {
+            return { value: '0.100' };
+        }
+        if (id === 'blunderStoreStatistics') {
+            return { innerHTML: '' };
+        }
+        return { checked: false };
+    };
+    harness.context.window.confirm = (message) => {
+        prompts.push(message);
+        return true;
+    };
+
+    const deletedCount = await harness.store.deleteIndubitableBlunders();
+
+    assert.equal(deletedCount, 2);
+    assert.deepEqual(prompts.map((message) => message.includes('Maximum lost equity: 0.050') || message.includes('Maximum lost equity: 0.090')), [true, true]);
+    assert.deepEqual(await harness.store.blunders.toArray(), [{ positionID: 'bad', matchID: 'm3', moves: [{ lostEquityValue: 0.120 }, { lostEquityValue: 0.200 }] }]);
 });
 
 test('blunder store statistics refresh even while the section is open', async () => {
