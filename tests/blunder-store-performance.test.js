@@ -10,6 +10,8 @@ function createBlunderStore({
     importData = [],
     confirmSampleImport = false,
     sampleData = [],
+    stubStats = true,
+    blunderStoreVisible = false,
 }) {
     let exportedJSON = '';
     let importedBlunders = [];
@@ -52,10 +54,25 @@ function createBlunderStore({
         }
     }
 
+    const statsElement = { innerHTML: '' };
+    const blunderStoreElement = {
+        classList: {
+            contains(className) {
+                return className === 'show' && blunderStoreVisible;
+            },
+        },
+    };
+
     const context = vm.createContext({
         Dexie: FakeDexie,
         document: {
             getElementById(id) {
+                if (id === 'blunderStore') {
+                    return blunderStoreElement;
+                }
+                if (id === 'blunderStoreStatistics') {
+                    return statsElement;
+                }
                 assert.equal(id, 'resetBlunderPerformance');
                 return { checked: resetPerformance };
             },
@@ -99,13 +116,16 @@ function createBlunderStore({
         repoOwner: 'modiholodri',
         repoName: 'backgammon-roll-recall',
         fetchBlundersFromStore() {},
+        marked: { parse(markdown) { return markdown; } },
         console: { log() {}, error() {}, warn() {} },
     });
 
     const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'BlunderStore.js'), 'utf8');
     vm.runInContext(source, context, { filename: 'BlunderStore.js' });
     const store = vm.runInContext('blunderStore', context);
-    store.updateLevelStats = async () => {};
+    if (stubStats) {
+        store.updateLevelStats = async () => {};
+    }
 
     return {
         store,
@@ -144,6 +164,25 @@ test('download sample blunders imports the sample data without confirmation', as
     assert.equal(result, 1);
     assert.equal(harness.getSampleFetchCount(), 1);
     assert.deepEqual(harness.getImportedBlunders(), [sampleBlunder]);
+});
+
+test('blunder store statistics refresh even while the section is open', async () => {
+    const records = [
+        { positionID: 'l1', matchID: 'm1', level: 1 },
+        { positionID: 'l2', matchID: 'm2', level: 2 },
+    ];
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        records,
+        stubStats: false,
+        blunderStoreVisible: true,
+    });
+
+    await harness.store.updateLevelStats();
+
+    assert.match(harness.context.document.getElementById('blunderStoreStatistics').innerHTML, /\|1\|1\|/);
+    assert.match(harness.context.document.getElementById('blunderStoreStatistics').innerHTML, /\|2\|1\|/);
+    assert.match(harness.context.document.getElementById('blunderStoreStatistics').innerHTML, /\|∑\|2\|/);
 });
 
 test('sample blunders are not downloaded when the store already has data', async () => {
