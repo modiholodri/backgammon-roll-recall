@@ -210,6 +210,66 @@ test('import preserves performance data when the option is unchecked', async () 
     assert.deepEqual(harness.getImportedBlunders(), [blunder]);
 });
 
+test('import preserves existing performance when the same blunder is imported again', async () => {
+    const existingBlunder = {
+        positionID: 'position',
+        matchID: 'match',
+        level: 5,
+        timesAsked: 14,
+        totalLostEquity: 0.72,
+    };
+    const incomingBlunder = {
+        positionID: 'position',
+        matchID: 'match',
+        level: 2,
+        timesAsked: 3,
+        totalLostEquity: 0.12,
+    };
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        records: [existingBlunder],
+        importData: [incomingBlunder],
+    });
+
+    assert.equal(await harness.store.importJSON(), 1);
+    assert.deepEqual(harness.getImportedBlunders(), [{
+        ...incomingBlunder,
+        level: existingBlunder.level,
+        timesAsked: existingBlunder.timesAsked,
+        totalLostEquity: existingBlunder.totalLostEquity,
+    }]);
+});
+
+test('download sample blunders preserves existing performance when the same blunder is downloaded again', async () => {
+    const existingBlunder = {
+        positionID: 'sample-position',
+        matchID: 'sample-match',
+        level: 6,
+        timesAsked: 18,
+        totalLostEquity: 1.2,
+    };
+    const sampleBlunder = {
+        positionID: 'sample-position',
+        matchID: 'sample-match',
+        level: 1,
+        timesAsked: 2,
+        totalLostEquity: 0.08,
+    };
+    const harness = createBlunderStore({
+        resetPerformance: false,
+        records: [existingBlunder],
+        sampleData: [sampleBlunder],
+    });
+
+    assert.equal(await harness.store.downloadSampleBlunders(), 1);
+    assert.deepEqual(harness.getImportedBlunders(), [{
+        ...sampleBlunder,
+        level: existingBlunder.level,
+        timesAsked: existingBlunder.timesAsked,
+        totalLostEquity: existingBlunder.totalLostEquity,
+    }]);
+});
+
 test('export resets performance data without changing the stored blunder', async () => {
     const blunder = {
         positionID: 'position',

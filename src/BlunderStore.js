@@ -46,6 +46,48 @@ class BlunderStore extends Dexie {
         return this.blunders.add(blunder);
     }
 
+    async mergeImportedBlunders(blunders) {
+        const existingBlunders = await this.blunders.toArray();
+        const existingByKey = new Map();
+
+        existingBlunders.forEach((existingBlunder) => {
+            if (existingBlunder && existingBlunder.positionID != null && existingBlunder.matchID != null) {
+                existingByKey.set(`${existingBlunder.positionID}:${existingBlunder.matchID}`, existingBlunder);
+            }
+        });
+
+        const resetPerformance = document.getElementById('resetBlunderPerformance').checked;
+
+        return blunders.map((blunder) => {
+            const key = `${blunder.positionID}:${blunder.matchID}`;
+            const existingBlunder = existingByKey.get(key);
+
+            if (!existingBlunder) {
+                if (resetPerformance) {
+                    return { ...blunder, level: 0, timesAsked: 0, totalLostEquity: 0 };
+                }
+                return blunder;
+            }
+
+            if (resetPerformance) {
+                return {
+                    ...blunder,
+                    ...existingBlunder,
+                    level: 0,
+                    timesAsked: 0,
+                    totalLostEquity: 0,
+                };
+            }
+
+            return {
+                ...blunder,
+                level: existingBlunder.level ?? blunder.level,
+                timesAsked: existingBlunder.timesAsked ?? blunder.timesAsked,
+                totalLostEquity: existingBlunder.totalLostEquity ?? blunder.totalLostEquity,
+            };
+        });
+    }
+
     async downloadSampleBlunders() {
         const response = await fetch(
             `https://api.github.com/repos/${repoOwner}/${repoName}/contents/SampleBlunders.json`
@@ -71,9 +113,11 @@ class BlunderStore extends Dexie {
             throw new Error('The sample blunders file contains no valid blunders');
         }
 
+        const importBlunders = await this.mergeImportedBlunders(sampleBlunders);
+
         const importedCount = await this.transaction('rw', this.blunders, async () => {
-            await this.blunders.bulkPut(sampleBlunders);
-            return sampleBlunders.length;
+            await this.blunders.bulkPut(importBlunders);
+            return importBlunders.length;
         });
 
         await this.updateLevelStats();
@@ -277,16 +321,10 @@ class BlunderStore extends Dexie {
                 return 0;
             }
 
-            if (document.getElementById('resetBlunderPerformance').checked) {
-                blundersToImport.forEach((blunder) => {
-                    blunder.level = 0;
-                    blunder.timesAsked = 0;
-                    blunder.totalLostEquity = 0;
-                });
-            }
+            const mergedBlundersToImport = await this.mergeImportedBlunders(blundersToImport);
 
             await this.transaction('rw', this.blunders, async () => {
-                await this.blunders.bulkPut(blundersToImport);
+                await this.blunders.bulkPut(mergedBlundersToImport);
             });
 
             await this.updateLevelStats();
