@@ -6,6 +6,18 @@ const DB_NAME = 'RollRecallDB';
 const DB_VERSION = 2;
 const TABLE_NAME = 'blunders';
 
+function getBlunderMaxLostEquity(blunder) {
+    if (!blunder || !Array.isArray(blunder.moves)) {
+        return 0;
+    }
+
+    const values = blunder.moves
+        .map((move) => Number(move && move.lostEquityValue))
+        .filter((value) => Number.isFinite(value));
+
+    return values.length > 0 ? Math.max(...values) : 0;
+}
+
 class BlunderStore extends Dexie {
     constructor() {
         super(DB_NAME);
@@ -188,6 +200,46 @@ class BlunderStore extends Dexie {
 
     async updateBlunder(id, changes) {
         return this.blunders.update(id, changes);
+    }
+
+    getMaxLostEquity(blunder) {
+        return getBlunderMaxLostEquity(blunder);
+    }
+
+    async getIndubitableBlunders() {
+        const doubtfulLostEquity = Math.abs(Number(document.getElementById('doubtfulLostEquity')?.value || 0));
+        const allBlunders = await this.blunders.toArray();
+
+        return allBlunders.filter((blunder) => this.getMaxLostEquity(blunder) <= doubtfulLostEquity);
+    }
+
+    async deleteIndubitableBlunders() {
+        const indubitableBlunders = await this.getIndubitableBlunders();
+        if (indubitableBlunders.length === 0) {
+            return 0;
+        }
+
+        let deletedCount = 0;
+        for (const blunder of indubitableBlunders) {
+            const maxLostEquity = this.getMaxLostEquity(blunder);
+            const confirmed = window.confirm(
+                `Delete this indubitable blunder? Maximum lost equity: ${maxLostEquity.toFixed(3)}.`
+            );
+
+            if (!confirmed) {
+                continue;
+            }
+
+            const id = [blunder.positionID, blunder.matchID];
+            const deleted = await this.deleteBlunder(id);
+            if (deleted) {
+                deletedCount++;
+            }
+        }
+
+        await this.updateLevelStats();
+        fetchBlundersFromStore();
+        return deletedCount;
     }
 
     async deleteBlunder(id) {

@@ -193,7 +193,16 @@ function performDeleteCurrentBlunder() {
 function deleteCurrentBlunder() {
     collapseDigestSections();
 
-    const confirmed = window.confirm('Are you sure you want to delete this blunder?');
+    if (!Array.isArray(blunders) || blunders.length === 0 || currentBlunder < 0 || currentBlunder >= blunders.length) {
+        console.log('No current blunder to delete');
+        return false;
+    }
+
+    const blunder = new Blunder(blunders[currentBlunder]);
+    const maxLostEquity = typeof blunderStore !== 'undefined' && typeof blunderStore.getMaxLostEquity === 'function'
+        ? blunderStore.getMaxLostEquity(blunder)
+        : Math.max(...(blunder.moves || []).map((move) => Number(move && move.lostEquityValue) || 0), 0);
+    const confirmed = window.confirm(`Are you sure you want to delete this blunder? Maximum lost equity: ${maxLostEquity.toFixed(3)}.`);
     if (!confirmed) {
         return false;
     }
