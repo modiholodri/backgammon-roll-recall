@@ -83,7 +83,7 @@ canvas {
 }
 
 .btn-outline-primary.best-move-option {
-    background-color: darkblue;
+    background-color: rgb(0, 0, 64);
     border-color: darkblue;
     color: white;
 }
