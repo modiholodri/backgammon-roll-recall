@@ -160,8 +160,8 @@ class BlunderStore extends Dexie {
 
     // Returns a statistics string like "L0:1 L1:21 L2:12" counting blunders per level
     async updateLevelStats() {
-        const blunderStoreElement = document.getElementById('blunderStore');
-        if (blunderStoreElement.classList.contains('show')) {
+        const blunderStoreStatistics = document.getElementById('blunderStoreStatistics');
+        if (!blunderStoreStatistics) {
             return;
         }
 
@@ -183,7 +183,6 @@ class BlunderStore extends Dexie {
         const statisticsTable = `|Level|Blunders|\n|:-:|:-:|\n${levels}|∑|${total}|`;
         const htmlStatisticsTable = marked.parse(statisticsTable);
 
-        const blunderStoreStatistics = document.getElementById('blunderStoreStatistics');
         blunderStoreStatistics.innerHTML = htmlStatisticsTable;
     }
 
