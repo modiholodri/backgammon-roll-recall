@@ -1,7 +1,7 @@
 # Backgammon Roll Recall
 
 Play matches against GNU Backgammon (further on only referred to as GNU), analyze your matches, extract your mistakes and learn from them.
-You’ll face these critical moments repeatedly until you master them, ensuring you never make the same mistake again.
+You’ll face these critical moments repeatedly until you master them...
 
 Before you start [Adjust the GNU Settings](#Adjust-the-GNU-Settings).
 
@@ -78,10 +78,6 @@ Click on the Blunder Store heading to refresh the statistics.
 - **Download Sample Blunders** fetches the bundled sample blunders into the Blunder Store.
 - Select **Reset performance on import/export** to reset the level, times asked, and total lost equity for imported or exported blunders. This does not change the saved data when exporting.
 - **Delete All** deletes all blunders in the Blunder Store.
-
-##### Read Me
-
-The Read Me section just shows the information you are reading now.
 
 ##### Settings
 
