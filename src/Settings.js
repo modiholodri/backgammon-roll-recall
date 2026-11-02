@@ -43,6 +43,8 @@ function loadSettings() {
     // Theme Selection
     loadValueSetting('themeSelection', 'system-theme');
     loadValueSetting('challengeOrder', 'level');
+    loadCheckedSetting('showStatisticDetails', 'true');
+    showStatisticDetails = document.getElementById('showStatisticDetails').checked;
     if (localStorage.getItem('boardThemeSelection') === 'felt') {
         localStorage.setItem('boardThemeSelection', 'moss');
     }
@@ -60,6 +62,7 @@ function saveSettings() {
     // Settings
     saveValueSetting('themeSelection'); 
     saveValueSetting('challengeOrder');
+    saveCheckedSetting('showStatisticDetails');
     saveValueSetting('boardThemeSelection');
     saveValueSetting('acceptedLostEquity'); 
     saveValueSetting('doubtfulLostEquity'); 
