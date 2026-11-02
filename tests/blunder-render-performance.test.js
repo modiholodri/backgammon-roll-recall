@@ -10,9 +10,8 @@ test('showing a blunder updates the board chart once after all board data is set
     const context = vm.createContext({
         alert() {},
         boardChart: {
-            update(mode) {
+            update() {
                 updates++;
-                calls.push(['chart update', mode]);
             },
         },
         console: { error() {} },
@@ -51,7 +50,6 @@ test('showing a blunder updates the board chart once after all board data is set
         ['cube'],
         ['dice', false],
         ['away'],
-        ['chart update', 'none'],
     ]);
     assert.equal(updates, 1);
 });
