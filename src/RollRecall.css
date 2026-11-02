@@ -88,7 +88,7 @@ canvas {
 }
 
 .btn-outline-primary {
-    border-color: blue;
+    border-color: var(--button-primary);
     margin-top: 15px;
     font-size: 1.25rem;
     margin: 0.3rem;
@@ -96,14 +96,15 @@ canvas {
 
 .btn-outline-primary.best-move-option {
     background-color: rgb(0, 0, 64);
-    border-color: darkblue;
+    border-color: var(--button-primary);
     color: white;
 }
 
 .btn-outline-primary:hover,
 .btn-outline-primary:active,
 .btn-outline-primary:focus {
-    background-color: darkblue;
+    background-color: var(--button-primary);
+    border-color: var(--button-primary);
 }
 
 .btn-secondary {

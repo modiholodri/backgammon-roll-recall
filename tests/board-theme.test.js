@@ -6,6 +6,14 @@ const vm = require('node:vm');
 
 const canvas = { style: {} };
 const selection = { value: 'classic' };
+const body = {
+    style: {
+        values: new Map(),
+        setProperty(name, value) {
+            this.values.set(name, value);
+        },
+    },
+};
 const context = vm.createContext({
     Chart: {
         defaults: {
@@ -17,6 +25,7 @@ const context = vm.createContext({
         },
     },
     document: {
+        body,
         getElementById(id) {
             if (id === 'boardChartCanvas') return canvas;
             if (id === 'boardThemeSelection') return selection;
@@ -43,6 +52,9 @@ test('board theme changes update the canvas and chart palette', () => {
     vm.runInContext("setBoardTheme('walnut')", context);
 
     assert.equal(canvas.style.backgroundColor, 'black');
+    assert.equal(body.style.values.get('--text-accent'), 'rgba(255, 223, 167, 0.9)');
+    assert.equal(body.style.values.get('--button-primary'), '#925f00');
+    assert.equal(body.style.values.get('--border-accent'), 'rgba(255, 223, 167, 0.9)');
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(255, 223, 167, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(242, 196, 110, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(88, 45, 24, 0.7)');
@@ -80,6 +92,8 @@ test('moss, ocean, and fire themes use their greener, bluer, and warmer palettes
 
     vm.runInContext("setBoardTheme('moss')", context);
 
+    assert.equal(body.style.values.get('--text-accent'), 'rgba(116, 176, 92, 0.9)');
+    assert.equal(body.style.values.get('--button-primary'), '#3d7a00');
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(116, 176, 92, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(92, 176, 79, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(0, 82, 19, 0.75)');
