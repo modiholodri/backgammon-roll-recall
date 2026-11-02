@@ -170,6 +170,18 @@
         </footer>
     </div>
 
+    <dialog id="fullscreenPrompt" aria-labelledby="fullscreenPromptTitle">
+        <h2 id="fullscreenPromptTitle">Start in fullscreen?</h2>
+        <p>Would you like to use Roll Recall in fullscreen mode?</p>
+        <p id="fullscreenPromptError" role="alert" aria-live="polite"></p>
+        <div class="d-flex justify-content-center gap-2">
+            <button id="enterFullscreen" type="button" class="btn btn-primary">Enter fullscreen</button>
+            <form method="dialog">
+                <button type="submit" class="btn btn-outline-primary">Continue windowed</button>
+            </form>
+        </div>
+    </dialog>
+
     <!-- Include Marked.js -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
@@ -200,6 +212,7 @@
     <script>
         // Add DOM Content Loaded Event Listener
         document.addEventListener("DOMContentLoaded", () => {
+            setupFullscreenPrompt();
 
             // wait for settings to load, then continue initialization
             (async function() {

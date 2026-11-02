@@ -31,6 +31,18 @@ body {
     color: var(--text-primary);
 }
 
+dialog#fullscreenPrompt {
+    max-width: min(90vw, 28rem);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-accent);
+    border-radius: 0.5rem;
+}
+
+dialog#fullscreenPrompt::backdrop {
+    background-color: rgb(0 0 0 / 75%);
+}
+
 h1, h2, h3, h4, h5, h6 {
     color: var(--text-accent);
     text-align: center;

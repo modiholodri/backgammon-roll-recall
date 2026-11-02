@@ -82,6 +82,30 @@ function fullscreenChanged() {
     }
 }
 
+function setupFullscreenPrompt() {
+    const dialog = document.getElementById('fullscreenPrompt');
+    const enterFullscreenButton = document.getElementById('enterFullscreen');
+    const errorMessage = document.getElementById('fullscreenPromptError');
+
+    if (!dialog || !enterFullscreenButton || !errorMessage || typeof dialog.showModal !== 'function') {
+        console.error('Fullscreen prompt could not be initialized.');
+        return;
+    }
+
+    enterFullscreenButton.addEventListener('click', async () => {
+        try {
+            await document.documentElement.requestFullscreen();
+            dialog.close();
+        } catch (error) {
+            const message = error && typeof error.message === 'string' ? error.message : String(error);
+            errorMessage.textContent = `Unable to enter fullscreen: ${message}`;
+            console.error(`Error entering fullscreen mode: ${message}`);
+        }
+    });
+
+    dialog.showModal();
+}
+
 
 // Linear Congruential Generator (LCG) for pseudo-random number generation
 class LCG {
@@ -232,4 +256,3 @@ function scrollToElement(element) {
         block: 'start'      // Optional: aligns the element to the top of the viewport
     });
 }
-
