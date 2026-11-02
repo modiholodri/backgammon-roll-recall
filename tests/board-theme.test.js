@@ -46,8 +46,8 @@ test('board theme changes update the canvas and chart palette', () => {
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(255, 223, 167, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(242, 196, 110, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(88, 45, 24, 0.7)');
-    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(242, 196, 110, 0.85)');
-    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(129, 84, 0, 0.85)');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(242, 196, 110, 0.95)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(129, 84, 0, 0.95)');
     assert.equal(chart.options.scales.x.grid.color, 'rgba(255, 255, 255, 0.12)');
     assert.equal(chart.options.scales.y.grid.color, 'rgba(255, 255, 255, 0.12)');
     assert.equal(updates, 1);
@@ -55,8 +55,8 @@ test('board theme changes update the canvas and chart palette', () => {
     vm.runInContext("setBoardTheme('classic')", context);
 
     assert.equal(canvas.style.backgroundColor, 'black');
-    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(0, 99, 255, 0.7)');
-    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(255, 0, 255, 0.7)');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(0, 82, 214, 0.95)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(255, 44, 255, 0.95)');
     assert.equal(updates, 2);
 });
 
@@ -69,7 +69,7 @@ test('unknown board themes restore the classic selection', () => {
     assert.equal(selection.value, 'classic');
 });
 
-test('moss and ocean themes use their greener and bluer palettes', () => {
+test('moss, ocean, and fire themes use their greener, bluer, and warmer palettes', () => {
     const chart = {
         data: { datasets: Array.from({ length: 8 }, () => ({})) },
         options: { scales: { x: { grid: {} }, y: { grid: {} } } },
@@ -82,10 +82,10 @@ test('moss and ocean themes use their greener and bluer palettes', () => {
 
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(116, 176, 92, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(92, 176, 79, 0.65)');
-    assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(34, 105, 51, 0.75)');
-    assert.equal(chart.data.datasets[0].borderColor, '#7cfc00');
-    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(124, 252, 0, 0.95)');
-    assert.equal(chart.data.datasets[1].borderColor, '#d9f99d');
+    assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(0, 82, 19, 0.75)');
+    assert.equal(chart.data.datasets[0].borderColor, '#3d7a00');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(96, 192, 0, 0.95)');
+    assert.equal(chart.data.datasets[1].borderColor, '#5d9000');
     assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(217, 249, 157, 0.95)');
 
     vm.runInContext("setBoardTheme('felt')", context);
@@ -98,6 +98,14 @@ test('moss and ocean themes use their greener and bluer palettes', () => {
     assert.equal(chart.data.datasets[4].borderColor, 'rgba(110, 190, 225, 0.9)');
     assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(95, 190, 225, 0.65)');
     assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(40, 105, 175, 0.75)');
-    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(38, 139, 255, 0.85)');
-    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(0, 46, 230, 0.85)');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(38, 139, 255, 0.95)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(0, 46, 230, 0.95)');
+
+    vm.runInContext("setBoardTheme('fire')", context);
+
+    assert.equal(chart.data.datasets[4].borderColor, 'rgba(214, 98, 24, 0.9)');
+    assert.equal(chart.data.datasets[5].backgroundColor, 'rgba(255, 140, 0, 0.65)');
+    assert.equal(chart.data.datasets[6].backgroundColor, 'rgba(120, 32, 15, 0.75)');
+    assert.equal(chart.data.datasets[0].backgroundColor, 'rgba(255, 180, 72, 0.95)');
+    assert.equal(chart.data.datasets[1].backgroundColor, 'rgba(255, 85, 0, 0.95)');
 });

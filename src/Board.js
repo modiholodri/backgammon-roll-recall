@@ -32,6 +32,16 @@ const boardThemes = {
         player1Fore: '#5b3b00',
         player1Back: 'rgba(129, 84, 0, 0.95)',
     },
+    fire: {
+        frame: 'rgba(214, 98, 24, 0.9)',
+        pointsA: 'rgba(255, 140, 0, 0.65)',
+        pointsB: 'rgba(120, 32, 15, 0.75)',
+        grid: 'rgba(255, 255, 255, 0.12)',
+        player0Fore: '#c95d00',
+        player0Back: 'rgba(255, 180, 72, 0.95)',
+        player1Fore: '#7a1f1f',
+        player1Back: 'rgba(255, 85, 0, 0.95)',
+    },
     ocean: {
         frame: 'rgba(110, 190, 225, 0.9)',
         pointsA: 'rgba(95, 190, 225, 0.65)',
