@@ -146,12 +146,27 @@ class Blunder {
     }
 }
 
-let showStatisticDetails = false;
+let showStatisticDetails = true;
 
 function toggleStatistics() {
-    showStatisticDetails = !showStatisticDetails;
-    const blunder = new Blunder(blunders[currentBlunder]);
-    blunder.showStatistics();
+    setStatisticDetails(!showStatisticDetails);
+}
+
+function setStatisticDetails(showDetails) {
+    showStatisticDetails = Boolean(showDetails);
+    const setting = document.getElementById('showStatisticDetails');
+    if (setting) {
+        setting.checked = showStatisticDetails;
+    }
+    saveCheckedSetting('showStatisticDetails');
+
+    if (typeof blunders !== 'undefined' &&
+        typeof currentBlunder !== 'undefined' &&
+        Array.isArray(blunders) &&
+        currentBlunder >= 0 &&
+        currentBlunder < blunders.length) {
+        new Blunder(blunders[currentBlunder]).showStatistics();
+    }
 }
 
 // Export for use elsewhere
