@@ -136,7 +136,7 @@ class Blunder {
             alert('Invalid match ID.');
         }
 
-        boardChart?.update();
+        boardChart?.update('none');
         this.showStatistics();
 
         const moveDisplay = document.getElementById('moveDisplay');
