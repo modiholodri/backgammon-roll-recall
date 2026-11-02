@@ -522,6 +522,16 @@ function destroyBoardChart(message) {
     }
 }
 
+function applyBoardThemeColors(theme) {
+    const body = document.body;
+    if (!body || !body.style) return;
+
+    body.style.setProperty('--text-accent', theme.frame);
+    body.style.setProperty('--button-primary', theme.player0Fore);
+    body.style.setProperty('--border-accent', theme.frame);
+    body.style.setProperty('--bs-border-color', theme.player0Fore);
+}
+
 function setBoardTheme(themeName) {
     const selectedThemeName = themeName === 'felt' ? 'moss' : themeName;
     const isKnownTheme = Object.prototype.hasOwnProperty.call(boardThemes, selectedThemeName);
@@ -540,6 +550,7 @@ function setBoardTheme(themeName) {
     player1ForeColor = theme.player1Fore;
     player1BackColor = theme.player1Back;
     gridColor.color = theme.grid;
+    applyBoardThemeColors(theme);
     cube.forEach(point => {
         if (point.labelColor === previousPlayer0ForeColor) point.labelColor = player0ForeColor;
         else if (point.labelColor === previousPlayer1ForeColor) point.labelColor = player1ForeColor;
