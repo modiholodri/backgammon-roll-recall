@@ -3,6 +3,11 @@
 Play matches against GNU Backgammon (further on only referred to as GNU), analyze your matches, extract your mistakes and learn from them.
 You’ll face these critical moments repeatedly until you master them...
 
+Blunders progress one level up each time you answer within the limit (Accepted Lost Equity). 
+If you lose more equity than accepted, the blunder goes one level down.
+You can select either to get the blunders with the lowest level or the highest PR first.
+Once you master a blunder it will be asked less frequent.
+
 Before you start [Adjust the GNU Settings](#Adjust-the-GNU-Settings).
 
 The basic process is as follows:
@@ -14,35 +19,44 @@ The basic process is as follows:
 - [Digest Blunders in BG Roll Recall](#Face-the-Mistakes-in-BG-Roll-Recall)
 
 
-### Play a Match in GNU
+### 💻 Play a Match in GNU
 
 Click on New and select the options according to your match preferences. 
 For tips and tricks how to play against GNU read the GNU User Manual.
 
 
-### Analyze the Match with GNU
+### 💻 Analyze the Match with GNU
 
 In the menu go to Analyze - Analyze Match or Session. 
 It'll take a minute or two until GNU did it's calculations.
 
 
-### Export the Match from GNU
+### 💻 Export the Match from GNU
 
 After the match has been analyzed click on **Save**. 
 You can leave the default name as it is but select HTML as file format.
 
 
-### Extract Blunders in BG Roll Recall
+### 💻 Extract Blunders in BG Roll Recall
 
 Click the **Extract** button and select all the analysis files from which you want to extract the blunders. 
 Multiple files can be selected at once. BG Roll Recall extracts the blunders only once.
 
+### 💻 Export Blunders from BG Roll Recall
 
-### Digest Blunders in BG Roll Recall
+Click the **Export** button and save the blunder file, so that it can be imported in the mobile phone.
+Send the blunders to your mobile phone via Telegram or a similar app.
+
+### 📱 Import Blunders in BG Roll Recall
+
+Save the blunders from Telegram to your phone.
+Click the **Import** button and select the saved file. 
+
+### 📱 Digest Blunders in BG Roll Recall
 
 Extracted mistakes are converted into question/answer situations.
 A question contains up to five moves.
-To answer a question just select a move from the available optinos by clicking on it.
+To answer a question just select a move from the available options by clicking on it.
 
 Basic operation includes...
 - Click on Roll Recall to toggle full screen mode.
