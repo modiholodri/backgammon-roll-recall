@@ -590,13 +590,17 @@ function wholeNumbersOnly(value) {
 
 function setCanvasHeight() {
     const canvas = document.getElementById('boardChartCanvas');
-    if (canvas) {
-        const width = window.innerWidth;
-        const height = width * 0.85; // Maintain 3:2 aspect ratio (width:height)
-        canvas.style.height = `${height}px`;
+    const width = canvas?.parentElement?.clientWidth;
+    if (!canvas || !width) return;
 
-        checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 1.8; // Adjust checker size based on canvas size
-        boardChart?.update();
+    const height = width * 0.85;
+    canvas.style.height = `${height}px`;
+
+    checkerSize = Math.min(height / 12 * 0.8, width / 15 * 0.8) / 1.8;
+    if (boardChart) {
+        boardChart.data.datasets[0].pointRadius = checkerSize;
+        boardChart.data.datasets[1].pointRadius = checkerSize;
+        boardChart.update();
     }
 }
 
