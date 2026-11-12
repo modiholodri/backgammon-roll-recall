@@ -17,6 +17,7 @@ test('settings migrate the board theme and persist challenge order and statistic
         ['timesAsked', timesAsked],
         ['questionLevel', questionLevel],
         ['boardThemeSelection', { value: '' }],
+        ['heatMapTypeSelection', { value: 'missedChecker' }],
         ['acceptedLostEquity', { value: '' }],
         ['doubtfulLostEquity', { value: '' }],
         ['prettyBadLostEquity', { value: '' }],

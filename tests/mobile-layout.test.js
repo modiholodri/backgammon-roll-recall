@@ -60,3 +60,43 @@ test('board sizing uses its container width instead of the viewport width', () =
     assert.ok(chart.data.datasets[0].pointRadius < 15);
     assert.equal(chart.updates, 1);
 });
+
+test('heat map board matches the main board height at narrow widths', () => {
+    const boardCanvas = {
+        parentElement: { clientWidth: 430 },
+        style: {},
+    };
+    const heatMapCanvas = {
+        parentElement: { clientWidth: 200 },
+        style: {},
+    };
+    const chart = {
+        data: { datasets: Array.from({ length: 8 }, () => ({})) },
+        update() {},
+    };
+    const context = vm.createContext({
+        Chart: {
+            defaults: {
+                color: '',
+                borderColor: '',
+                plugins: { legend: { labels: { color: '' } } },
+                scale: { title: { font: {}, color: '' } },
+                layout: { padding: {} },
+            },
+        },
+        document: {
+            getElementById(id) {
+                if (id === 'boardChartCanvas') return boardCanvas;
+                if (id === 'heatMapChartCanvas') return heatMapCanvas;
+                return null;
+            },
+        },
+    });
+    const boardSource = fs.readFileSync(path.join(__dirname, '..', 'src', 'Board.js'), 'utf8');
+    vm.runInContext(boardSource, context, { filename: 'Board.js' });
+
+    vm.runInContext('boardChart = { data: { datasets: Array.from({ length: 8 }, () => ({})) }, update() {} }; heatMapChart = { update() {} }; setCanvasHeight(); setHeatMapCanvasHeight()', context);
+
+    assert.equal(boardCanvas.style.height, '365.5px');
+    assert.equal(heatMapCanvas.style.height, boardCanvas.style.height);
+});

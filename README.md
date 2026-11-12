@@ -81,6 +81,18 @@ The Chances are the Winning Chances, but arranged a little bit differently.
 - Win Gammon - Lose Gammon
 - Win Backgammon - Lose Gammon
 
+##### Heat Map
+
+The Heat Map summarizes move data from the Blunder Store on a separate board. Choose what the bars represent from the Heat Map selector:
+
+- **Where a checker has been missed** shows the starting points of analyzed moves, weighted by lost equity and how often the position was asked.
+- **Where a checker should have been put** shows the destination points of each position's best move, weighted by how often the position was asked.
+- **Where the most equity has been lost** shows the destination points of analyzed moves, weighted by lost equity and how often the position was asked.
+- **Most frequent mistake** counts losing moves equally, regardless of lost equity, weighted by how often the position was asked. Best moves are excluded.
+- **Best-move destinations across blunders** shows the destination points of each position's best move, counted once per position regardless of how often it was asked.
+
+Positions that have not yet been asked are counted as one attempt in modes weighted by asks. Red bars indicate mistakes; green bars indicate best or non-losing moves.
+
 ##### Blunder Store
 
 The Blunder Store is used to show basic statistics and manage your blunders. 

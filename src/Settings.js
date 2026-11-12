@@ -12,29 +12,39 @@ function loadToggleSetting(elementName, defaultState = 'expanded') {
 }
 
 function loadCheckedSetting(elementName, defaultValue) {
+    const element = document.getElementById(elementName);
+    if (!element) return;
     const checked = localStorage.getItem(elementName) || defaultValue;
-    document.getElementById(elementName).checked = checked === 'true';
+    element.checked = checked === 'true';
 }
 
 function loadValueSetting(elementName, defaultValue) {
-    document.getElementById(elementName).value = localStorage.getItem(elementName) || defaultValue;
+    const element = document.getElementById(elementName);
+    if (!element) return;
+    element.value = localStorage.getItem(elementName) || defaultValue;
 }
 
 // save the settings of a toggle element to localStorage
 function saveToggleSetting(elementName) {
-    const matchReportFormCollapsed = document.getElementById(elementName).classList.contains('show') ? 'expanded' : 'collapsed';
+    const element = document.getElementById(elementName);
+    if (!element) return;
+    const matchReportFormCollapsed = element.classList.contains('show') ? 'expanded' : 'collapsed';
     localStorage.setItem(elementName + 'State', matchReportFormCollapsed);
 }
 
 // save the value of a specific element to localStorage
 function saveValueSetting(elementName) {
-    const elementValue = document.getElementById(elementName).value;
+    const element = document.getElementById(elementName);
+    if (!element) return;
+    const elementValue = element.value;
     localStorage.setItem(elementName, elementValue);
 }
 
 // save the value of a specific element to localStorage
 function saveCheckedSetting(elementName) {
-    const checked = document.getElementById(elementName).checked;
+    const element = document.getElementById(elementName);
+    if (!element) return;
+    const checked = element.checked;
     localStorage.setItem(elementName, checked);
 }
 
@@ -49,12 +59,16 @@ function loadSettings() {
         localStorage.setItem('boardThemeSelection', 'moss');
     }
     loadValueSetting('boardThemeSelection', 'classic');
+    loadValueSetting('heatMapTypeSelection', 'missedChecker');
     loadValueSetting('acceptedLostEquity', '0.011');
     loadValueSetting('doubtfulLostEquity', '0.030');
     loadValueSetting('prettyBadLostEquity', '0.060');
     loadValueSetting('veryBadLostEquity', '0.120');
     themeSelectionChanged();
     setBoardTheme(document.getElementById('boardThemeSelection').value);
+    if (typeof setHeatMapType === 'function') {
+        setHeatMapType(document.getElementById('heatMapTypeSelection').value);
+    }
 }
 
 // Save settings to localStorage
@@ -64,6 +78,7 @@ function saveSettings() {
     saveValueSetting('challengeOrder');
     saveCheckedSetting('showStatisticDetails');
     saveValueSetting('boardThemeSelection');
+    saveValueSetting('heatMapTypeSelection');
     saveValueSetting('acceptedLostEquity'); 
     saveValueSetting('doubtfulLostEquity'); 
     saveValueSetting('prettyBadLostEquity'); 

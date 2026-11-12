@@ -32,7 +32,7 @@ function challengeOrderChanged() {
 }
 
 function collapseDigestSections() {
-    collapseElements(['blunderStore', 'settings']);
+    collapseElements(['blunderStore', 'settings', 'heatMap']);
 }
 
 function showNextBlunder() {
@@ -52,6 +52,9 @@ function showNextBlunder() {
     console.log('Showing blunder:', currentBlunder, blunder);
     
     blunder.show();
+    if (typeof refreshHeatMap === 'function') {
+        refreshHeatMap(blunders, heatMapType);
+    }
 }
 
 function clearMoveOptionSelection() {
