@@ -29,6 +29,8 @@ html, body {
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    display: flex;
+    justify-content: center;
 }
 
 dialog#confirmationPrompt,
@@ -86,7 +88,10 @@ canvas {
 }
 
 .container {
-    margin-top: 15px;
+    width: min(100%, 430px);
+    max-width: 430px;
+    margin: 15px auto 0;
+    padding-inline: 0.75rem;
 }
 
 .btn-outline-primary {
