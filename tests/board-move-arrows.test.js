@@ -48,6 +48,14 @@ test('move notation is parsed into board arrows', () => {
     assert.deepEqual(JSON.parse(doubleMove), [{ from: 6, to: 4, count: 2, label: '(2)' }]);
 });
 
+test('bar move arrows start from the checker row on the correct side of the bar', () => {
+    const topHalfBarStart = vm.runInContext('JSON.stringify(boardMovePointToPixel(25, 10))', context);
+    assert.deepEqual(JSON.parse(topHalfBarStart), { x: 7, y: 4 });
+
+    const bottomHalfBarStart = vm.runInContext('JSON.stringify(boardMovePointToPixel(25, 20))', context);
+    assert.deepEqual(JSON.parse(bottomHalfBarStart), { x: 7, y: 7 });
+});
+
 test('selected move arrows are generated using the move color and refreshed on the board', () => {
     let updates = 0;
     vm.runInContext('boardChart = { update() { globalThis.__moveArrowUpdates = (globalThis.__moveArrowUpdates || 0) + 1; } };', context);
