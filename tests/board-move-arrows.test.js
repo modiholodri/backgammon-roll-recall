@@ -36,10 +36,13 @@ vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', 'Board.js'), '
 
 test('move notation is parsed into board arrows', () => {
     const parsed = vm.runInContext('JSON.stringify(parseBoardMoveNotation("13/9 13/8"))', context);
-    assert.deepEqual(JSON.parse(parsed), [{ from: 13, to: 9 }, { from: 13, to: 8 }]);
+    assert.deepEqual(JSON.parse(parsed), [{ from: 13, to: 9, count: 1, label: null }, { from: 13, to: 8, count: 1, label: null }]);
 
     const barMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("bar/24 24/23"))', context);
-    assert.deepEqual(JSON.parse(barMove), [{ from: 25, to: 24 }, { from: 24, to: 23 }]);
+    assert.deepEqual(JSON.parse(barMove), [{ from: 25, to: 24, count: 1, label: null }, { from: 24, to: 23, count: 1, label: null }]);
+
+    const doubleMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("6/4(2)"))', context);
+    assert.deepEqual(JSON.parse(doubleMove), [{ from: 6, to: 4, count: 2, label: '(2)' }]);
 });
 
 test('selected move arrows are generated using the move color and refreshed on the board', () => {
@@ -69,9 +72,12 @@ test('board arrows use a curved line and mark their starting point', () => {
         closePath() { calls.push(['closePath']); },
         stroke() { calls.push(['stroke']); },
         fill() { calls.push(['fill']); },
+        fillText(...args) { calls.push(['fillText', ...args]); },
+        save() { calls.push(['save']); },
+        restore() { calls.push(['restore']); },
     };
 
-    vm.runInContext('drawBoardArrow(ctx, { x: 10, y: 20 }, { x: 100, y: 80 }, "magenta");', vm.createContext({
+    vm.runInContext('drawBoardArrow(ctx, { x: 10, y: 20 }, { x: 100, y: 80 }, "magenta", "(2)");', vm.createContext({
         drawBoardArrow: vm.runInContext('drawBoardArrow', context),
         ctx,
         Math,
@@ -82,4 +88,8 @@ test('board arrows use a curved line and mark their starting point', () => {
     assert.ok(curve[1] > 55);
     assert.ok(curve[2] < 50);
     assert.deepEqual(calls.find(([name]) => name === 'arc'), ['arc', 10, 20, 4, 0, Math.PI * 2]);
+    const labelCall = calls.find(([name]) => name === 'fillText');
+    assert.equal(labelCall[1], '(2)');
+    assert.ok(labelCall[2] > 50);
+    assert.ok(labelCall[3] > 30);
 });

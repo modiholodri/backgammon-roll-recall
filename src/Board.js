@@ -651,14 +651,20 @@ function parseBoardMoveNotation(moveNotation)
         .map((segment) => segment.replace(/[*!]+$/g, ''))
         .filter((segment) => segment)
         .map((segment) => {
-            const matches = segment.match(/^([0-9]+|bar|off)\/([0-9]+|bar|off)$/i);
+            const matches = segment.match(/^([0-9]+|bar|off)\/([0-9]+|bar|off)(?:\(([0-9]+)\))?$/i);
             if (!matches) return null;
 
             const from = normalizeBoardMovePoint(matches[1]);
             const to = normalizeBoardMovePoint(matches[2]);
+            const repeatCount = Number.parseInt(matches[3] ?? '1', 10);
             if (from === null || to === null) return null;
 
-            return { from, to };
+            return {
+                from,
+                to,
+                count: Number.isInteger(repeatCount) && repeatCount > 0 ? repeatCount : 1,
+                label: matches[3] ? `(${matches[3]})` : null,
+            };
         })
         .filter(Boolean);
 }
@@ -683,7 +689,7 @@ function boardMovePointToPixel(pointValue, sourcePoint = pointValue)
     };
 }
 
-function drawBoardArrow(ctx, start, end, lineColor)
+function drawBoardArrow(ctx, start, end, lineColor, label = null)
 {
     if (!ctx || !start || !end || !lineColor) return;
 
@@ -720,6 +726,18 @@ function drawBoardArrow(ctx, start, end, lineColor)
     ctx.closePath();
     ctx.fillStyle = lineColor;
     ctx.fill();
+
+    if (!label) return;
+
+    const midX = (start.x + end.x) / 2 + ((dy / length) || 0) * 14;
+    const midY = (start.y + end.y) / 2 - ((dx / length) || 0) * 14;
+    ctx.save();
+    ctx.fillStyle = 'cyan';
+    ctx.font = 'bold 14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, midX, midY);
+    ctx.restore();
 }
 
 function setSelectedMoveArrows(move)
@@ -728,10 +746,10 @@ function setSelectedMoveArrows(move)
     if (!move || !move.notation) return;
 
     const color = typeof moveColor === 'function' ? moveColor(move.lostEquityValue) : 'lime';
-    selectedMoveArrows = parseBoardMoveNotation(move.notation).map(({ from, to }) => {
+    selectedMoveArrows = parseBoardMoveNotation(move.notation).map(({ from, to, count, label }) => {
         const start = boardMovePointToPixel(from);
         const end = boardMovePointToPixel(to, from);
-        return { from, to, start, end, color };
+        return { from, to, count, label, start, end, color };
     }).filter((arrow) => arrow.start && arrow.end);
 
     if (boardChart) boardChart.update();
@@ -755,7 +773,7 @@ const moveArrowAnnotations = {
             const startY = chart.scales.y.getPixelForValue(arrow.start.y);
             const endX = chart.scales.x.getPixelForValue(arrow.end.x);
             const endY = chart.scales.y.getPixelForValue(arrow.end.y);
-            drawBoardArrow(ctx, { x: startX, y: startY }, { x: endX, y: endY }, arrow.color);
+            drawBoardArrow(ctx, { x: startX, y: startY }, { x: endX, y: endY }, arrow.color, arrow.label);
         });
         ctx.restore();
     }
