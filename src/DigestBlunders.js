@@ -44,6 +44,9 @@ function showNextBlunder() {
     }
 
     currentBlunder = (currentBlunder + 1) % blunders.length;
+    if (typeof clearSelectedMoveArrows === 'function') {
+        clearSelectedMoveArrows();
+    }
 
     const blunder = new Blunder(blunders[currentBlunder]);
     console.log('Showing blunder:', currentBlunder, blunder);
@@ -203,6 +206,9 @@ function checkSelectedMoveOption(revealBestMove = false) {
             }
             colorMoveOptions();
             lastCheckedBlunder = currentBlunder;
+        }
+        if (typeof setSelectedMoveArrows === 'function') {
+            setSelectedMoveArrows(selectedMove);
         }
     }
     else {

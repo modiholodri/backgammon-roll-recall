@@ -64,18 +64,27 @@ function moveColor(lostEquity)
     const perfectLostEquity = 0.000;
     const doubtfulLostEquity = Math.abs(Number(document.getElementById('doubtfulLostEquity').value));
     const veryBadLostEquity = Math.abs(Number(document.getElementById('veryBadLostEquity').value));
+    const interpolateMoveHue = typeof interpolateHue === 'function'
+        ? interpolateHue
+        : (startHue, endHue, value, minValue, maxValue) => {
+            if (value <= minValue) return startHue;
+            if (value >= maxValue) return endHue;
+            const t = (value - minValue) / (maxValue - minValue);
+            const easedT = t * t;
+            return startHue + (endHue - startHue) * easedT;
+        };
 
     if (lostEquity <= perfectLostEquity) {
         return 'lime';
     }
 
     if (lostEquity <= doubtfulLostEquity) {
-        const hue = interpolateHue(120, 60, lostEquity, perfectLostEquity, doubtfulLostEquity);
+        const hue = interpolateMoveHue(120, 60, lostEquity, perfectLostEquity, doubtfulLostEquity);
         return `hsl(${hue}, 100%, 50%)`;
     }
 
     if (lostEquity <= veryBadLostEquity) {
-        const hue = interpolateHue(60, -40, lostEquity, doubtfulLostEquity, veryBadLostEquity);
+        const hue = interpolateMoveHue(60, -40, lostEquity, doubtfulLostEquity, veryBadLostEquity);
         return `hsl(${hue}, 100%, 50%)`;
     }
 
