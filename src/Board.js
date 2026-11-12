@@ -96,6 +96,7 @@ Chart.defaults.scale.title.color = unimportantColor;
 Chart.defaults.layout.padding.top = 7;
 
 let boardChart;
+let selectedMoveArrows = [];
 
 let player0CheckerData = [];
 let Player0OffCheckerData = [];
@@ -482,6 +483,136 @@ function pointNumberToBoardPosition(point)
     return point;
 }
 
+function normalizeBoardMovePoint(pointValue)
+{
+    const text = String(pointValue ?? '').trim().toLowerCase();
+    if (!text) return null;
+    if (text === 'bar') return 25;
+    if (text === 'off') return 0;
+    const numericValue = Number(text.replace(/[^0-9-]/g, ''));
+    if (Number.isInteger(numericValue) && numericValue >= 0 && numericValue <= 25) return numericValue;
+    return null;
+}
+
+function parseBoardMoveNotation(moveNotation)
+{
+    const text = String(moveNotation ?? '').replace(/\s+/g, ' ').trim();
+    if (!text) return [];
+
+    return text.split(/\s+/)
+        .map((segment) => segment.replace(/[*!]+$/g, ''))
+        .filter((segment) => segment)
+        .map((segment) => {
+            const matches = segment.match(/^([0-9]+|bar|off)\/([0-9]+|bar|off)$/i);
+            if (!matches) return null;
+
+            const from = normalizeBoardMovePoint(matches[1]);
+            const to = normalizeBoardMovePoint(matches[2]);
+            if (from === null || to === null) return null;
+
+            return { from, to };
+        })
+        .filter(Boolean);
+}
+
+function boardMovePointToPixel(pointValue, sourcePoint = pointValue)
+{
+    const point = normalizeBoardMovePoint(pointValue);
+    if (point === null) return null;
+
+    const xValue = pointNumberToBoardPosition(point);
+    if (point === 25) {
+        return { x: xValue, y: 5.5 };
+    }
+    if (point === 0) {
+        const source = normalizeBoardMovePoint(sourcePoint);
+        return { x: 13.8, y: source < 13 ? 2.5 : 8.5 };
+    }
+
+    return {
+        x: xValue,
+        y: point < 13 ? 2.5 : 8.5,
+    };
+}
+
+function drawBoardArrow(ctx, start, end, lineColor)
+{
+    if (!ctx || !start || !end || !lineColor) return;
+
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.hypot(dx, dy) || 1;
+    const curveOffset = 32;
+    const control = {
+        x: (start.x + end.x) / 2 + (dy / length) * curveOffset,
+        y: (start.y + end.y) / 2 - (dx / length) * curveOffset,
+    };
+    const angle = Math.atan2(end.y - control.y, end.x - control.x);
+    const arrowHeadSize = 14;
+
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.quadraticCurveTo(control.x, control.y, end.x, end.y);
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(start.x, start.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    ctx.fill();
+    ctx.strokeStyle = lineColor;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(end.x, end.y);
+    ctx.lineTo(end.x - arrowHeadSize * Math.cos(angle - Math.PI / 7), end.y - arrowHeadSize * Math.sin(angle - Math.PI / 7));
+    ctx.lineTo(end.x - arrowHeadSize * Math.cos(angle + Math.PI / 7), end.y - arrowHeadSize * Math.sin(angle + Math.PI / 7));
+    ctx.closePath();
+    ctx.fillStyle = lineColor;
+    ctx.fill();
+}
+
+function setSelectedMoveArrows(move)
+{
+    selectedMoveArrows = [];
+    if (!move || !move.notation) return;
+
+    const color = typeof moveColor === 'function' ? moveColor(move.lostEquityValue) : 'lime';
+    selectedMoveArrows = parseBoardMoveNotation(move.notation).map(({ from, to }) => {
+        const start = boardMovePointToPixel(from);
+        const end = boardMovePointToPixel(to, from);
+        return { from, to, start, end, color };
+    }).filter((arrow) => arrow.start && arrow.end);
+
+    if (boardChart) boardChart.update();
+}
+
+function clearSelectedMoveArrows()
+{
+    selectedMoveArrows = [];
+    if (boardChart) boardChart.update();
+}
+
+const moveArrowAnnotations = {
+    id: 'moveArrows',
+    afterDatasetsDraw(chart, args, options) {
+        if (!Array.isArray(selectedMoveArrows) || selectedMoveArrows.length === 0) return;
+
+        const { ctx } = chart;
+        ctx.save();
+        selectedMoveArrows.forEach((arrow) => {
+            const startX = chart.scales.x.getPixelForValue(arrow.start.x);
+            const startY = chart.scales.y.getPixelForValue(arrow.start.y);
+            const endX = chart.scales.x.getPixelForValue(arrow.end.x);
+            const endY = chart.scales.y.getPixelForValue(arrow.end.y);
+            drawBoardArrow(ctx, { x: startX, y: startY }, { x: endX, y: endY }, arrow.color);
+        });
+        ctx.restore();
+    }
+};
+
 function addPointToBoard(pointData, point)
 {
     const iBoardPosition = pointNumberToBoardPosition(point);
@@ -623,7 +754,7 @@ function createBoard() {
     // Create the chart if it doesn't exist
     boardChart = new Chart(ctx, {
         type: 'scatter',
-        plugins: [pointNumberAnnotations, diceNumberAnnotations, awayAnnotations], 
+        plugins: [pointNumberAnnotations, diceNumberAnnotations, awayAnnotations, moveArrowAnnotations],
         data: {
             datasets: [
                 {

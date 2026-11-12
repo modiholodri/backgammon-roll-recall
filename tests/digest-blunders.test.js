@@ -206,6 +206,95 @@ test('clicking a move option records its selection so a later evaluation can res
     assert.equal(moveOption2.dataset.selected, 'true');
 });
 
+test('selecting another answer updates its board arrows without recording the blunder twice', () => {
+    const makeButton = (id, textContent) => ({
+        id,
+        textContent,
+        dataset: {},
+        classList: {
+            add(name) { this[name] = true; },
+            remove(name) { delete this[name]; },
+        },
+        style: {},
+        setAttribute(name, value) { this[name] = value; },
+        focus() { document.activeElement = this; },
+    });
+    const options = [
+        makeButton('moveOption1', '3/2'),
+        makeButton('moveOption2', '24/23'),
+        makeButton('moveOption3', ''),
+        makeButton('moveOption4', ''),
+        makeButton('moveOption5', ''),
+    ];
+    const document = {
+        activeElement: null,
+        getElementById(id) {
+            if (id === 'moveDisplay') return { innerHTML: '' };
+            return options.find((option) => option.id === id) || null;
+        },
+        querySelector() {
+            return options.find((option) => option.dataset.selected === 'true') || null;
+        },
+    };
+    const arrowUpdates = [];
+    let statisticsUpdates = 0;
+    const context = vm.createContext({
+        blunders: [{
+            positionID: 'pos-1',
+            matchID: 'match-1',
+            moves: [
+                { notation: '3/2', lostEquityValue: 0.123 },
+                { notation: '24/23', lostEquityValue: 0.0 },
+            ],
+        }],
+        currentBlunder: 0,
+        document,
+        Blunder: class {
+            constructor(data) {
+                Object.assign(this, data);
+            }
+            updateStatistics() {
+                statisticsUpdates++;
+            }
+        },
+        moveToTable() {
+            return 'Move';
+        },
+        moveColor() {
+            return 'gray';
+        },
+        setSelectedMoveArrows(move) {
+            arrowUpdates.push(move.notation);
+        },
+        collapseElements() {},
+        marked: { parse(markup) { return markup; } },
+        console: { log() {}, error() {}, warn() {} },
+    });
+
+    loadSupportingFunctions(context);
+    const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
+    vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
+    vm.runInContext(`
+        blunders = [{
+            positionID: 'pos-1',
+            matchID: 'match-1',
+            moves: [
+                { notation: '3/2', lostEquityValue: 0.123 },
+                { notation: '24/23', lostEquityValue: 0.0 },
+            ],
+        }];
+        currentBlunder = 0;
+        lastCheckedBlunder = -1;
+        selectMoveOption('moveOption1');
+        checkSelectedMoveOption();
+        selectMoveOption('moveOption2');
+        checkSelectedMoveOption();
+    `, context);
+
+    assert.deepEqual(arrowUpdates, ['3/2', '24/23']);
+    assert.equal(statisticsUpdates, 1);
+});
+
 test('revealing the best move marks the correct option button with the highlighted style', () => {
     const makeButton = (textContent) => ({
         textContent,
