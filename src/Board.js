@@ -463,8 +463,24 @@ const HEAT_MAP_TYPES = Object.freeze({
     bestMoveDestinations: 'bestMoveDestinations',
 });
 
+const HEAT_MAP_DESCRIPTIONS = Object.freeze({
+    [HEAT_MAP_TYPES.missedChecker]: 'Shows the starting points of analyzed moves, weighted by lost equity and how often the position was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
+    [HEAT_MAP_TYPES.shouldHavePut]: 'Shows the destination points of each position\'s best move, weighted by how often the position was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
+    [HEAT_MAP_TYPES.equityLost]: 'Shows the destination points of analyzed moves, weighted by lost equity and how often the position was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
+    [HEAT_MAP_TYPES.frequentMistake]: 'Counts losing moves equally regardless of lost equity, weighted by how often the position was asked. Best moves are excluded. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
+    [HEAT_MAP_TYPES.bestMoveDestinations]: 'Shows the destination points of each position\'s best move, counted once per position regardless of how often it was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
+});
+
 let heatMapType = HEAT_MAP_TYPES.missedChecker;
 let heatMapBars = [];
+
+function updateHeatMapDescription(type = heatMapType) {
+    const description = document.getElementById('heatMapDescription');
+    if (!description) return;
+
+    const selectedType = Object.prototype.hasOwnProperty.call(HEAT_MAP_TYPES, type) ? type : HEAT_MAP_TYPES.missedChecker;
+    description.textContent = HEAT_MAP_DESCRIPTIONS[selectedType] || HEAT_MAP_DESCRIPTIONS[HEAT_MAP_TYPES.missedChecker];
+}
 
 function getHeatMapMovePoints(move, type) {
     if (!move || typeof move !== 'object') return [];
@@ -565,6 +581,7 @@ function setHeatMapType(type) {
     const selectedType = Object.prototype.hasOwnProperty.call(HEAT_MAP_TYPES, type) ? type : HEAT_MAP_TYPES.missedChecker;
     heatMapType = selectedType;
     if (selection) selection.value = selectedType;
+    updateHeatMapDescription(selectedType);
     if (typeof window !== 'undefined' && typeof window.blunders !== 'undefined') {
         refreshHeatMap(window.blunders, selectedType);
     }

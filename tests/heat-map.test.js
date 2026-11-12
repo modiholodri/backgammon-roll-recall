@@ -132,3 +132,39 @@ test('most frequent mistake counts each losing move equally and excludes best mo
         { point: 8, value: 6, color: 'red' },
     ]);
 });
+
+test('heat map description explains the selected mode and color meanings', () => {
+    const selection = { value: 'missedChecker' };
+    const description = { textContent: '' };
+    const context = vm.createContext({
+        Chart: {
+            defaults: {
+                color: '',
+                borderColor: '',
+                plugins: { legend: { labels: { color: '' } } },
+                scale: { title: { font: {}, color: '' } },
+                layout: { padding: {} },
+            },
+        },
+        document: {
+            getElementById(id) {
+                if (id === 'heatMapTypeSelection') return selection;
+                if (id === 'heatMapDescription') return description;
+                return null;
+            },
+        },
+        blunders: [{
+            timesAsked: 2,
+            moves: [{ notation: '8/7', lostEquityValue: 0.5 }],
+        }],
+    });
+    const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'Board.js'), 'utf8');
+    vm.runInContext(source, context, { filename: 'Board.js' });
+
+    vm.runInContext("setHeatMapType('shouldHavePut')", context);
+
+    assert.equal(selection.value, 'shouldHavePut');
+    assert.match(description.textContent, /best move/);
+    assert.match(description.textContent, /Red bars indicate mistakes/i);
+    assert.match(description.textContent, /green bars indicate best or non-losing moves/i);
+});
