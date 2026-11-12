@@ -86,6 +86,13 @@ test('selected move arrows are generated using the move color and refreshed on t
     assert.equal(vm.runInContext('globalThis.__moveArrowUpdates || 0', context), 1);
 });
 
+test('selected move lost equity is shown in the middle left board area at cube size', () => {
+    vm.runInContext('move = { notation: "13/9*", lostEquity: "(-0.123)", lostEquityValue: 0.123 }; setSelectedMoveArrows(move);', context);
+    const labelColor = vm.runInContext('moveColor(0.123)', context);
+    const selectedValue = JSON.parse(vm.runInContext('JSON.stringify(selectedMoveLostEquity)', context));
+    assert.deepEqual(selectedValue, [{ x: 3.5, y: 5.5, label: '(-0.123)', labelColor }]);
+});
+
 test('board arrows use a curved line and mark their starting point', () => {
     const calls = [];
     const ctx = {

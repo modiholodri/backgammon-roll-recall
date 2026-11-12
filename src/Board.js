@@ -98,6 +98,7 @@ Chart.defaults.layout.padding.top = 7;
 let boardChart;
 let heatMapChart;
 let selectedMoveArrows = [];
+let selectedMoveLostEquity = [];
 
 let player0CheckerData = [];
 let Player0OffCheckerData = [];
@@ -780,6 +781,7 @@ function drawBoardArrow(ctx, start, end, lineColor, label = null, hit = false)
 function setSelectedMoveArrows(move)
 {
     selectedMoveArrows = [];
+    selectedMoveLostEquity = [];
     if (!move || !move.notation) return;
 
     const color = typeof moveColor === 'function' ? moveColor(move.lostEquityValue) : 'lime';
@@ -789,14 +791,52 @@ function setSelectedMoveArrows(move)
         return { from, to, count, label, hit, start, end, color };
     }).filter((arrow) => arrow.start && arrow.end);
 
+    const lossLabel = typeof move.lostEquity === 'string' && move.lostEquity.trim()
+        ? move.lostEquity
+        : Number.isFinite(Number(move.lostEquityValue))
+            ? `(${Math.abs(Number(move.lostEquityValue)).toFixed(3)})`
+            : '(0.000)';
+
+    selectedMoveLostEquity.push({
+        x: 3.5,
+        y: 5.5,
+        label: lossLabel,
+        labelColor: color,
+    });
+
     if (boardChart) boardChart.update();
 }
 
 function clearSelectedMoveArrows()
 {
     selectedMoveArrows = [];
+    selectedMoveLostEquity = [];
     if (boardChart) boardChart.update();
 }
+
+const selectedMoveValueAnnotations = {
+    id: 'selectedMoveValue',
+    afterDatasetsDraw(chart, args, options) {
+        if (!Array.isArray(selectedMoveLostEquity) || selectedMoveLostEquity.length === 0) return;
+
+        const { ctx } = chart;
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        selectedMoveLostEquity.forEach((point) => {
+            if (!point || typeof point.label !== 'string') return;
+
+            ctx.fillStyle = point.labelColor || 'white';
+            ctx.font = 'bold 18px Arial';
+            const xPos = chart.scales.x.getPixelForValue(point.x);
+            const yPos = chart.scales.y.getPixelForValue(point.y);
+            ctx.fillText(point.label, xPos, yPos);
+        });
+
+        ctx.restore();
+    }
+};
 
 const moveArrowAnnotations = {
     id: 'moveArrows',
@@ -1066,7 +1106,7 @@ function createBoard() {
     // Create the chart if it doesn't exist
     boardChart = new Chart(ctx, {
         type: 'scatter',
-        plugins: [pointNumberAnnotations, diceNumberAnnotations, awayAnnotations, moveArrowAnnotations],
+        plugins: [pointNumberAnnotations, diceNumberAnnotations, awayAnnotations, moveArrowAnnotations, selectedMoveValueAnnotations],
         data: {
             datasets: [
                 {
