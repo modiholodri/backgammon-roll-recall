@@ -74,48 +74,94 @@ function createBlunderStore({
             },
         },
     };
+    const browserWindow = {
+        async confirm() {
+            return confirmSampleImport;
+        },
+        atob(encoded) {
+            return Buffer.from(encoded, 'base64').toString('binary');
+        },
+        async showSaveFilePicker() {
+            return {
+                async createWritable() {
+                    return {
+                        async write(content) {
+                            exportedJSON = content;
+                        },
+                        async close() {},
+                    };
+                },
+            };
+        },
+        async showOpenFilePicker() {
+            return [{
+                async getFile() {
+                    return { async text() { return JSON.stringify(importData); } };
+                },
+            }];
+        },
+    };
 
     const context = vm.createContext({
         Dexie: FakeDexie,
-        document: {
-            getElementById(id) {
-                if (id === 'blunderStore') {
-                    return blunderStoreElement;
-                }
-                if (id === 'blunderStoreStatistics') {
-                    return statsElement;
-                }
-                assert.equal(id, 'resetBlunderPerformance');
-                return { checked: resetPerformance };
-            },
-        },
-        window: {
-            async confirm() {
-                return confirmSampleImport;
-            },
-            atob(encoded) {
-                return Buffer.from(encoded, 'base64').toString('binary');
-            },
-            async showSaveFilePicker() {
-                return {
-                    async createWritable() {
-                        return {
-                            async write(content) {
-                                exportedJSON = content;
-                            },
-                            async close() {},
-                        };
-                    },
-                };
-            },
-            async showOpenFilePicker() {
-                return [{
-                    async getFile() {
-                        return { async text() { return JSON.stringify(importData); } };
-                    },
-                }];
-            },
-        },
+        document: (() => {
+            const dialogMessage = { textContent: '' };
+            const confirmButton = { onclick: null };
+            const cancelButton = { onclick: null };
+            const dialog = {
+                open: false,
+                addEventListener() {},
+                removeEventListener() {},
+                close() { this.open = false; },
+                showModal() {
+                    this.open = true;
+                    const result = typeof browserWindow.confirm === 'function'
+                        ? browserWindow.confirm(dialogMessage.textContent)
+                        : true;
+                    if (result && typeof result.then === 'function') {
+                        result.then((accepted) => {
+                            if (accepted) {
+                                confirmButton.onclick?.();
+                            } else {
+                                cancelButton.onclick?.();
+                            }
+                        });
+                        return;
+                    }
+                    if (result) {
+                        confirmButton.onclick?.();
+                    } else {
+                        cancelButton.onclick?.();
+                    }
+                },
+            };
+
+            return {
+                getElementById(id) {
+                    if (id === 'blunderStore') {
+                        return blunderStoreElement;
+                    }
+                    if (id === 'blunderStoreStatistics') {
+                        return statsElement;
+                    }
+                    if (id === 'confirmationPrompt') {
+                        return dialog;
+                    }
+                    if (id === 'confirmationPromptText') {
+                        return dialogMessage;
+                    }
+                    if (id === 'confirmationPromptConfirm') {
+                        return confirmButton;
+                    }
+                    if (id === 'confirmationPromptCancel') {
+                        return cancelButton;
+                    }
+                    assert.equal(id, 'resetBlunderPerformance');
+                    return { checked: resetPerformance };
+                },
+            };
+        })(),
+        window: browserWindow,
         fetch: async (url) => {
             sampleFetchCount++;
             assert.equal(
@@ -131,7 +177,10 @@ function createBlunderStore({
         marked: { parse(markdown) { return markdown; } },
         console: { log() {}, error() {}, warn() {} },
     });
+    context.globalThis = context;
 
+    const supportingFunctionsSource = fs.readFileSync(path.join(__dirname, '..', 'src', 'SupportingFunctions.js'), 'utf8');
+    vm.runInContext(supportingFunctionsSource, context, { filename: 'SupportingFunctions.js' });
     const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'BlunderStore.js'), 'utf8');
     vm.runInContext(source, context, { filename: 'BlunderStore.js' });
     const store = vm.runInContext('blunderStore', context);
