@@ -699,7 +699,7 @@ function boardMovePointToPixel(pointValue, sourcePoint = pointValue)
     const xValue = pointNumberToBoardPosition(point);
     if (point === 25) {
         const source = normalizeBoardMovePoint(sourcePoint);
-        return { x: xValue, y: source < 13 ? 4.0 : 7.0 };
+        return { x: xValue, y: source < 13 ? 3.5 : 7.5 };
     }
     if (point === 0) {
         const source = normalizeBoardMovePoint(sourcePoint);
