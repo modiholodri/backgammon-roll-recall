@@ -20,6 +20,13 @@ test('mobile button controls are explicit and tap-friendly on iPhone Safari', ()
     assert.match(html, /<button[^>]*id="downloadSampleBlunders"[^>]*type="button"/is);
 });
 
+test('app locks to the current device orientation to prevent auto-rotation', () => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
+
+    assert.match(html, /matchMedia\(\s*'\(orientation:\s*portrait\)'\s*\)\.matches/is);
+    assert.match(html, /screen\.orientation\.lock\(orientation\)/is);
+});
+
 test('board sizing uses its container width instead of the viewport width', () => {
     const canvas = {
         parentElement: { clientWidth: 430 },
