@@ -128,6 +128,7 @@ class Blunder {
                 addDiceToBoard(false);
                 addAwayToBoard();
                 this.populateMoveOptions();
+                // Keep the answer cards uncolored until the user answers or the best move is revealed.
             } catch (err) {
                 console.error('Failed to load match ID:', err);
                 alert('Failed to load match ID. Please check the console for more details.');

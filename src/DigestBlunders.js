@@ -51,16 +51,33 @@ function showNextBlunder() {
     blunder.show();
 }
 
-function clearBestMoveOptionHighlight() {
+function clearMoveOptionSelection() {
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
 
     optionIds.forEach((id) => {
         const option = document.getElementById(id);
         if (!option) return;
 
+        option.classList.remove('selected');
         option.classList.remove('best-move-option');
+        option.dataset.selected = 'false';
         option.setAttribute('aria-pressed', 'false');
     });
+}
+
+function selectMoveOption(option) {
+    const selectedOption = typeof option === 'string' ? document.getElementById(option) : option;
+    if (!selectedOption) return;
+
+    clearMoveOptionSelection();
+    selectedOption.classList.add('selected');
+    selectedOption.dataset.selected = 'true';
+    selectedOption.setAttribute('aria-pressed', 'true');
+    selectedOption.focus?.();
+}
+
+function clearBestMoveOptionHighlight() {
+    clearMoveOptionSelection();
 }
 
 function highlightBestMoveOption(bestMoveNotation) {
@@ -129,9 +146,18 @@ function checkSelectedMoveOption(revealBestMove = false) {
     if (!moveDisplay) return;
 
 
-    // Try to find an explicitly selected element by common patterns
+    // Try to find an explicitly selected element by common patterns.
+    // Buttons are stateful only when we update their selection explicitly, so
+    // rely on the active element or the stored selected state instead of focus alone.
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
-    let selectedEl = document.querySelector('.selected, [data-selected="true"], button[aria-pressed="true"], button:focus');
+    let selectedEl = null;
+
+    if (document.activeElement && optionIds.includes(document.activeElement.id)) {
+        selectedEl = document.activeElement;
+    }
+    if (!selectedEl) {
+        selectedEl = document.querySelector('.selected, [data-selected="true"], button[aria-pressed="true"]');
+    }
 
     let selectedMoveNotation = null;
     if (selectedEl) {
