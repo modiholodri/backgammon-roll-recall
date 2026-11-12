@@ -647,26 +647,48 @@ function parseBoardMoveNotation(moveNotation)
     const text = String(moveNotation ?? '').replace(/\s+/g, ' ').trim();
     if (!text) return [];
 
-    return text.split(/\s+/)
-        .map((segment) => segment.replace(/[*!]+$/g, ''))
-        .filter((segment) => segment)
-        .map((segment) => {
-            const matches = segment.match(/^([0-9]+|bar|off)\/([0-9]+|bar|off)(?:\(([0-9]+)\))?$/i);
-            if (!matches) return null;
+    const parsedMoves = [];
 
-            const from = normalizeBoardMovePoint(matches[1]);
-            const to = normalizeBoardMovePoint(matches[2]);
-            const repeatCount = Number.parseInt(matches[3] ?? '1', 10);
-            if (from === null || to === null) return null;
+    text.split(/\s+/).forEach((segment) => {
+        const cleanedSegment = segment.replace(/[*!]+$/g, '');
+        if (!cleanedSegment) return;
 
-            return {
+        let remaining = cleanedSegment;
+        let previousTo = null;
+        let isFirstMove = true;
+
+        while (remaining) {
+            const matches = isFirstMove
+                ? remaining.match(/^([0-9]+|bar|off)\/([0-9]+|bar|off)(\*?)?(?:\(([0-9]+)\))?/i)
+                : remaining.match(/^\/?([0-9]+|bar|off)(\*?)?(?:\(([0-9]+)\))?/i);
+
+            if (!matches) break;
+
+            const from = isFirstMove ? normalizeBoardMovePoint(matches[1]) : previousTo;
+            const to = isFirstMove ? normalizeBoardMovePoint(matches[2]) : normalizeBoardMovePoint(matches[1]);
+            const repeatCount = Number.parseInt(matches[isFirstMove ? 4 : 3] ?? '1', 10);
+
+            if (from === null || to === null) {
+                break;
+            }
+
+            parsedMoves.push({
                 from,
                 to,
                 count: Number.isInteger(repeatCount) && repeatCount > 0 ? repeatCount : 1,
-                label: matches[3] ? `(${matches[3]})` : null,
-            };
-        })
-        .filter(Boolean);
+                label: matches[isFirstMove ? 4 : 3] ? `(${matches[isFirstMove ? 4 : 3]})` : null,
+            });
+
+            previousTo = to;
+            remaining = remaining.slice(matches[0].length);
+            if (remaining.startsWith('/')) {
+                remaining = remaining.slice(1);
+            }
+            isFirstMove = false;
+        }
+    });
+
+    return parsedMoves;
 }
 
 function boardMovePointToPixel(pointValue, sourcePoint = pointValue)
