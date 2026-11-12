@@ -698,7 +698,8 @@ function boardMovePointToPixel(pointValue, sourcePoint = pointValue)
 
     const xValue = pointNumberToBoardPosition(point);
     if (point === 25) {
-        return { x: xValue, y: 5.5 };
+        const source = normalizeBoardMovePoint(sourcePoint);
+        return { x: xValue, y: source < 13 ? 4.0 : 7.0 };
     }
     if (point === 0) {
         const source = normalizeBoardMovePoint(sourcePoint);
@@ -769,7 +770,7 @@ function setSelectedMoveArrows(move)
 
     const color = typeof moveColor === 'function' ? moveColor(move.lostEquityValue) : 'lime';
     selectedMoveArrows = parseBoardMoveNotation(move.notation).map(({ from, to, count, label }) => {
-        const start = boardMovePointToPixel(from);
+        const start = boardMovePointToPixel(from, to);
         const end = boardMovePointToPixel(to, from);
         return { from, to, count, label, start, end, color };
     }).filter((arrow) => arrow.start && arrow.end);
