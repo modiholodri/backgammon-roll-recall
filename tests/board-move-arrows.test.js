@@ -36,35 +36,49 @@ vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'src', 'Board.js'), '
 
 test('move notation is parsed into board arrows', () => {
     const parsed = vm.runInContext('JSON.stringify(parseBoardMoveNotation("13/9 13/8"))', context);
-    assert.deepEqual(JSON.parse(parsed), [{ from: 13, to: 9, count: 1, label: null }, { from: 13, to: 8, count: 1, label: null }]);
+    assert.deepEqual(JSON.parse(parsed), [
+        { from: 13, to: 9, count: 1, label: null, hit: false },
+        { from: 13, to: 8, count: 1, label: null, hit: false },
+    ]);
 
     const barMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("bar/24 24/23"))', context);
-    assert.deepEqual(JSON.parse(barMove), [{ from: 25, to: 24, count: 1, label: null }, { from: 24, to: 23, count: 1, label: null }]);
+    assert.deepEqual(JSON.parse(barMove), [
+        { from: 25, to: 24, count: 1, label: null, hit: false },
+        { from: 24, to: 23, count: 1, label: null, hit: false },
+    ]);
 
     const comboMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("6/3*/2"))', context);
-    assert.deepEqual(JSON.parse(comboMove), [{ from: 6, to: 3, count: 1, label: null }, { from: 3, to: 2, count: 1, label: null }]);
+    assert.deepEqual(JSON.parse(comboMove), [
+        { from: 6, to: 3, count: 1, label: null, hit: true },
+        { from: 3, to: 2, count: 1, label: null, hit: false },
+    ]);
+
+    const hitMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("6/3*"))', context);
+    assert.deepEqual(JSON.parse(hitMove), [{ from: 6, to: 3, count: 1, label: null, hit: true }]);
 
     const doubleMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("6/4(2)"))', context);
-    assert.deepEqual(JSON.parse(doubleMove), [{ from: 6, to: 4, count: 2, label: '(2)' }]);
+    assert.deepEqual(JSON.parse(doubleMove), [{ from: 6, to: 4, count: 2, label: '(2)', hit: false }]);
 });
 
 test('bar move arrows start from the checker row on the correct side of the bar', () => {
     const topHalfBarStart = vm.runInContext('JSON.stringify(boardMovePointToPixel(25, 10))', context);
-    assert.deepEqual(JSON.parse(topHalfBarStart), { x: 7, y: 4 });
+    assert.deepEqual(JSON.parse(topHalfBarStart), { x: 7, y: 3.5 });
 
     const bottomHalfBarStart = vm.runInContext('JSON.stringify(boardMovePointToPixel(25, 20))', context);
-    assert.deepEqual(JSON.parse(bottomHalfBarStart), { x: 7, y: 7 });
+    assert.deepEqual(JSON.parse(bottomHalfBarStart), { x: 7, y: 7.5 });
 });
 
 test('selected move arrows are generated using the move color and refreshed on the board', () => {
     let updates = 0;
     vm.runInContext('boardChart = { update() { globalThis.__moveArrowUpdates = (globalThis.__moveArrowUpdates || 0) + 1; } };', context);
-    vm.runInContext('move = { notation: "13/9 13/8 6/off 19/off", lostEquityValue: 0.100 };', context);
+    vm.runInContext('move = { notation: "13/9* 13/8 6/off 19/off", lostEquityValue: 0.100 };', context);
     vm.runInContext('setSelectedMoveArrows(move);', context);
 
     const arrowCount = vm.runInContext('selectedMoveArrows.length', context);
     assert.equal(arrowCount, 4);
     assert.equal(vm.runInContext('selectedMoveArrows[0].color', context), 'hsl(60, 100%, 50%)');
+    assert.equal(vm.runInContext('selectedMoveArrows[0].hit', context), true);
+    assert.equal(vm.runInContext('selectedMoveArrows[1].hit', context), false);
     assert.equal(vm.runInContext('selectedMoveArrows[2].end.x', context), 13.8);
     assert.equal(vm.runInContext('selectedMoveArrows[2].end.y', context), 2.5);
     assert.equal(vm.runInContext('selectedMoveArrows[3].end.x', context), 13.8);
@@ -83,12 +97,12 @@ test('board arrows use a curved line and mark their starting point', () => {
         closePath() { calls.push(['closePath']); },
         stroke() { calls.push(['stroke']); },
         fill() { calls.push(['fill']); },
-        fillText(...args) { calls.push(['fillText', ...args]); },
+        fillText(...args) { calls.push(['fillText', ...args, this.fillStyle, this.font]); },
         save() { calls.push(['save']); },
         restore() { calls.push(['restore']); },
     };
 
-    vm.runInContext('drawBoardArrow(ctx, { x: 10, y: 20 }, { x: 100, y: 80 }, "magenta", "(2)");', vm.createContext({
+    vm.runInContext('drawBoardArrow(ctx, { x: 10, y: 20 }, { x: 100, y: 80 }, "magenta", "(2)", true);', vm.createContext({
         drawBoardArrow: vm.runInContext('drawBoardArrow', context),
         ctx,
         Math,
@@ -103,4 +117,9 @@ test('board arrows use a curved line and mark their starting point', () => {
     assert.equal(labelCall[1], '(2)');
     assert.ok(labelCall[2] > 50);
     assert.ok(labelCall[3] > 30);
+    const hitMarkerCall = calls.find(([name, text]) => name === 'fillText' && text === '*');
+    assert.equal(hitMarkerCall[4], 'cyan');
+    assert.equal(hitMarkerCall[5], 'bold 32px sans-serif');
+    assert.ok(hitMarkerCall[2] > 50);
+    assert.ok(hitMarkerCall[3] > 30);
 });
