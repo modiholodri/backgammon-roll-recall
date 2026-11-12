@@ -82,6 +82,80 @@ function fullscreenChanged() {
     }
 }
 
+const requestUserConfirmation = async (message) => {
+    const globalHandler = typeof globalThis !== 'undefined' ? globalThis.confirmAction : undefined;
+    if (typeof globalHandler === 'function' && globalHandler !== requestUserConfirmation) {
+        return globalHandler(message);
+    }
+
+    const windowHandler = typeof window !== 'undefined' ? window.confirmAction : undefined;
+    if (typeof windowHandler === 'function' && windowHandler !== requestUserConfirmation) {
+        return windowHandler(message);
+    }
+
+    if (typeof document === 'undefined') {
+        return Promise.resolve(typeof window !== 'undefined' && typeof window.confirm === 'function'
+            ? window.confirm(message)
+            : false);
+    }
+
+    const dialog = document.getElementById('confirmationPrompt');
+    const dialogMessage = document.getElementById('confirmationPromptText');
+    const confirmButton = document.getElementById('confirmationPromptConfirm');
+    const cancelButton = document.getElementById('confirmationPromptCancel');
+
+    if (!dialog || !dialogMessage || !confirmButton || !cancelButton || typeof dialog.showModal !== 'function') {
+        return Promise.resolve(typeof window !== 'undefined' && typeof window.confirm === 'function'
+            ? window.confirm(message)
+            : false);
+    }
+
+    return new Promise((resolve) => {
+        let settled = false;
+
+        const finish = (accepted) => {
+            if (settled) {
+                return;
+            }
+
+            settled = true;
+            confirmButton.onclick = null;
+            cancelButton.onclick = null;
+            dialog.removeEventListener('close', onClose);
+            if (dialog.open) {
+                dialog.close();
+            }
+            resolve(Boolean(accepted));
+        };
+
+        const onClose = () => {
+            if (!settled) {
+                finish(false);
+            }
+        };
+
+        dialog.addEventListener('close', onClose, { once: true });
+        dialogMessage.textContent = message;
+        confirmButton.onclick = () => finish(true);
+        cancelButton.onclick = () => finish(false);
+        dialog.showModal();
+    });
+};
+
+if (typeof window !== 'undefined') {
+    const hasExistingWindowHandler = typeof window.confirmAction === 'function' && window.confirmAction !== requestUserConfirmation;
+    if (!hasExistingWindowHandler) {
+        window.confirmAction = requestUserConfirmation;
+    }
+}
+
+if (typeof globalThis !== 'undefined') {
+    const hasExistingGlobalHandler = typeof globalThis.confirmAction === 'function' && globalThis.confirmAction !== requestUserConfirmation;
+    if (!hasExistingGlobalHandler) {
+        globalThis.confirmAction = requestUserConfirmation;
+    }
+}
+
 function setupFullscreenPrompt() {
     const dialog = document.getElementById('fullscreenPrompt');
     const enterFullscreenButton = document.getElementById('enterFullscreen');

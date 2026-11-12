@@ -142,7 +142,7 @@ class BlunderStore extends Dexie {
             return 0;
         }
 
-        const confirmed = await window.confirm(
+        const confirmed = await requestUserConfirmation(
             'Your Blunder Store is empty. Would you like to download and import the sample blunders?'
         );
         if (!confirmed) {
@@ -222,7 +222,7 @@ class BlunderStore extends Dexie {
         let deletedCount = 0;
         for (const blunder of indubitableBlunders) {
             const maxLostEquity = this.getMaxLostEquity(blunder);
-            const confirmed = window.confirm(
+            const confirmed = await requestUserConfirmation(
                 `Delete this indubitable blunder? Maximum lost equity: ${maxLostEquity.toFixed(3)}.`
             );
 
@@ -258,7 +258,7 @@ class BlunderStore extends Dexie {
     }
 
     async deleteAllBlunders() {
-        const confirmed = window.confirm('Are you sure you want to delete all blunders?');
+        const confirmed = await requestUserConfirmation('Are you sure you want to delete all blunders?');
         if (!confirmed) {
             return false;
         }

@@ -4,6 +4,11 @@ const path = require('node:path');
 const test = require('node:test');
 const vm = require('node:vm');
 
+function loadSupportingFunctions(context) {
+    const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'SupportingFunctions.js'), 'utf8');
+    vm.runInContext(source, context, { filename: 'SupportingFunctions.js' });
+}
+
 test('fetching blunders collapses the Blunder Store and Settings sections', async () => {
     const collapsedSections = [];
     const context = vm.createContext({
@@ -25,6 +30,7 @@ test('fetching blunders collapses the Blunder Store and Settings sections', asyn
         console: { error() {}, log() {} },
     });
 
+    loadSupportingFunctions(context);
     const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
     vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
     vm.runInContext('fetchBlundersFromStore()', context);
@@ -32,7 +38,7 @@ test('fetching blunders collapses the Blunder Store and Settings sections', asyn
     assert.deepEqual(collapsedSections, ['blunderStore', 'settings']);
 });
 
-test('board, move option, and delete interactions collapse the Blunder Store and Settings sections', () => {
+test('board, move option, and delete interactions collapse the Blunder Store and Settings sections', async () => {
     const collapsedSections = [];
     const context = vm.createContext({
         collapseElements(sections) {
@@ -46,15 +52,78 @@ test('board, move option, and delete interactions collapse the Blunder Store and
         console: { log() {} },
     });
 
+    loadSupportingFunctions(context);
     const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
     vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
-    vm.runInContext('showNextBlunder(); checkSelectedMoveOption(); deleteCurrentBlunder()', context);
+    await vm.runInContext('showNextBlunder(); checkSelectedMoveOption(); deleteCurrentBlunder()', context);
 
     assert.deepEqual(collapsedSections, [
         'blunderStore', 'settings',
         'blunderStore', 'settings',
         'blunderStore', 'settings',
     ]);
+});
+
+test('deleteCurrentBlunder uses the app confirmation dialog instead of the browser prompt', async () => {
+    let confirmed = false;
+    const deleted = [];
+    const context = vm.createContext({
+        blunders: [{
+            positionID: 'pos-1',
+            matchID: 'match-1',
+            moves: [{ notation: '3/2', lostEquityValue: 0.5 }],
+        }],
+        currentBlunder: 0,
+        collapseElements() {},
+        window: {
+            confirmAction(message) {
+                confirmed = true;
+                assert.match(message, /delete this blunder/i);
+                return Promise.resolve(true);
+            },
+            confirm() {
+                throw new Error('Native browser confirm should not be used for deletes');
+            },
+        },
+        console: { log() {}, error() {}, warn() {} },
+        blunderStore: {
+            getMaxLostEquity() {
+                return 0.5;
+            },
+            deleteBlunder(id) {
+                deleted.push(id);
+                return Promise.resolve(true);
+            },
+        },
+        Blunder: class {
+            constructor(data) {
+                Object.assign(this, data);
+            }
+            show() {}
+        },
+    });
+    context.globalThis = context;
+
+    loadSupportingFunctions(context);
+    const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
+    vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
+    vm.runInContext(`
+        blunders = [{
+            positionID: 'pos-1',
+            matchID: 'match-1',
+            moves: [{ notation: '3/2', lostEquityValue: 0.5 }],
+        }];
+        currentBlunder = 0;
+    `, context);
+
+    const result = await vm.runInContext('deleteCurrentBlunder()', context);
+
+    assert.equal(result, true);
+    assert.equal(confirmed, true);
+    assert.equal(deleted.length, 1);
+    assert.equal(deleted[0].length, 2);
+    assert.equal(deleted[0][0], 'pos-1');
+    assert.equal(deleted[0][1], 'match-1');
 });
 
 test('revealing the best move marks the correct option button with the highlighted style', () => {
@@ -118,6 +187,7 @@ test('revealing the best move marks the correct option button with the highlight
         console: { log() {}, error() {}, warn() {} },
     });
 
+    loadSupportingFunctions(context);
     const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
     vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
     vm.runInContext(`
