@@ -64,6 +64,12 @@ test('board, move option, and delete interactions collapse the Blunder Store and
     ]);
 });
 
+test('loading a new blunder keeps answer buttons uncolored until the user answers or the best move is revealed', () => {
+    const blunderSource = fs.readFileSync(path.join(__dirname, '..', 'src', 'Blunder.js'), 'utf8');
+    assert.doesNotMatch(blunderSource, /if \(typeof colorMoveOptions === 'function'\)/);
+    assert.doesNotMatch(blunderSource, /colorMoveOptions\(\);/);
+});
+
 test('deleteCurrentBlunder uses the app confirmation dialog instead of the browser prompt', async () => {
     let confirmed = false;
     const deleted = [];
@@ -126,9 +132,84 @@ test('deleteCurrentBlunder uses the app confirmation dialog instead of the brows
     assert.equal(deleted[0][1], 'match-1');
 });
 
+test('clicking a move option records its selection so a later evaluation can resolve the answer without browser focus quirks', () => {
+    const makeButton = (textContent) => ({
+        textContent,
+        id: textContent === '3/2' ? 'moveOption1' : 'moveOption2',
+        dataset: {},
+        classList: {
+            add(name) { this[name] = true; },
+            remove(name) { delete this[name]; },
+            contains(name) { return !!this[name]; },
+            has(name) { return !!this[name]; },
+        },
+        style: {},
+        setAttribute(name, value) { this[name] = value; },
+        focus() { this.focused = true; },
+    });
+
+    const moveOption1 = makeButton('3/2');
+    const moveOption2 = makeButton('24/23');
+    const moveDisplay = { innerHTML: '' };
+    const context = vm.createContext({
+        blunders: [{
+            positionID: 'pos-1',
+            matchID: 'match-1',
+            moves: [
+                { notation: '3/2', lostEquityValue: 0.123 },
+                { notation: '24/23', lostEquityValue: 0.0 },
+            ],
+        }],
+        currentBlunder: 0,
+        lastCheckedBlunder: -1,
+        document: {
+            activeElement: null,
+            getElementById(id) {
+                if (id === 'moveDisplay') return moveDisplay;
+                return {
+                    'moveOption1': moveOption1,
+                    'moveOption2': moveOption2,
+                    'moveOption3': null,
+                    'moveOption4': null,
+                    'moveOption5': null,
+                }[id] || null;
+            },
+            querySelector(selector) {
+                if (selector.includes('data-selected')) return moveOption2;
+                return null;
+            },
+        },
+        Blunder: class {
+            constructor(data) {
+                Object.assign(this, data);
+            }
+            updateStatistics() {}
+        },
+        blunderStore: { updateBlunder() { return Promise.resolve(); } },
+        moveToTable() {
+            return 'Best move';
+        },
+        moveColor() {
+            return 'gray';
+        },
+        collapseElements() {},
+        marked: { parse(markup) { return markup; } },
+        console: { log() {}, error() {}, warn() {} },
+    });
+
+    loadSupportingFunctions(context);
+    const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
+    vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
+    vm.runInContext('selectMoveOption("moveOption2"); checkSelectedMoveOption();', context);
+
+    assert.equal(moveOption2['aria-pressed'], 'true');
+    assert.equal(moveOption2.dataset.selected, 'true');
+});
+
 test('revealing the best move marks the correct option button with the highlighted style', () => {
     const makeButton = (textContent) => ({
         textContent,
+        dataset: {},
         classList: {
             add(name) { this[name] = true; },
             remove(name) { delete this[name]; },
