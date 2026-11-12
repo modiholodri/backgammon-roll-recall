@@ -96,6 +96,7 @@ Chart.defaults.scale.title.color = unimportantColor;
 Chart.defaults.layout.padding.top = 7;
 
 let boardChart;
+let heatMapChart;
 let selectedMoveArrows = [];
 
 let player0CheckerData = [];
@@ -453,6 +454,153 @@ const pointNumberAnnotations = {
     }
 };
 
+const HEAT_MAP_TYPES = Object.freeze({
+    missedChecker: 'missedChecker',
+    shouldHavePut: 'shouldHavePut',
+    equityLost: 'equityLost',
+    frequentMistake: 'frequentMistake',
+    bestMoveDestinations: 'bestMoveDestinations',
+});
+
+let heatMapType = HEAT_MAP_TYPES.missedChecker;
+let heatMapBars = [];
+
+function getHeatMapMovePoints(move, type) {
+    if (!move || typeof move !== 'object') return [];
+
+    const parsedMoves = parseBoardMoveNotation(move.notation || '');
+    if (parsedMoves.length === 0) {
+        return [];
+    }
+
+    if (type === HEAT_MAP_TYPES.shouldHavePut ||
+        type === HEAT_MAP_TYPES.equityLost ||
+        type === HEAT_MAP_TYPES.bestMoveDestinations) {
+        return parsedMoves
+            .map(({ to }) => normalizeBoardMovePoint(to))
+            .filter((point) => point !== null && point !== 25 && point !== 0);
+    }
+
+    return parsedMoves
+        .map(({ from }) => normalizeBoardMovePoint(from))
+        .filter((point) => point !== null && point !== 25 && point !== 0);
+}
+
+function buildHeatMapData(blunders, type = heatMapType) {
+    const pointWeights = new Map();
+    const safeBlunders = Array.isArray(blunders) ? blunders : [];
+
+    safeBlunders.forEach((blunder) => {
+        if (!blunder || typeof blunder !== 'object') return;
+
+        const askedCount = Number(blunder.timesAsked) > 0 ? Number(blunder.timesAsked) : 1;
+        const moveList = Array.isArray(blunder.moves) ? blunder.moves : [];
+        const movesToAggregate = (
+            type === HEAT_MAP_TYPES.shouldHavePut ||
+            type === HEAT_MAP_TYPES.bestMoveDestinations
+        ) && moveList.length > 0
+            ? [moveList.reduce((bestMove, move) => {
+                if (!move || typeof move !== 'object') return bestMove;
+                if (!bestMove) return move;
+                return Math.abs(Number(move.lostEquityValue) || 0) < Math.abs(Number(bestMove.lostEquityValue) || 0)
+                    ? move
+                    : bestMove;
+            }, null)].filter(Boolean)
+            : type === HEAT_MAP_TYPES.frequentMistake
+                ? moveList.filter((move) => move && Math.abs(Number(move.lostEquityValue) || 0) > 0)
+                : moveList;
+
+        movesToAggregate.forEach((move) => {
+            if (!move || typeof move !== 'object') return;
+
+            const points = getHeatMapMovePoints(move, type);
+            if (points.length === 0) return;
+
+            const severity = Math.abs(Number(move.lostEquityValue) || 0);
+            const weight = type === HEAT_MAP_TYPES.shouldHavePut || type === HEAT_MAP_TYPES.frequentMistake
+                ? askedCount
+                : type === HEAT_MAP_TYPES.bestMoveDestinations
+                    ? 1
+                    : severity > 0 ? Math.max(1, severity * askedCount) : 1;
+            const color = type === HEAT_MAP_TYPES.shouldHavePut ||
+                type === HEAT_MAP_TYPES.bestMoveDestinations ||
+                severity === 0 ? 'green' : 'red';
+
+            points.forEach((point) => {
+                const current = pointWeights.get(point) || { value: 0, color: 'green' };
+                const nextValue = current.value + weight;
+                pointWeights.set(point, {
+                    value: nextValue,
+                    color: current.value === 0 ? color : (nextValue >= current.value ? current.color : color),
+                });
+            });
+        });
+    });
+
+    return Array.from(pointWeights.entries())
+        .map(([point, stats]) => ({
+            point,
+            value: stats.value,
+            color: stats.color,
+        }))
+        .sort((a, b) => b.value - a.value);
+}
+
+function refreshHeatMap(blunders, type = heatMapType) {
+    heatMapType = Object.prototype.hasOwnProperty.call(HEAT_MAP_TYPES, type) ? type : HEAT_MAP_TYPES.missedChecker;
+    heatMapBars = buildHeatMapData(blunders, heatMapType).map((pointData) => ({
+        point: pointData.point,
+        value: pointData.value,
+        color: pointData.color,
+    }));
+
+    if (heatMapChart) {
+        heatMapChart.update();
+    }
+}
+
+function setHeatMapType(type) {
+    const selection = document.getElementById('heatMapTypeSelection');
+    const selectedType = Object.prototype.hasOwnProperty.call(HEAT_MAP_TYPES, type) ? type : HEAT_MAP_TYPES.missedChecker;
+    heatMapType = selectedType;
+    if (selection) selection.value = selectedType;
+    if (typeof window !== 'undefined' && typeof window.blunders !== 'undefined') {
+        refreshHeatMap(window.blunders, selectedType);
+    }
+    if (typeof blunders !== 'undefined') {
+        refreshHeatMap(blunders, selectedType);
+    }
+}
+
+const heatMapAnnotations = {
+    id: 'heatMap',
+    afterDatasetsDraw(chart, args, options) {
+        if (!Array.isArray(heatMapBars) || heatMapBars.length === 0) return;
+
+        const { ctx } = chart;
+        const maxValue = Math.max(...heatMapBars.map((bar) => Number(bar.value) || 0), 1);
+        ctx.save();
+
+        heatMapBars.forEach((bar) => {
+            const point = Number(bar.point);
+            if (!Number.isFinite(point)) return;
+
+            const isTop = point >= 13;
+            const xPos = chart.scales.x.getPixelForValue(pointNumberToBoardPosition(point));
+            const width = 18;
+            const baseY = chart.scales.y.getPixelForValue(isTop ? 10.8 : 0.2);
+            const normalized = (Number(bar.value) || 0) / maxValue;
+            const height = Math.max(5, normalized * 75);
+            const y = isTop ? baseY : baseY - height;
+
+            ctx.fillStyle = bar.color === 'green' ? 'rgba(40, 200, 90, 0.8)' : 'rgba(220, 38, 38, 0.8)';
+            ctx.fillRect(xPos - width / 2, y, width, height);
+        });
+
+        ctx.restore();
+    },
+};
+
 function setPointNumbers()
 {
     pointNumbers.length = 0;
@@ -710,6 +858,16 @@ function setBoardTheme(themeName) {
         boardChart.options.scales.y.grid.color = gridColor.color;
         boardChart.update();
     }
+    if (heatMapChart) {
+        heatMapChart.data.datasets[0].borderColor = frameColor;
+        heatMapChart.data.datasets[1].borderColor = pointsAForeColor;
+        heatMapChart.data.datasets[1].backgroundColor = pointsAForeColor;
+        heatMapChart.data.datasets[2].borderColor = pointsBForeColor;
+        heatMapChart.data.datasets[2].backgroundColor = pointsBForeColor;
+        heatMapChart.options.scales.x.grid.color = gridColor.color;
+        heatMapChart.options.scales.y.grid.color = gridColor.color;
+        heatMapChart.update();
+    }
 
     const selection = document.getElementById('boardThemeSelection');
     if (selection) selection.value = isKnownTheme ? selectedThemeName : 'classic';
@@ -733,6 +891,105 @@ function setCanvasHeight() {
         boardChart.data.datasets[1].pointRadius = checkerSize;
         boardChart.update();
     }
+}
+
+function setHeatMapCanvasHeight() {
+    const canvas = document.getElementById('heatMapChartCanvas');
+    const boardCanvas = document.getElementById('boardChartCanvas');
+    const width = canvas?.parentElement?.clientWidth;
+    if (!canvas) return;
+
+    const boardHeight = Number.parseFloat(boardCanvas?.style.height) || boardCanvas?.clientHeight;
+    if (!boardHeight && !width) return;
+
+    const height = boardHeight || width * 0.85;
+    canvas.style.height = `${height}px`;
+
+    if (heatMapChart) {
+        heatMapChart.update();
+    }
+}
+
+function createHeatMapBoard() {
+    const canvas = document.getElementById('heatMapChartCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    setHeatMapCanvasHeight();
+
+    if (heatMapChart) {
+        heatMapChart.destroy();
+    }
+
+    heatMapChart = new Chart(ctx, {
+        type: 'scatter',
+        plugins: [pointNumberAnnotations, heatMapAnnotations],
+        data: {
+            datasets: [
+                {
+                    label: 'Board Frame',
+                    data: boardFrameData,
+                    borderColor: frameColor,
+                    borderWidth: 2,
+                    showLine: true,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'Points A',
+                    data: pointsA,
+                    borderColor: pointsAForeColor,
+                    backgroundColor: pointsAForeColor,
+                    borderWidth: 3,
+                    showLine: true,
+                    pointRadius: 0,
+                },
+                {
+                    label: 'Points B',
+                    data: pointsB,
+                    borderColor: pointsBForeColor,
+                    backgroundColor: pointsBForeColor,
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    pointRadius: 0,
+                },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: { enabled: showDebug },
+            },
+            events: [],
+            layout: { padding: { bottom: -20 } },
+            scales: {
+                x: {
+                    title: { display: showDebug },
+                    beginAtZero: true,
+                    stacked: true,
+                    position: 'bottom',
+                    ticks: { color: unimportantColor, display: showDebug },
+                    grid: gridColor,
+                    min: 0.4,
+                    max: 13.6,
+                    display: showDebug,
+                },
+                y: {
+                    ticks: { display: showDebug },
+                    beginAtZero: true,
+                    min: -0.7,
+                    max: 11.7,
+                    grid: gridColor,
+                    display: showDebug,
+                }
+            }
+        }
+    });
+
+    setBoardTheme(document.getElementById('boardThemeSelection')?.value || 'classic');
+    refreshHeatMap(Array.isArray(blunders) ? blunders : [], heatMapType);
 }
 
 // Function to create the Backgammon Board

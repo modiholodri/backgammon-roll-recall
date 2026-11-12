@@ -35,7 +35,7 @@ test('fetching blunders collapses the Blunder Store and Settings sections', asyn
     vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
     vm.runInContext('fetchBlundersFromStore()', context);
     await new Promise((resolve) => setImmediate(resolve));
-    assert.deepEqual(collapsedSections, ['blunderStore', 'settings']);
+    assert.deepEqual(collapsedSections, ['blunderStore', 'settings', 'heatMap']);
 });
 
 test('board, move option, and delete interactions collapse the Blunder Store and Settings sections', async () => {
@@ -58,9 +58,9 @@ test('board, move option, and delete interactions collapse the Blunder Store and
     await vm.runInContext('showNextBlunder(); checkSelectedMoveOption(); deleteCurrentBlunder()', context);
 
     assert.deepEqual(collapsedSections, [
-        'blunderStore', 'settings',
-        'blunderStore', 'settings',
-        'blunderStore', 'settings',
+        'blunderStore', 'settings', 'heatMap',
+        'blunderStore', 'settings', 'heatMap',
+        'blunderStore', 'settings', 'heatMap',
     ]);
 });
 

@@ -54,6 +54,29 @@
         </div>
 
 
+        <!-- Heat Map -->
+        <section id="heatMapSection" class="container" style="padding: 0; margin-top: 0.5rem;">
+            <hr class="rounded">
+            <h3 id="heatMapToggle" type="button" data-toggle="collapse" data-target="#heatMap" aria-expanded="false" aria-controls="heatMap">
+                Heat Map ⇅
+            </h3>
+            <div id="heatMap" class="collapse">
+                <div id="heatMapChart">
+                    <canvas id="heatMapChartCanvas" style="background-color: black; display: block; width: 100%;" aria-label="Blunder heat map"></canvas>
+                </div>
+                <div class="input-group mt-2">
+                    <span class="input-group-text">Heat Map</span>
+                    <select id="heatMapTypeSelection" title="Heat Map Type" class="form-select" onchange="setHeatMapType(this.value)">
+                        <option value="missedChecker">Where a checker has been missed</option>
+                        <option value="shouldHavePut">Where a checker should have been put</option>
+                        <option value="equityLost">Where the most equity has been lost</option>
+                        <option value="frequentMistake">Most frequent mistake</option>
+                        <option value="bestMoveDestinations">Best-move destinations across blunders</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
         <!-- Blunder Store -->
         <section id="blunderStoreSection" class="container">
             <hr class="rounded">
@@ -237,10 +260,12 @@
 
             checkLocalStorageAvailable();
             createBoard();
+            createHeatMapBoard();
 
             // call setCanvasHeight when the window is resized
             window.addEventListener('resize', function() {
                 try { setCanvasHeight(); } catch (e) { /* ignore if not defined */ }
+                try { setHeatMapCanvasHeight(); } catch (e) { /* ignore if not defined */ }
             });
         });
         
@@ -252,16 +277,19 @@
 
             switch (elementName) {
                 case 'readMe':
-                    collapseElements(['settings', 'blunderStore', 'tipOfTheDay']);
+                    collapseElements(['settings', 'blunderStore', 'heatMap', 'tipOfTheDay']);
                     break;
                 case 'settings':
-                    collapseElements(['readMe', 'blunderStore', 'tipOfTheDay']);
+                    collapseElements(['readMe', 'blunderStore', 'heatMap', 'tipOfTheDay']);
                     break;
                 case 'blunderStore':
-                    collapseElements(['readMe', 'settings', 'tipOfTheDay']);
+                    collapseElements(['readMe', 'settings', 'heatMap', 'tipOfTheDay']);
+                    break;
+                case 'heatMap':
+                    collapseElements(['readMe', 'settings', 'blunderStore', 'tipOfTheDay']);
                     break;
                 case 'tipOfTheDay':
-                    collapseElements(['readMe', 'settings', 'blunderStore']);
+                    collapseElements(['readMe', 'settings', 'blunderStore', 'heatMap']);
                     break;
             }
         }
@@ -306,11 +334,18 @@
                 const elementJustShown = collapseElement.classList.contains('show');
                 if (elementJustShown) {
                     autoCollapse(elementName);
+                    if (elementName === 'heatMap') {
+                        requestAnimationFrame(() => {
+                            setHeatMapCanvasHeight();
+                            if (heatMapChart) heatMapChart.resize();
+                        });
+                    }
                 }
             });
         }
 
         addToggleListener('blunderStore');
+        addToggleListener('heatMap');
         addToggleListener('readMe');
         addToggleListener('settings');
     </script>
