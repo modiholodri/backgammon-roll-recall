@@ -650,7 +650,7 @@ function parseBoardMoveNotation(moveNotation)
     const parsedMoves = [];
 
     text.split(/\s+/).forEach((segment) => {
-        const cleanedSegment = segment.replace(/[*!]+$/g, '');
+        const cleanedSegment = segment.replace(/!+$/g, '');
         if (!cleanedSegment) return;
 
         let remaining = cleanedSegment;
@@ -666,6 +666,7 @@ function parseBoardMoveNotation(moveNotation)
 
             const from = isFirstMove ? normalizeBoardMovePoint(matches[1]) : previousTo;
             const to = isFirstMove ? normalizeBoardMovePoint(matches[2]) : normalizeBoardMovePoint(matches[1]);
+            const hit = Boolean(matches[isFirstMove ? 3 : 2]);
             const repeatCount = Number.parseInt(matches[isFirstMove ? 4 : 3] ?? '1', 10);
 
             if (from === null || to === null) {
@@ -677,6 +678,7 @@ function parseBoardMoveNotation(moveNotation)
                 to,
                 count: Number.isInteger(repeatCount) && repeatCount > 0 ? repeatCount : 1,
                 label: matches[isFirstMove ? 4 : 3] ? `(${matches[isFirstMove ? 4 : 3]})` : null,
+                hit,
             });
 
             previousTo = to;
@@ -712,7 +714,7 @@ function boardMovePointToPixel(pointValue, sourcePoint = pointValue)
     };
 }
 
-function drawBoardArrow(ctx, start, end, lineColor, label = null)
+function drawBoardArrow(ctx, start, end, lineColor, label = null, hit = false)
 {
     if (!ctx || !start || !end || !lineColor) return;
 
@@ -750,16 +752,28 @@ function drawBoardArrow(ctx, start, end, lineColor, label = null)
     ctx.fillStyle = lineColor;
     ctx.fill();
 
-    if (!label) return;
+    if (label) {
+        const midX = (start.x + end.x) / 2 + ((dy / length) || 0) * 14;
+        const midY = (start.y + end.y) / 2 - ((dx / length) || 0) * 14;
+        ctx.save();
+        ctx.fillStyle = 'cyan';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, midX, midY);
+        ctx.restore();
+    }
 
-    const midX = (start.x + end.x) / 2 + ((dy / length) || 0) * 14;
-    const midY = (start.y + end.y) / 2 - ((dx / length) || 0) * 14;
+    if (!hit) return;
+
+    const hitX = (start.x + 2 * control.x + end.x) / 4;
+    const hitY = (start.y + 2 * control.y + end.y) / 4;
     ctx.save();
     ctx.fillStyle = 'cyan';
-    ctx.font = 'bold 14px sans-serif';
+    ctx.font = 'bold 32px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(label, midX, midY);
+    ctx.fillText('*', hitX, hitY);
     ctx.restore();
 }
 
@@ -769,10 +783,10 @@ function setSelectedMoveArrows(move)
     if (!move || !move.notation) return;
 
     const color = typeof moveColor === 'function' ? moveColor(move.lostEquityValue) : 'lime';
-    selectedMoveArrows = parseBoardMoveNotation(move.notation).map(({ from, to, count, label }) => {
+    selectedMoveArrows = parseBoardMoveNotation(move.notation).map(({ from, to, count, label, hit }) => {
         const start = boardMovePointToPixel(from, to);
         const end = boardMovePointToPixel(to, from);
-        return { from, to, count, label, start, end, color };
+        return { from, to, count, label, hit, start, end, color };
     }).filter((arrow) => arrow.start && arrow.end);
 
     if (boardChart) boardChart.update();
@@ -796,7 +810,7 @@ const moveArrowAnnotations = {
             const startY = chart.scales.y.getPixelForValue(arrow.start.y);
             const endX = chart.scales.x.getPixelForValue(arrow.end.x);
             const endY = chart.scales.y.getPixelForValue(arrow.end.y);
-            drawBoardArrow(ctx, { x: startX, y: startY }, { x: endX, y: endY }, arrow.color, arrow.label);
+            drawBoardArrow(ctx, { x: startX, y: startY }, { x: endX, y: endY }, arrow.color, arrow.label, arrow.hit);
         });
         ctx.restore();
     }
