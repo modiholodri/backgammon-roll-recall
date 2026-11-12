@@ -41,6 +41,9 @@ test('move notation is parsed into board arrows', () => {
     const barMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("bar/24 24/23"))', context);
     assert.deepEqual(JSON.parse(barMove), [{ from: 25, to: 24, count: 1, label: null }, { from: 24, to: 23, count: 1, label: null }]);
 
+    const comboMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("6/3*/2"))', context);
+    assert.deepEqual(JSON.parse(comboMove), [{ from: 6, to: 3, count: 1, label: null }, { from: 3, to: 2, count: 1, label: null }]);
+
     const doubleMove = vm.runInContext('JSON.stringify(parseBoardMoveNotation("6/4(2)"))', context);
     assert.deepEqual(JSON.parse(doubleMove), [{ from: 6, to: 4, count: 2, label: '(2)' }]);
 });
