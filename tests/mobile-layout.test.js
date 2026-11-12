@@ -9,6 +9,15 @@ test('mobile layout constrains the app to phone-friendly width', () => {
 
     assert.match(css, /body\s*\{[^}]*display:\s*flex;[^}]*justify-content:\s*center;/is);
     assert.match(css, /\.container\s*\{[^}]*width:\s*min\(100%,\s*430px\);[^}]*max-width:\s*430px;/is);
+    assert.match(css, /touch-action:\s*manipulation;/is);
+});
+
+test('mobile button controls are explicit and tap-friendly on iPhone Safari', () => {
+    const html = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.html'), 'utf8');
+
+    assert.match(html, /<button[^>]*id="moveOption1"[^>]*type="button"/is);
+    assert.match(html, /<button[^>]*id="deleteIndubitable"[^>]*type="button"/is);
+    assert.match(html, /<button[^>]*id="downloadSampleBlunders"[^>]*type="button"/is);
 });
 
 test('board sizing uses its container width instead of the viewport width', () => {

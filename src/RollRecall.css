@@ -33,6 +33,14 @@ body {
     justify-content: center;
 }
 
+button,
+.btn {
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
 dialog#confirmationPrompt,
 dialog#fullscreenPrompt {
     max-width: min(90vw, 28rem);
