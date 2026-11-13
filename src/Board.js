@@ -464,11 +464,11 @@ const HEAT_MAP_TYPES = Object.freeze({
 });
 
 const HEAT_MAP_DESCRIPTIONS = Object.freeze({
-    [HEAT_MAP_TYPES.missedChecker]: 'Shows the starting points of analyzed moves, weighted by lost equity and how often the position was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
-    [HEAT_MAP_TYPES.shouldHavePut]: 'Shows the destination points of each position\'s best move, weighted by how often the position was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
-    [HEAT_MAP_TYPES.equityLost]: 'Shows the destination points of analyzed moves, weighted by lost equity and how often the position was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
-    [HEAT_MAP_TYPES.frequentMistake]: 'Counts losing moves equally regardless of lost equity, weighted by how often the position was asked. Best moves are excluded. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
-    [HEAT_MAP_TYPES.bestMoveDestinations]: 'Shows the destination points of each position\'s best move, counted once per position regardless of how often it was asked. Red bars indicate mistakes; green bars indicate best or non-losing moves.',
+    [HEAT_MAP_TYPES.missedChecker]: 'Where a checker has been missed: Shows the starting points of analyzed moves, weighted by lost equity and how often the position was asked.',
+    [HEAT_MAP_TYPES.shouldHavePut]: 'Where a checker should have been put: Shows the destination points of each position\'s best move, weighted by how often the position was asked.',
+    [HEAT_MAP_TYPES.equityLost]: 'Where the most equity has been lost: Shows the destination points of analyzed moves, weighted by lost equity and how often the position was asked.',
+    [HEAT_MAP_TYPES.frequentMistake]: 'Most frequent mistake: Counts losing moves equally regardless of lost equity, weighted by how often the position was asked. Best moves are excluded.',
+    [HEAT_MAP_TYPES.bestMoveDestinations]: 'Best-move destinations across blunders: Shows the destination points of each position\'s best move, counted once per position regardless of how often it was asked.',
 });
 
 let heatMapType = HEAT_MAP_TYPES.missedChecker;
