@@ -57,6 +57,85 @@ function showNextBlunder() {
     }
 }
 
+function showPreviousBlunder() {
+    collapseDigestSections();
+
+    if (!Array.isArray(blunders) || blunders.length === 0) {
+        console.log('No blunders available');
+        return;
+    }
+
+    const currentIndex = currentBlunder < 0 ? blunders.length - 1 : currentBlunder;
+    currentBlunder = (currentIndex - 1 + blunders.length) % blunders.length;
+    if (typeof clearSelectedMoveArrows === 'function') {
+        clearSelectedMoveArrows();
+    }
+
+    const blunder = new Blunder(blunders[currentBlunder]);
+    console.log('Showing previous blunder:', currentBlunder, blunder);
+
+    blunder.show();
+    if (typeof refreshHeatMap === 'function') {
+        refreshHeatMap(blunders, heatMapType);
+    }
+}
+
+const SWIPE_NAVIGATION_DISTANCE = 60;
+
+function handleSwipeNavigationStart(event) {
+    const touch = event && event.touches && event.touches.length ? event.touches[0] : event;
+    if (!touch) {
+        return;
+    }
+
+    this.__swipeStartX = touch.clientX;
+    this.__swipeStartY = touch.clientY;
+}
+
+function handleSwipeNavigationEnd(event) {
+    const touch = event && event.changedTouches && event.changedTouches.length ? event.changedTouches[0] : event;
+    if (!touch || typeof this.__swipeStartX !== 'number' || typeof this.__swipeStartY !== 'number') {
+        return;
+    }
+
+    const deltaX = touch.clientX - this.__swipeStartX;
+    const deltaY = touch.clientY - this.__swipeStartY;
+    this.__swipeStartX = undefined;
+    this.__swipeStartY = undefined;
+
+    if (Math.abs(deltaX) < SWIPE_NAVIGATION_DISTANCE || Math.abs(deltaX) < Math.abs(deltaY)) {
+        return;
+    }
+
+    if (deltaX < 0) {
+        showNextBlunder();
+    } else {
+        showPreviousBlunder();
+    }
+}
+
+function attachSwipeNavigation(element) {
+    if (!element || typeof element.addEventListener !== 'function') {
+        return;
+    }
+
+    element.addEventListener('touchstart', handleSwipeNavigationStart, { passive: true });
+    element.addEventListener('touchend', handleSwipeNavigationEnd, { passive: true });
+    element.addEventListener('pointerdown', handleSwipeNavigationStart, { passive: true });
+    element.addEventListener('pointerup', handleSwipeNavigationEnd, { passive: true });
+}
+
+if (typeof document !== 'undefined') {
+    const swipeNavigationTargets = ['boardChartCanvas', 'moveDisplay'];
+    swipeNavigationTargets.forEach((elementId) => {
+        try {
+            attachSwipeNavigation(document.getElementById(elementId));
+        } catch (error) {
+            console.warn?.(`Skipping swipe navigation for ${elementId}`, error);
+        }
+    });
+}
+
 function clearMoveOptionSelection() {
     const optionIds = ['moveOption1', 'moveOption2', 'moveOption3', 'moveOption4', 'moveOption5'];
 

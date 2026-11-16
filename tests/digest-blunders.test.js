@@ -14,8 +14,13 @@ test('fetching blunders collapses the Blunder Store and Settings sections', asyn
     const context = vm.createContext({
         document: {
             getElementById(id) {
-                assert.equal(id, 'challengeOrder');
-                return { value: 'level' };
+                if (id === 'challengeOrder') {
+                    return { value: 'level' };
+                }
+                if (id === 'boardChartCanvas' || id === 'moveDisplay') {
+                    return { addEventListener() {} };
+                }
+                return null;
             },
         },
         blunderStore: {
@@ -27,7 +32,7 @@ test('fetching blunders collapses the Blunder Store and Settings sections', asyn
         collapseElements(sections) {
             collapsedSections.push(...sections);
         },
-        console: { error() {}, log() {} },
+        console: { error() {}, log() {}, warn() {} },
     });
 
     loadSupportingFunctions(context);
@@ -36,6 +41,59 @@ test('fetching blunders collapses the Blunder Store and Settings sections', asyn
     vm.runInContext('fetchBlundersFromStore()', context);
     await new Promise((resolve) => setImmediate(resolve));
     assert.deepEqual(collapsedSections, ['blunderStore', 'settings', 'heatMap']);
+});
+
+test('swiping left and right moves through blunders on mobile', () => {
+    const boardCanvas = {
+        addEventListener(eventName, handler) {
+            this[eventName] = handler;
+        },
+    };
+    const moveDisplay = {
+        addEventListener(eventName, handler) {
+            this[eventName] = handler;
+        },
+    };
+    const context = vm.createContext({
+        heatMapType: 'equityLost',
+        collapseElements() {},
+        clearSelectedMoveArrows() {},
+        refreshHeatMap() {},
+        document: {
+            getElementById(id) {
+                if (id === 'boardChartCanvas') return boardCanvas;
+                if (id === 'moveDisplay') return moveDisplay;
+                return null;
+            },
+        },
+        console: { log() {}, error() {}, warn() {} },
+        Blunder: class {
+            constructor(data) {
+                Object.assign(this, data);
+            }
+            show() {}
+        },
+    });
+
+    loadSupportingFunctions(context);
+    const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'DigestBlunders.js'), 'utf8');
+    vm.runInContext(source, context, { filename: 'DigestBlunders.js' });
+    vm.runInContext(`
+        blunders = [
+            { positionID: 'pos-1', matchID: 'match-1', moves: [] },
+            { positionID: 'pos-2', matchID: 'match-2', moves: [] },
+            { positionID: 'pos-3', matchID: 'match-3', moves: [] }
+        ];
+        currentBlunder = 1;
+    `, context);
+
+    boardCanvas.touchstart({ touches: [{ clientX: 200, clientY: 90 }] });
+    boardCanvas.touchend({ changedTouches: [{ clientX: 120, clientY: 80 }] });
+    assert.equal(vm.runInContext('currentBlunder', context), 2);
+
+    moveDisplay.touchstart({ touches: [{ clientX: 150, clientY: 80 }] });
+    moveDisplay.touchend({ changedTouches: [{ clientX: 240, clientY: 70 }] });
+    assert.equal(vm.runInContext('currentBlunder', context), 1);
 });
 
 test('board, move option, and delete interactions collapse the Blunder Store and Settings sections', async () => {
