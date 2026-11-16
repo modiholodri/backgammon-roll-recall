@@ -64,6 +64,10 @@
                 <div id="heatMapChart">
                     <canvas id="heatMapChartCanvas" style="background-color: black; display: block; width: 100%;" aria-label="Blunder heat map"></canvas>
                 </div>
+                <div class="small text-center">
+                    <span class="me-3"><span style="display:inline-block;width:0.8rem;height:0.8rem;background:rgba(220, 38, 38, 0.8);vertical-align:middle;border-radius:2px;"></span> Mistakes</span>
+                    <span><span style="display:inline-block;width:0.8rem;height:0.8rem;background:rgba(40, 200, 90, 0.8);vertical-align:middle;border-radius:2px;"></span> Best or Non-losing Moves</span>
+                </div>
                 <div class="input-group mt-2">
                     <span class="input-group-text">Heat Map</span>
                     <select id="heatMapTypeSelection" title="Heat Map Type" class="form-select" onchange="setHeatMapType(this.value)">
@@ -74,11 +78,7 @@
                         <option value="bestMoveDestinations">Best Move Destinations</option>
                     </select>
                 </div>
-                <p id="heatMapDescription" class="mt-2 mb-1 text-muted" aria-live="polite"></p>
-                <div class="small text-muted">
-                    <span class="me-3"><span style="display:inline-block;width:0.8rem;height:0.8rem;background:rgba(220, 38, 38, 0.8);vertical-align:middle;border-radius:2px;"></span> Red = mistakes</span>
-                    <span><span style="display:inline-block;width:0.8rem;height:0.8rem;background:rgba(40, 200, 90, 0.8);vertical-align:middle;border-radius:2px;"></span> Green = best or non-losing moves</span>
-                </div>
+                <p id="heatMapDescription" class="mt-2 mb-1 text-center" aria-live="polite"></p>
             </div>
         </section>
 
